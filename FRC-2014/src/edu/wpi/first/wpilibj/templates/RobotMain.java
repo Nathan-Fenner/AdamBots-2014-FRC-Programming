@@ -17,42 +17,34 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class RobotTemplate extends IterativeRobot {
+public class RobotMain extends IterativeRobot {
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
-		RobotRun.setup();
-    }
 
-	public void autonomousInit() {
-		RobotRun.autonSetup();
-	}
+    }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-		RobotRun.autonPeriodic();
-    }
 
-	public void teleopInit() {
-		RobotRun.teleopSetup();
-	}
+    }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-		RobotRun.teleopPeriodic();
+        
     }
-
+    
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-
+    
     }
-
+    
 }
