@@ -65,7 +65,7 @@ public class RobotShoot {
             //release the ball
         }
         else{
-            System.out.println("Tyler what did you do?");
+            System.out.println("Roi and Simon, what did you do?");
         }
     }
     
