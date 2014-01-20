@@ -64,8 +64,8 @@ public class RobotShoot {
             //initialize the limit switcha nd the pnuematic shifters
             //release the ball
         }
-        else{
-            System.out.println("Roi and Simon, what did you do?");
+        else
+            System.out.println("Shooter jammed");
         }
     }
     
