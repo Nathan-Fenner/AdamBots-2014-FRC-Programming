@@ -36,22 +36,36 @@ public class Drive {
 		distance = dist;
 		return distance;
 	}
-	public static double setDistancePerTick(double wheelDiameterM){
+	public static void startEncoder(){
+		encoderRight.start();
+		encoderLeft.start();
+	}
+	public static double setDistancePerTick(double wheelDiameterM /*in meters*/){
 		double circ = wheelDiameterM * Math.PI;
 		double distPerTick = circ/360;
 		encoderRight.setDistancePerPulse(distPerTick);
+		encoderLeft.setDistancePerPulse(distPerTick);
 		return distPerTick;
 	}
-	public void correctDistance(){
-		if(targetDistance != distance){
-			if(targetDistance > distance){
-				double dist = Drive.setDistancePerTick(0.1624);
+	public void correctDistance(double speed){
+		if(targetDistance != distance){			
+				double distPerTick = Drive.setDistancePerTick(0.1624);
 				double difference = targetDistance - distance;
-				double ticks = difference/dist;
-				
-				
+				double RequiredTicks = difference * (1/distPerTick);				
+				Drive.startEncoder();
+				if(difference < 0){
+					while(encoderRight.get()!= RequiredTicks || encoderLeft.get() != RequiredTicks){
+						right1Victor.set(speed);
+						left1Victor.set(speed);
+					}
+			}else if(difference > 0){
+				while(encoderRight.get()!= RequiredTicks || encoderLeft.get() != RequiredTicks){
+						right1Victor.set(-speed);
+						left1Victor.set(-speed);
+					}
 			}else{
-				
+				right1Victor.set(0);
+				left1Victor.set(0);
 			}
 		}
 	}
