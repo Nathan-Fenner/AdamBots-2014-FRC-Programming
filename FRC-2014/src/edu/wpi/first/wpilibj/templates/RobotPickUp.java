@@ -35,7 +35,11 @@ public class RobotPickUp {
 	//INSERT CODE HERE
     }
     
-    public void ifLoaded() {
+    public boolean ifLoaded() {
+	if() //loaded
+	    return true;
+	else
+	    return false;
 	//INSERT CODE HERE
     }
     
@@ -56,7 +60,9 @@ public class RobotPickUp {
 	//INSERT CODE HERE
     }
     
-    
+    public void catchMech() {
+	//INSERT CODE HERE
+    }
     
     
     

@@ -6,6 +6,8 @@
 
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 
 /**
@@ -20,6 +22,10 @@ public class RobotActuators {
     public static final Victor gamePieceIntake;
     public static final Victor armRotate;
     public static final Victor cockingMech;
+    public static final Compressor comp;
+    public static final Talon tal1;
+    public static final Talon tal2;
+    
     
     
 ////CONSTANTS-------------------------------------------------------------------

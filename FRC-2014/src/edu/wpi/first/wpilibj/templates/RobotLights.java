@@ -6,6 +6,7 @@
 
 package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.DigitalInput;
+
 /**
  *
  * @author Tyler
@@ -40,6 +41,15 @@ public class RobotLights {
     public void lightResponse() {
 	boolean ifReady = ifReady();
 	boolean ifJammed = ifJammed();
+	if(ifReady)
+	    ;
+	else
+	    ; //Error message
+	if(ifJammed)
+	    ; //Error message
+	else
+	    ;
+
 	//INSERT CODE HERE
     }
     
@@ -51,7 +61,22 @@ public class RobotLights {
 	//INSERT CODE HERE
     }
     
-    public void liar() {
+    public void confuse() {
 	//INSERT CODE HERE
+	for(int loop = 0; loop < 100; loop++)
+	{
+	    //turn on
+	    //turn off
+	    delay(50);
+	}
+    }
+    
+    public void delay(int time) {
+	try {
+	    Thread.sleep(time);
+	} catch (InterruptedException e) {
+	    System.out.println(e);
+	
+    }
     }
 }
