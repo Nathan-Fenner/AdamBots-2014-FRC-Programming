@@ -4,85 +4,75 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Victor;
+
 /**
  *
  * @author Nathan
  */
 public class RobotShoot {
-    private static double tensionTarget;
-    private static double winchValue;
-    public static double targetPosition = 0.0;//where it should be
-    
+
+    public static final int ENCODER_REVOLUTIONS = 5;
+    public static final double UNIWIND_SPEED = -.5;
+    public static DigitalInput limitBuckle;
+    public static DigitalInput limitLatched;
+    public static Solenoid latchSolenoid;
+    public static final int LIMIT_BUCKLE = 8;
+    public static final int LIMIT_LATCHED = 9;
+    public static Victor motorShooter;
+    public static Encoder shooterEncoder;
+    public static int revolutionsOfShooter;
     /**
      * This method returns the tension (in encoder ticks or something) in terms
      * of the distance in feet to the target.
+     *
      * @param distance The distance to the target in feet
      * @return The tension required to hit the target
      */
-    public static double getTensionFromDistance(double distance){
-        double tension = 0.0;
-        return tension;
-    }
+    
+
     /**
-     * this will initialize the victors limit switches and pneumatics 
+     * this will initialize the victors limit switches and pneumatics
      */
-    public static void initialize(){
+    public static void init() {
         
-    }
-    /**
-     * we will initialize the encoders and then output the values
-     * @return the angle that the shooter wheel has revolved
-     */
-    public static void encodersINIT() {
-        
-    }
-    public static void updateTension(){
-        //update the tension
-    }
-    public static void setTension(double amount){
-        tensionTarget = amount;
-    }
-    public static double getTension() {
-        return 0; //will return actual encoder value
+        /*limitBuckle = new DigitalInput(LIMIT_BUCKLE);
+        limitLatched = new DigitalInput(LIMIT_LATCHED)*/
     }
     
-    public static void initializeWinch(){
-        //we will initialize the winch
-    }
-    public static double currentWinchValue(double winchValue){
-        return winchValue;
-    }
-    public static boolean isBallLoaded(){
-        //initialize limit switch for this
-        //use limit switch to check if ball is there
-        boolean checkIfLoaded = true;
-        
-        return checkIfLoaded;
-    }
-    public static void ReleaseBall(){
-        if(RobotShoot.isBallLoaded()){
-            //initialize the limit switcha nd the pnuematic shifters
-            //release the ball
+   public static void releaseBall() {
+        if (RobotPickup.isBallLoaded()) {
+            latchSolenoid.set(false);
+        } else {
+            System.out.println("Ball not loaded");
+            //or blink a light
         }
-        else
-            System.out.println("Shooter jammed");
+    }
+   public static void relatch(){
+      
+       latchSolenoid.set(true); 
+   }
+   private static int getEncoderValue(){
+       revolutionsOfShooter = shooterEncoder.get();
+       return revolutionsOfShooter;
+   }
+   public static void unwindShooter(){
+        //counter
+        while (getEncoderValue()!=ENCODER_REVOLUTIONS){
+            motorShooter.set(UNIWIND_SPEED);
         }
+    }
+    public static void latchShooter(){
+        latchSolenoid.set(true);
     }
     
-    public static void initializeJamDetector(){
-        //initialize switches or whatever they are using
+    public static boolean isUnwound(){
+        return true;
     }
-    public static double findCurrentPosition(){
-        //find the position
-        double currentPosition = 0.0;
-        return currentPosition;
-    }
-    public static boolean isJammed(){
-        if(RobotShoot.findCurrentPosition()== targetPosition){
-            return false;
-        }
-        else{
-            return true;
-        }
+    public static void update() {
+        updateTension();
     }
 }
