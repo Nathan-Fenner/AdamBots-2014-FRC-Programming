@@ -21,6 +21,7 @@ public class Drive {
 	private static Encoder encoderLeft;
 	public static double targetDistance;
 	public static double distance;
+	public static double WHEEL_DIAMETER = 0.1624;
 		
 	////CONSTRUCTOR-------------------------------------------------------------
 	public void Drive(){
@@ -28,6 +29,8 @@ public class Drive {
 	}
 	
 	////METHODS-----------------------------------------------------------------
+	public class DistanceCorrection{
+	
 	public double setTargetDistance(double target){
 		targetDistance = target;		
 		return targetDistance;
@@ -36,11 +39,11 @@ public class Drive {
 		distance = dist;
 		return distance;
 	}
-	static void startEncoder(){
+	 void startEncoder(){
 		encoderRight.start();
 		encoderLeft.start();
 	}
-	public static double setDistancePerTick(double wheelDiameterM /*in meters*/){
+	public double setDistancePerTick(double wheelDiameterM /*in meters*/){
 		double circ = wheelDiameterM * Math.PI;
 		double distPerTick = circ/360;
 		encoderRight.setDistancePerPulse(distPerTick);
@@ -49,10 +52,10 @@ public class Drive {
 	}
 	public void correctDistance(double speed){
 		if(targetDistance != distance){			
-				double distPerTick = Drive.setDistancePerTick(0.1624);
+				double distPerTick = this.setDistancePerTick(Drive.WHEEL_DIAMETER);
 				double difference = targetDistance - distance;
 				double RequiredTicks = difference * (1/distPerTick);				
-				Drive.startEncoder();
+				this.startEncoder();
 				if(difference < 0){
 					while(encoderRight.get()!= RequiredTicks || encoderLeft.get() != RequiredTicks){
 						right1Victor.set(speed);
@@ -68,5 +71,6 @@ public class Drive {
 				left1Victor.set(0);
 			}
 		}		
+		}
 	}
 }
