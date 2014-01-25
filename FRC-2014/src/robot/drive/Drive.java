@@ -28,30 +28,30 @@ public class Drive {
 		
 	}
 	
-	////METHODS-----------------------------------------------------------------
+	////SUBCLASS----------------------------------------------------------------
 	public class DistanceCorrection{
-	
-	public double setTargetDistance(double target){
-		targetDistance = target;		
-		return targetDistance;
-	}
-	public double setDistance(double dist){
-		distance = dist;
-		return distance;
-	}
-	 void startEncoder(){
-		encoderRight.start();
-		encoderLeft.start();
-	}
-	public double setDistancePerTick(double wheelDiameterM /*in meters*/){
-		double circ = wheelDiameterM * Math.PI;
-		double distPerTick = circ/360;
-		encoderRight.setDistancePerPulse(distPerTick);
-		encoderLeft.setDistancePerPulse(distPerTick);
-		return distPerTick;
-	}
-	public void correctDistance(double speed){
-		if(targetDistance != distance){			
+	////CLASS METHODS-----------------------------------------------------------
+		public double setTargetDistance(double target){
+			targetDistance = target;		
+			return targetDistance;
+		}
+		public double setDistance(double dist){
+			distance = dist;
+			return distance;
+		}
+		 void startEncoder(){
+			encoderRight.start();
+			encoderLeft.start();
+		}
+		public double setDistancePerTick(double wheelDiameterM /*in meters*/){
+			double circ = wheelDiameterM * Math.PI;
+			double distPerTick = circ/360;
+			encoderRight.setDistancePerPulse(distPerTick);
+			encoderLeft.setDistancePerPulse(distPerTick);
+			return distPerTick;
+		}
+		public void correctDistance(double speed){
+			if(targetDistance != distance){			
 				double distPerTick = this.setDistancePerTick(Drive.WHEEL_DIAMETER);
 				double difference = targetDistance - distance;
 				double RequiredTicks = difference * (1/distPerTick);				
@@ -60,17 +60,17 @@ public class Drive {
 					while(encoderRight.get()!= RequiredTicks || encoderLeft.get() != RequiredTicks){
 						right1Victor.set(speed);
 						left1Victor.set(speed);
-					}
-			}else if(difference > 0){
-				while(encoderRight.get()!= RequiredTicks || encoderLeft.get() != RequiredTicks){
+						}
+				}else if(difference > 0){
+					while(encoderRight.get()!= RequiredTicks || encoderLeft.get() != RequiredTicks){
 						right1Victor.set(-speed);
 						left1Victor.set(-speed);
 					}
-			}else{
-				right1Victor.set(0);
-				left1Victor.set(0);
+				}else{
+					right1Victor.set(0);
+					left1Victor.set(0);
+					}
+				}		
 			}
-		}		
 		}
-	}
 }
