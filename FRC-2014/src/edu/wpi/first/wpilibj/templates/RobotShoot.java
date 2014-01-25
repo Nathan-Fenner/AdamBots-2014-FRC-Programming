@@ -3,18 +3,23 @@
  * and open the template in the editor.
  */
 package edu.wpi.first.wpilibj.templates;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Victor;
+
+
+
 
 /**
  *
  * @author Nathan
  */
 public class RobotShoot {
-
+    public static boolean limitBuckleValue;
+    public static double WIND_SPEED;
+    public static Timer timerRelatch;
     public static final int ENCODER_REVOLUTIONS = 5;
     public static final double UNIWIND_SPEED = -.5;
     public static DigitalInput limitBuckle;
@@ -39,8 +44,6 @@ public class RobotShoot {
      */
     public static void init() {
         
-        /*limitBuckle = new DigitalInput(LIMIT_BUCKLE);
-        limitLatched = new DigitalInput(LIMIT_LATCHED)*/
     }
     
    public static void releaseBall() {
@@ -52,7 +55,12 @@ public class RobotShoot {
         }
     }
    public static void relatch(){
-      
+       timerRelatch = new Timer();
+       double a = timerRelatch.get();
+       double b = timerRelatch.get();
+       while (b-a<500){
+           b = timerRelatch.get();
+       }
        latchSolenoid.set(true); 
    }
    private static int getEncoderValue(){
@@ -65,12 +73,15 @@ public class RobotShoot {
             motorShooter.set(UNIWIND_SPEED);
         }
     }
-    public static void latchShooter(){
-        latchSolenoid.set(true);
+   private static boolean getLimitBuckleValue(){
+       limitBuckleValue = limitBuckle.get();
+       return limitBuckleValue;
+   } 
+   public static void rewindShooter(){
+        while (!limitBuckleValue){
+            motorShooter.set(WIND_SPEED);
+        }
     }
-    
-    public static boolean isUnwound(){
-        return true;
     }
     public static void update() {
         updateTension();
