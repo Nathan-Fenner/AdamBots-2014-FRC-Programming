@@ -23,6 +23,9 @@ public class Drive {
 	public static double targetDistance;
 	public static double distance;
 	public static final double WHEEL_DIAMETER = 0.1624;
+        public static final double noMove = 0.0;
+        public static final double maxSpeed = 1.0;
+        public static final double minSpeed = -1.0;
 		
 	////CONSTRUCTOR-------------------------------------------------------------
 	public void Drive(){
@@ -81,6 +84,53 @@ public class Drive {
             else     //BTTN_A
                 ;//Shift to low gear
             
+            if(leftTrigger < minSpeed)
+                leftTrigger = minSpeed;
+            else if(leftTrigger > maxSpeed)
+                leftTrigger = maxSpeed;
+            if(rightTrigger > maxSpeed)
+                rightTrigger = maxSpeed;
+            else if(rightTrigger < minSpeed)
+                rightTrigger = minSpeed;
             
+            if(leftTrigger == noMove && rightTrigger != noMove)
+            {
+                if(leftJoy == noMove)
+                {
+                    right1Victor.set(maxSpeed);
+                    left1Victor.set(maxSpeed);
+                }
+                else
+                {
+                    right1Victor.set(rightTrigger - leftJoy);
+                    left1Victor.set(rightTrigger + leftJoy);
+                }
+            }
+            else if(leftTrigger != noMove && rightTrigger == noMove)
+            {
+                if(leftJoy == noMove)
+                {
+                    right1Victor.set(minSpeed);
+                    left1Victor.set(minSpeed);
+                }
+                else
+                {
+                    right1Victor.set(leftTrigger - leftJoy);
+                    left1Victor.set(leftTrigger + leftJoy);
+                }
+            }
+            else if(leftTrigger == noMove && rightTrigger == noMove)
+            {
+                if(leftJoy == noMove)
+                {
+                    right1Victor.set(noMove);
+                    left1Victor.set(noMove);
+                }
+                else
+                {
+                    right1Victor.set(-leftJoy);
+                    left1Victor.set(leftJoy);
+                }
+            }
         }
 }
