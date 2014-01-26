@@ -78,59 +78,64 @@ public class Drive {
 			}
 		}
         ////METHODS-------------------------------------------------------------
-        public void driveTeleop(double leftTrigger, double rightTrigger, double leftJoy, double BTTN_X, double BTTN_A /*Figure out what to put here later*/) {
-            if(true) //BTTN_X
+        public void driveTeleop(double leftTrigger, double rightTrigger, double leftJoy, boolean BTTN_X, boolean BTTN_A /*Figure out what to put here later*/) {
+            if(BTTN_X && !BTTN_A){
                 ;//Shift to high gear
-            else     //BTTN_A
+            }else if(!BTTN_X && BTTN_A){
                 ;//Shift to low gear
-            
-            if(leftTrigger < minSpeed)
-                leftTrigger = minSpeed;
-            else if(leftTrigger > maxSpeed)
-                leftTrigger = maxSpeed;
-            if(rightTrigger > maxSpeed)
-                rightTrigger = maxSpeed;
-            else if(rightTrigger < minSpeed)
-                rightTrigger = minSpeed;
-            
-            if(leftTrigger == noMove && rightTrigger != noMove)
-            {
-                if(leftJoy == noMove)
-                {
-                    right1Victor.set(maxSpeed);
-                    left1Victor.set(maxSpeed);
-                }
-                else
-                {
-                    right1Victor.set(rightTrigger - leftJoy);
-                    left1Victor.set(rightTrigger + leftJoy);
-                }
+            }else if(BTTN_X && BTTN_A){
+                ;//Shift to low gear?
+            }else if(!BTTN_X && !BTTN_A){
+                ;//Shift to low gear?
+            }else{
+                ;//Shift to low gear?
             }
-            else if(leftTrigger != noMove && rightTrigger == noMove)
-            {
-                if(leftJoy == noMove)
-                {
-                    right1Victor.set(minSpeed);
-                    left1Victor.set(minSpeed);
+            //The following lines have been turned into the class "speedLimiter"
+            //if(leftTrigger < minSpeed)
+            //    leftTrigger = minSpeed;
+            //else if(leftTrigger > maxSpeed)
+            //    leftTrigger = maxSpeed;
+            //if(rightTrigger > maxSpeed)
+            //    rightTrigger = maxSpeed;
+            //else if(rightTrigger < minSpeed)
+            //    rightTrigger = minSpeed;
+            
+            if(leftTrigger == noMove && rightTrigger != noMove){
+                if(leftJoy == noMove){
+                    right1Victor.set(speedLimiter(rightTrigger));
+                    left1Victor.set(speedLimiter(rightTrigger));
+                }else{
+                    right1Victor.set(speedLimiter(rightTrigger - leftJoy));
+                    left1Victor.set(speedLimiter(rightTrigger + leftJoy));
                 }
-                else
-                {
-                    right1Victor.set(leftTrigger - leftJoy);
-                    left1Victor.set(leftTrigger + leftJoy);
+            }else if(leftTrigger != noMove && rightTrigger == noMove) {
+                if(leftJoy == noMove){
+                    right1Victor.set(speedLimiter(leftTrigger));
+                    left1Victor.set(speedLimiter(leftTrigger));
+                }else{
+                    right1Victor.set(speedLimiter(leftTrigger - leftJoy));
+                    left1Victor.set(speedLimiter(leftTrigger + leftJoy));
                 }
-            }
-            else if(leftTrigger == noMove && rightTrigger == noMove)
-            {
-                if(leftJoy == noMove)
-                {
+            }else if(leftTrigger == noMove && rightTrigger == noMove){
+                if(leftJoy == noMove){
                     right1Victor.set(noMove);
                     left1Victor.set(noMove);
+                }else{
+                    right1Victor.set(speedLimiter(-leftJoy));
+                    left1Victor.set(speedLimiter(leftJoy));
                 }
-                else
-                {
-                    right1Victor.set(-leftJoy);
-                    left1Victor.set(leftJoy);
-                }
+            }else{
+                right1Victor.set(noMove);
+                left1Victor.set(noMove);
             }
+                
+        }
+        public double speedLimiter(double speed) {
+            if(speed < minSpeed)
+                return minSpeed;
+            else if(speed > maxSpeed)
+                return maxSpeed;
+            else
+                return speed;
         }
 }
