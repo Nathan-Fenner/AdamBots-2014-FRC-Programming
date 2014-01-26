@@ -21,7 +21,7 @@ public class Drive {
 	private static Encoder encoderLeft;
 	public static double targetDistance;
 	public static double distance;
-	public static double WHEEL_DIAMETER = 0.1624;
+	public static final double WHEEL_DIAMETER = 0.1624;
 		
 	////CONSTRUCTOR-------------------------------------------------------------
 	public void Drive(){
@@ -39,7 +39,7 @@ public class Drive {
 			distance = dist;
 			return distance;
 		}
-		 void startEncoder(){
+		void startEncoder(){
 			encoderRight.start();
 			encoderLeft.start();
 		}
@@ -74,5 +74,7 @@ public class Drive {
 			}
 		}
         ////METHODS-------------------------------------------------------------
-        
+        public void driveTeleop(double trigger ) {
+            
+        }
 }
