@@ -7,6 +7,7 @@
 package robot.drive;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Victor;
+import robot.drive.*;
 /**
  *
  * @author Robin Onsay
@@ -74,7 +75,12 @@ public class Drive {
 			}
 		}
         ////METHODS-------------------------------------------------------------
-        public void driveTeleop(double trigger ) {
+        public void driveTeleop(double leftTrigger, double rightTrigger, double leftJoy, double BTTN_X, double BTTN_A /*Figure out what to put here later*/) {
+            if(true) //BTTN_X
+                ;//Shift to high gear
+            else     //BTTN_A
+                ;//Shift to low gear
+            
             
         }
 }
