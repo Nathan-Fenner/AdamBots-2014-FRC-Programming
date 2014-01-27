@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj.templates.RobotActuators;
  */
 public class Drive {
 ////VARIABLES-------------------------------------------------------------------	
-	private Pneumatics shift;	
+	private Pneumatics shift;
+	private Timer time;
 	public static double targetDistance;
 	public static double distance;
 ////CONSTANTS-------------------------------------------------------------------
@@ -25,7 +26,8 @@ public class Drive {
 	public static final double MIN_SPEED = -1.0;		
 ////INIT------------------------------------------------------------------------
 	public void init(){
-		
+		RobotSensors.RIGHT_DRIVE_ENCODER.start();
+		RobotSensors.LEFT_DRIVE_ENCODER.start();
 	}
 ////CONSTRUCTOR-----------------------------------------------------------------
 	public void Drive(){
@@ -48,13 +50,13 @@ public class Drive {
 		public double setDistancePerTick(double wheelDiameterM /*in meters*/){
 			final double CIRC = wheelDiameterM * Math.PI;
 			double distPerTick = CIRC/360;
-			encoderR.setDistancePerPulse(distPerTick);
-			encoderL.setDistancePerPulse(distPerTick);			
+			RobotSensors.RIGHT_DRIVE_ENCODER.setDistancePerPulse(distPerTick);
+			RobotSensors.LEFT_DRIVE_ENCODER.setDistancePerPulse(distPerTick);			
 			double RequiredTicks = difference * (1/distPerTick);
 			return RequiredTicks;
 		}		
 		double[] convertToTime(){
-			double[] speed = {encoderR.getRate(), encoderL.getRate()};
+			double[] speed = {RobotSensors.RIGHT_DRIVE_ENCODER.getRate(), RobotSensors.LEFT_DRIVE_ENCODER.getRate()};
 			double[] time = new double[2]; 
 			for(int i = 0; i < speed.length; i++){
 				time[i]= (1/speed[i]) * this.setDistancePerTick(WHEEL_DIAMETER);
@@ -65,7 +67,7 @@ public class Drive {
 			double[] targetTime = this.convertToTime();
 			time.start();
 			while(time.get() != targetTime[0] || time.get() != targetTime[1]){
-				right1Victor.set(speed);
+				.set(speed);
 				left1Victor.set(speed);
 			}
 			right1Victor.set(NO_SPEED);
