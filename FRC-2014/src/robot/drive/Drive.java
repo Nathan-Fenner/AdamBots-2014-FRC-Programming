@@ -67,11 +67,11 @@ public class Drive {
 			double[] targetTime = this.convertToTime();
 			time.start();
 			while(time.get() != targetTime[0] || time.get() != targetTime[1]){
-				.set(speed);
-				left1Victor.set(speed);
+				RobotActuators.rightDrive.set(speed);
+				RobotActuators.leftDrive.set(speed);
 			}
-			right1Victor.set(NO_SPEED);
-			left1Victor.set(NO_SPEED);
+			RobotActuators.rightDrive.set(NO_SPEED);
+			RobotActuators.leftDrive.set(NO_SPEED);
 		}
 	}
 	
@@ -92,8 +92,8 @@ public class Drive {
 		this.speedLimiter(turnRightVic);
 		this.speedLimiter(turnLeftVic);			
 		
-		right1Victor.set(turnRightVic);		
-		left1Victor.set(turnLeftVic); 
+		RobotActuators.rightDrive.set(turnRightVic);		
+		RobotActuators.leftDrive.set(turnLeftVic); 
 		}        
         public double speedLimiter(double trigger) {
 			if(trigger < MIN_SPEED){

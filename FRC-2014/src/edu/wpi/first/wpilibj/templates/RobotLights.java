@@ -30,13 +30,13 @@ public class RobotLights {
     
     public boolean ifReady() {
 	//INSERT CODE HERE
-	return
-    }
+	return true;
+	}
     
     public boolean ifJammed() {
 	//INSERT CODE HERE
-	return
-    }
+	return true;
+	}
     
     public void lightResponse() {
 	boolean ifReady = ifReady();
@@ -79,4 +79,5 @@ public class RobotLights {
 	
     }
     }
+
 }

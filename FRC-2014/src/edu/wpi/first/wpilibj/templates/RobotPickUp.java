@@ -36,12 +36,12 @@ public class RobotPickUp {
     }
     
     public boolean ifLoaded() {
-	if() //loaded
+	if(true) //loaded
 	    return true;
 	else
 	    return false;
 	//INSERT CODE HERE
-    }
+	}
     
     public void rollInOut() {
 	//INSERT CODE HERE
