@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.*;
 public class RobotActuators {
     
 ////VARIABLES-------------------------------------------------------------------
-    public static final Victor leftDrive;
-    public static final Victor rightDrive;
+    public static final Victor LEFT_DRIVE;
+    public static final Victor RIGHT_DRIVE;
     public static final Talon PICKUP_ROLLER_ARM_MOTOR;
     public static final Talon PICKUP_SYSTEM_MOTOR;
     public static final Talon SHOOTER_WINCH;
