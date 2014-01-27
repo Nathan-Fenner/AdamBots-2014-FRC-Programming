@@ -4,12 +4,10 @@
  * and open the template in the editor.
  */
 
-package robot.drive;
+package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.ADXL345_I2C;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.*;
+
 
 /**
  *
@@ -17,10 +15,7 @@ import edu.wpi.first.wpilibj.Solenoid;
  */
 public class Pneumatics{
 	////VARIABLES---------------------------------------------------------------	
-	private Relay compressor;
-	private DigitalInput pressureSwitch;
-	private Solenoid shift;	
-	private ADXL345_I2C shiftAuto;
+	
 	////CONSTRUCTOR-------------------------------------------------------------
 	public void shifting(){
 		
@@ -28,7 +23,7 @@ public class Pneumatics{
 	////METHODS-----------------------------------------------------------------
 	public void shiftIt(boolean buttonShift/**true = high, false = low**/){
 		if(buttonShift){
-			shift.set(true);
+			RobotActuators..set(true);
 		}else{		
 			shift.set(false);
 		}
