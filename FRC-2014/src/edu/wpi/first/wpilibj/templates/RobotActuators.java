@@ -6,9 +6,7 @@
 
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.*;
 
 /**
  *
@@ -19,12 +17,16 @@ public class RobotActuators {
 ////VARIABLES-------------------------------------------------------------------
     public static final Victor leftDrive;
     public static final Victor rightDrive;
-    public static final Victor gamePieceIntake;
-    public static final Victor armRotate;
-    public static final Victor cockingMech;
-    public static final Compressor comp;
-    public static final Talon tal1;
-    public static final Talon tal2;
+    public static final Talon PICKUP_ROLLER_ARM_MOTOR;
+    public static final Talon PICKUP_SYSTEM_MOTOR;
+    public static final Talon SHOOTER_WINCH;
+    public static final Relay COMPRESSOR;
+	public static final Solenoid SHIFTER_PISTON;
+	public static final Solenoid ROLLER_ARM_UP;
+	public static final Solenoid ROLLER_ARM_DOWN;
+	public static final Solenoid LATCH;
+	 
+   
     
     
     
