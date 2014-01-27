@@ -6,19 +6,16 @@
 
 package robot.drive;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.templates.RobotSensors;
+import edu.wpi.first.wpilibj.templates.RobotActuators;
 
 /**
  *
  * @author Robin Onsay
  */
 public class Drive {
-////VARIABLES-------------------------------------------------------------------
-	private Timer time;
-	private Victor right1Victor;	
-	private Victor left1Victor;	
-	private Pneumatics shift;
-	private static Encoder encoderR;
-	private static Encoder encoderL;
+////VARIABLES-------------------------------------------------------------------	
+	private Pneumatics shift;	
 	public static double targetDistance;
 	public static double distance;
 ////CONSTANTS-------------------------------------------------------------------
@@ -28,8 +25,6 @@ public class Drive {
 	public static final double MIN_SPEED = -1.0;		
 ////INIT------------------------------------------------------------------------
 	public void init(){
-		encoderR.start();
-		encoderL.start();
 		
 	}
 ////CONSTRUCTOR-----------------------------------------------------------------
