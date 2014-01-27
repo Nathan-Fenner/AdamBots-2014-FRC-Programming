@@ -6,6 +6,7 @@
 
 package robot.drive;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Victor;
 import robot.drive.*;
 /**
@@ -79,6 +80,9 @@ public class Drive {
 		}
         ////METHODS-------------------------------------------------------------
         public void driveTeleop(double leftTrigger, double rightTrigger, double leftJoy, boolean BTTN_X, boolean BTTN_A /*Figure out what to put here later*/) {
+            //NOT USING FancyJoystick, JUST REGULAR Joystick
+            
+            //Robin, plz halp
             if(BTTN_X && !BTTN_A){
                 ;//Shift to high gear
             }else if(!BTTN_X && BTTN_A){
@@ -128,8 +132,9 @@ public class Drive {
                 right1Victor.set(noMove);
                 left1Victor.set(noMove);
             }
-                
+            //Send values for right1Victor and left1Victor to SmartDashboard? 
         }
+        
         public double speedLimiter(double speed) {
             if(speed < minSpeed)
                 return minSpeed;
