@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Solenoid;
  *
  * @author Robin Onsay
  */
-public class Shifting{
+public class Pneumatics{
 	////VARIABLES---------------------------------------------------------------	
 	private Relay compressor;
 	private DigitalInput pressureSwitch;
@@ -26,11 +26,10 @@ public class Shifting{
 		
 	}
 	////METHODS-----------------------------------------------------------------
-	public void shiftIt(boolean buttonShiftHigh, boolean buttonShiftLow){
-		if(buttonShiftHigh){
+	public void shiftIt(boolean buttonShift/**true = high, false = low**/){
+		if(buttonShift){
 			shift.set(true);
-		}
-		if(buttonShiftLow){
+		}else{		
 			shift.set(false);
 		}
 	}
