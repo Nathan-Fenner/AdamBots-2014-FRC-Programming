@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Nathan
  */
 public class RobotShoot {
-    public static boolean limitshooter;
+    public static boolean limitShooter;
     public static boolean limitLatched;
     public static boolean limitBuckleValue;
     public static double WIND_SPEED;
@@ -78,9 +78,9 @@ public class RobotShoot {
     public static void unwindShooter() {
         timerLatch = new Timer();
         while (!limitLatched) {
-            RobotSensors.motorShooter.set(UNIWIND_SPEED);
+            RobotActuators.motorShooter.set(UNIWIND_SPEED);
             if(RobotShoot.getEncoderValue()>= rewindMaxRevolutions){
-                RobotSensors.motorShooter.set(0);
+                RobotActuators.motorShooter.set(0);
             }
             double a = timerLatch.get();
             if(a>500){
@@ -91,21 +91,30 @@ public class RobotShoot {
         }
     }
     public static void rewindShooter() {
-        while (!limitBuckleValue) {
-            RobotSensors.motorShooter.set(WIND_SPEED);
+        if(RobotSensors.limitLatched.get()){
+            while (!limitBuckleValue) {
+                RobotActuators.motorShooter.set(WIND_SPEED);
         }
     }
-
+        else{
+            unwindShooter();
+            SmartDashboard.putString("Error", "It did not latch properly:trying again");
+        }
+    }
     public static void update() {
         if (timerRelatch != null) {
             b = timerRelatch.get();
             if (a - b > 500) {
-                RobotSensors.latchSolenoid.set(true);
+                RobotActuators.latchSolenoid.set(true);
                 timerRelatch = null;
             }
         }
         limitBuckleValue = RobotSensors.limitBuckle.get();
         limitShooter = RobotSensors.limitShooter.get();    
-        limitLatched = RobotSensors.limitLatched.get();
+        limitLatched = RobotSensors.ShooterLatched.get();
     }
-}
+    public static void TerminateShooter(){
+        RobotActuators.motorShooter.set(0);
+        SmartDashboard.putString("Error", "You have just killed the shooter.");
+    }
+}   
