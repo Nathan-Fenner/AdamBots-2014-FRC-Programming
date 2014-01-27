@@ -22,7 +22,7 @@ public class RobotMain extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    Joystick joy = new Joystick();
+   
 	public void robotInit() {
 
     }
