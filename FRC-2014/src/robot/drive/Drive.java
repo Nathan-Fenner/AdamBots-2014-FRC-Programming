@@ -36,7 +36,7 @@ public class Drive {
 		distance = dist;
 		return distance;
 	}
-	public static void startEncoder(){
+	static void startEncoder(){
 		encoderRight.start();
 		encoderLeft.start();
 	}
@@ -67,6 +67,6 @@ public class Drive {
 				right1Victor.set(0);
 				left1Victor.set(0);
 			}
-		}
+		}		
 	}
 }
