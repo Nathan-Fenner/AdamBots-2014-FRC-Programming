@@ -4,11 +4,7 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -16,10 +12,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Nathan
  */
 public class RobotShoot {
-
+    public static boolean limitshooter;
+    public static boolean limitLatched;
     public static boolean limitBuckleValue;
     public static double WIND_SPEED;
     public static Timer timerRelatch = null;
+    public static Timer timerLatch;
     public static final int ENCODER_REVOLUTIONS = 5;
     public static final double UNIWIND_SPEED = -.5;
     /*public static DigitalInput limitBuckle;
@@ -33,7 +31,7 @@ public class RobotShoot {
     public static int revolutionsOfShooter;
     public static double a;
     public static double b;
-
+    public static double rewindMaxRevolutions = 5;
     /**
      * This method returns the tension (in encoder ticks or something) in terms
      * of the distance in feet to the target.
@@ -46,48 +44,68 @@ public class RobotShoot {
      * this will initialize the victors limit switches and pneumatics
      */
     public static void init() {
-
+        a = 0;
+        b = 0;
     }
-
+    
+    public static void AutomatedShoot(){
+        RobotShoot.update();
+        RobotShoot.releaseBall();
+        RobotShoot.unwindShooter();
+        RobotShoot.rewindShooter();
+    }
     public static void releaseBall() {
         if (RobotPickup.isBallLoaded()) {
-            latchSolenoid.set(false);
+            RobotSensors.latchSolenoid.set(false);
+            
         } else {
             SmartDashboard.putString("Error", "Ball not loaded");
             //or blink a light
         }
+        
     }
 
-    public static void relatch() {
+    /*public static void timerForRelatch() {
         timerRelatch = new Timer();
         a = timerRelatch.get();
-    }
+    }*/
 
     private static int getEncoderValue() {
-        revolutionsOfShooter = shooterEncoder.get();
+        revolutionsOfShooter = RobotSensors.shooterEncoder.get();
         return revolutionsOfShooter;
     }
-
+    
     public static void unwindShooter() {
-        //counter
-        while (getEncoderValue() != ENCODER_REVOLUTIONS) {
-            motorShooter.set(UNIWIND_SPEED);
+        timerLatch = new Timer();
+        while (!limitLatched) {
+            RobotSensors.motorShooter.set(UNIWIND_SPEED);
+            if(RobotShoot.getEncoderValue()>= rewindMaxRevolutions){
+                RobotSensors.motorShooter.set(0);
+            }
+            double a = timerLatch.get();
+            if(a>500){
+                RobotSensors.motorShooter.set(0);
+                RobotShoot.rewindShooter();
+                SmartDashboard.putString("Error", "The shooter is reloading, try Shooting again");
+            }
         }
     }
     public static void rewindShooter() {
         while (!limitBuckleValue) {
-            motorShooter.set(WIND_SPEED);
+            RobotSensors.motorShooter.set(WIND_SPEED);
         }
     }
 
     public static void update() {
         if (timerRelatch != null) {
             b = timerRelatch.get();
-            if (b - a > 500) {
-                latchSolenoid.set(true);
+            if (a - b > 500) {
+                RobotSensors.latchSolenoid.set(true);
                 timerRelatch = null;
             }
         }
         limitBuckleValue = RobotSensors.limitBuckle.get();
+        limitShooter = RobotSensors.limitShooter.get();    
+        limitLatched = RobotSensors.limitLatched.get();
     }
 }
