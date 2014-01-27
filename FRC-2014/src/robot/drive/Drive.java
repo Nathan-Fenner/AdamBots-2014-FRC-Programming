@@ -6,19 +6,17 @@
 
 package robot.drive;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.templates.RobotSensors;
+import edu.wpi.first.wpilibj.templates.RobotActuators;
 
 /**
  *
  * @author Robin Onsay
  */
 public class Drive {
-////VARIABLES-------------------------------------------------------------------
-	private Timer time;
-	private Victor right1Victor;	
-	private Victor left1Victor;	
+////VARIABLES-------------------------------------------------------------------	
 	private Pneumatics shift;
-	private static Encoder encoderR;
-	private static Encoder encoderL;
+	private Timer time;
 	public static double targetDistance;
 	public static double distance;
 ////CONSTANTS-------------------------------------------------------------------
@@ -28,9 +26,8 @@ public class Drive {
 	public static final double MIN_SPEED = -1.0;		
 ////INIT------------------------------------------------------------------------
 	public void init(){
-		encoderR.start();
-		encoderL.start();
-		
+		RobotSensors.RIGHT_DRIVE_ENCODER.start();
+		RobotSensors.LEFT_DRIVE_ENCODER.start();
 	}
 ////CONSTRUCTOR-----------------------------------------------------------------
 	public void Drive(){
@@ -53,13 +50,13 @@ public class Drive {
 		public double setDistancePerTick(double wheelDiameterM /*in meters*/){
 			final double CIRC = wheelDiameterM * Math.PI;
 			double distPerTick = CIRC/360;
-			encoderR.setDistancePerPulse(distPerTick);
-			encoderL.setDistancePerPulse(distPerTick);			
+			RobotSensors.RIGHT_DRIVE_ENCODER.setDistancePerPulse(distPerTick);
+			RobotSensors.LEFT_DRIVE_ENCODER.setDistancePerPulse(distPerTick);			
 			double RequiredTicks = difference * (1/distPerTick);
 			return RequiredTicks;
 		}		
 		double[] convertToTime(){
-			double[] speed = {encoderR.getRate(), encoderL.getRate()};
+			double[] speed = {RobotSensors.RIGHT_DRIVE_ENCODER.getRate(), RobotSensors.LEFT_DRIVE_ENCODER.getRate()};
 			double[] time = new double[2]; 
 			for(int i = 0; i < speed.length; i++){
 				time[i]= (1/speed[i]) * this.setDistancePerTick(WHEEL_DIAMETER);
@@ -70,11 +67,11 @@ public class Drive {
 			double[] targetTime = this.convertToTime();
 			time.start();
 			while(time.get() != targetTime[0] || time.get() != targetTime[1]){
-				right1Victor.set(speed);
-				left1Victor.set(speed);
+				RobotActuators.rightDrive.set(speed);
+				RobotActuators.leftDrive.set(speed);
 			}
-			right1Victor.set(NO_SPEED);
-			left1Victor.set(NO_SPEED);
+			RobotActuators.rightDrive.set(NO_SPEED);
+			RobotActuators.leftDrive.set(NO_SPEED);
 		}
 	}
 	
@@ -95,8 +92,8 @@ public class Drive {
 		this.speedLimiter(turnRightVic);
 		this.speedLimiter(turnLeftVic);			
 		
-		right1Victor.set(turnRightVic);		
-		left1Victor.set(turnLeftVic); 
+		RobotActuators.rightDrive.set(turnRightVic);		
+		RobotActuators.leftDrive.set(turnLeftVic); 
 		}        
         public double speedLimiter(double trigger) {
 			if(trigger < MIN_SPEED){
