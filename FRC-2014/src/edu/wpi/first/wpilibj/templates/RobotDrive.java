@@ -6,41 +6,39 @@
 
 package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.templates.RobotSensors;
-import edu.wpi.first.wpilibj.templates.RobotActuators;
-
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.templates.RobotSensors;
-import edu.wpi.first.wpilibj.templates.RobotActuators;
-
 /**
  *
  * @author Robin Onsay
  */
 public class RobotDrive {
 ////VARIABLES-------------------------------------------------------------------	
-	
-    private static Timer time;
-   
+    private static Timer time;   
 ////CONSTANTS-------------------------------------------------------------------
-    public static final double WHEEL_DIAMETER = 0.1624;/*In Meters*/
-	private static double encoderR;
-	private static double encoderL;
-    public static final double NO_SPEED = 0.0;
-    public static final double MAX_SPEED = 1.0;
-    public static final double MIN_SPEED = -1.0;
+    public static final double WHEEL_DIAMETER = 0.5;//Feet
+	private static double encoderR;//Single Channel
+	private static double encoderL;//Single Channel
+    public static final double STOP = 0.0;
 ////INIT------------------------------------------------------------------------    
 	public static void initialize() {
         RobotSensors.RIGHT_DRIVE_ENCODER.start();
         RobotSensors.LEFT_DRIVE_ENCODER.start();
     }
-////METHODS--------------------------------------------------------------------
+////TESTMETHOD------------------------------------------------------------------
+	public static void test(){		
+		RobotDrive.distanceCorrection(10,5,0.5,(Math.PI * 0.5)/360);
+	}
+////METHODS---------------------------------------------------------------------
 	public static void update(){
 		encoderL = RobotSensors.LEFT_DRIVE_ENCODER.get();
 		encoderR = RobotSensors.RIGHT_DRIVE_ENCODER.get();
 	}
+	/*
+		targetDist = feet
+		dist = feet
+		speed = voltage
+		distPerTick = (PI*WHEELDIAMETER)/360
+	*/
 	public static void distanceCorrection(double targetDist, double dist,double speed, double distPerTick){		
-		
 		double displacement = dist-targetDist;		
 		double encoderValR =encoderL;
 		double encoderValL = encoderR;
@@ -54,8 +52,22 @@ public class RobotDrive {
 		RobotActuators.RIGHT_DRIVE.set(-speed);
 		RobotActuators.LEFT_DRIVE.set(speed);
 	}
+	public static void drive(double rightSpeed, double leftSpeed){
+		RobotActuators.RIGHT_DRIVE.set(rightSpeed);
+		RobotActuators.LEFT_DRIVE.set(leftSpeed);
+	}
+	//100% 180 right, -100% 180 left
+	public static void turn(double speed ,double percent/*Angle/360*/){
+		if(percent >= 0){
+			RobotActuators.RIGHT_DRIVE.set(speed);
+			RobotActuators.LEFT_DRIVE.set(speed - percent);
+		}else{
+			RobotActuators.LEFT_DRIVE.set(speed - percent);
+			RobotActuators.RIGHT_DRIVE.set(speed);
+		}
+	}
     public static void robotStop() {
-            RobotActuators.LEFT_DRIVE.set(NO_SPEED);
-            RobotActuators.RIGHT_DRIVE.set(NO_SPEED);
+            RobotActuators.LEFT_DRIVE.set(STOP);
+            RobotActuators.RIGHT_DRIVE.set(STOP);
     }
 }
