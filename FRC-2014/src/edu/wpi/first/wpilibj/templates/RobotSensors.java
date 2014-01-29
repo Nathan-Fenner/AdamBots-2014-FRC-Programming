@@ -25,13 +25,13 @@ public class RobotSensors {
 	public static final Encoder RIGHT_DRIVE_ENCODER;
 	public static final Encoder LEFT_DRIVE_ENCODER;
 	public static final Encoder PICKUP_SYSTEM_ENCODER;
-	public static final Encoder SHOOTER_WHINCH;
+	public static final Encoder SHOOTER_WHINCH_ENCODER;
 	public static final DigitalInput BALL_READY_TO_LIFT_LIM;
 	public static final DigitalInput PICKUP_ROLLER_ARM_DOWN_LIM;
 	public static final DigitalInput PICKUP_ROLLER_ARM_UP_LIM;
-	public static final DigitalInput SHOOTER_LOADED;
-	public static final DigitalInput SHOOTER_UNLOADED;
-	public static final DigitalInput SHOOTER_LATCHED;
+	public static final DigitalInput SHOOTER_LOADED_LIM;
+	public static final DigitalInput SHOOTER_UNLOADED_LIM;
+	public static final DigitalInput SHOOTER_LATCHED_LIM;
 	public static final DigitalInput PREASSURE_SWITCH;
 	public static final ADXL345_I2C ACCELEROMETER;
     public void init() {
