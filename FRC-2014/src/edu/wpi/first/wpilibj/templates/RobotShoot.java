@@ -56,7 +56,7 @@ public class RobotShoot {
     }
     public static void releaseBall() {
         if (RobotPickup.isBallLoaded()) {
-            RobotSensors.latchSolenoid.set(false);
+            RobotActuators.latchSolenoid.set(false);
             
         } else {
             SmartDashboard.putString("Error", "Ball not loaded");
@@ -84,9 +84,8 @@ public class RobotShoot {
             }
             double a = timerLatch.get();
             if(a>500){
-                RobotSensors.motorShooter.set(0);
                 RobotShoot.rewindShooter();
-                SmartDashboard.putString("Error", "The shooter is reloading, try Shooting again");
+                SmartDashboard.putString("Error", "The shooter is experiencing dificulties, your next shot may be off");
             }
         }
     }
