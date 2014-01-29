@@ -40,7 +40,7 @@ public class RobotDrive {
 	*/
 	public static void distanceCorrection(double targetDist, double dist,double speed, double distPerTick){		
 		double displacement = dist-targetDist;		
-		double encoderValR =encoderL;
+		double encoderValR = encoderL;
 		double encoderValL = encoderR;
 		double encoderAvg = (encoderValR + encoderValL)/2;
 		double distMeters = distPerTick * encoderAvg;
