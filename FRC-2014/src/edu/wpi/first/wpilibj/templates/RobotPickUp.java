@@ -16,20 +16,10 @@ import edu.wpi.first.wpilibj.Encoder;
 public class RobotPickUp {
     
 ////VARIABLES-------------------------------------------------------------------
-    private DigitalInput top1;
-    private DigitalInput top2;
-    private DigitalInput bot1;
-    private DigitalInput bot2;
-    private DigitalInput check;
-    private Encoder encoder;
-    
+
     
 ////CONSTANTS-------------------------------------------------------------------
-    public static final int PORT_TOP1 = 1;
-    public static final int PORT_TOP2 = 1;
-    public static final int PORT_BOT1 = 1;
-    public static final int PORT_BOT2 = 1;
-    public static final int PORT_CHECK = 1;
+
     
     public void init() {
 	//INSERT CODE HERE
@@ -43,12 +33,28 @@ public class RobotPickUp {
 	//INSERT CODE HERE
 	}
     
-    public void rollInOut() {
-	//INSERT CODE HERE
+    public void suckGamePiece() {
+	RobotActuators.PICKUP_ROLLER_ARM_MOTOR.set(1); //Don't know if 1 or -1 right now
     }
     
-    public void removeTopArm() {
-	//INSERT CODE HERE
+    public void spitGamePiece() {
+        RobotActuators.PICKUP_ROLLER_ARM_MOTOR.set(-1);
+    }
+    
+    public void stopSuckingGamePiece() {
+        RobotActuators.PICKUP_ROLLER_ARM_MOTOR.set(0);
+    }
+    
+    public void raisePickUpMechanism() {
+	RobotActuators.PICKUP_SYSTEM_MOTOR.set(1);
+    }
+    
+    public void lowerPickUpMechanism() {
+        RobotActuators.PICKUP_SYSTEM_MOTOR.set(-1);
+    }
+    
+    public void stopMovingPickUpMechanism() {
+        RobotActuators.PICKUP_SYSTEM_MOTOR.set(0);
     }
     
     public void pass() {
@@ -56,14 +62,35 @@ public class RobotPickUp {
 	//?
     }
     
-    public void armMovement() {
-	//INSERT CODE HERE
+    public void liftRollerArm() {
+	RobotActuators.ROLLER_ARM_UP.set(true);
+        RobotActuators.ROLLER_ARM_DOWN.set(false);
     }
     
-    public void catchMech() {
-	//INSERT CODE HERE
+    public void lowerRollerArm() {
+        RobotActuators.ROLLER_ARM_UP.set(false);
+        RobotActuators.ROLLER_ARM_DOWN.set(true);
     }
     
+    /*
+    public void stopMovingRollerArm() {
+        RobotActuators.ROLLER_ARM_UP.set(false);
+        RobotActuators.ROLLER_ARM_UP.set(false);
+    }
+    */
     
     
+    public void moveGamePiece(double speed) {
+        RobotActuators.PICKUP_ROLLER_ARM_MOTOR.set(speed);
+    }
+    
+    public void movePickUpMechanism(double speed) {
+        RobotActuators.PICKUP_SYSTEM_MOTOR.set(speed);
+    }
+    
+    /*
+    public void automatedGamePieceIntake() {
+        
+    }
+    */
 }
