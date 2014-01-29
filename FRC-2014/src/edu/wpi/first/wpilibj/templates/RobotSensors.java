@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.Gyro;
 public class RobotSensors {
     
 ////VARIABLES-------------------------------------------------------------------
-    public static double starbucksWaitress;
 	public static final Gyro GYRO;
 	public static final AnalogPotentiometer PICK_UP_SYSTEM_POT;
 	public static final AnalogChannel CURRENT_SENSORS;
