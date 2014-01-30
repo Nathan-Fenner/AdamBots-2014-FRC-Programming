@@ -15,26 +15,48 @@ import edu.wpi.first.wpilibj.Gyro;
 public class RobotSensors {
 
 ////VARIABLES-------------------------------------------------------------------
-    public static Gyro GYRO;
-    public static AnalogPotentiometer PICK_UP_SYSTEM_POT;
-    public static AnalogChannel CURRENT_SENSORS;
-    public static AnalogChannel CONFIG_SWICTH_A;
-    public static AnalogChannel CONFIG_SWICTH_B;
-    public static AnalogChannel CONFIG_SWICTH_C;
-    public static Encoder RIGHT_DRIVE_ENCODER;
-    public static Encoder LEFT_DRIVE_ENCODER;
-    public static Encoder PICKUP_SYSTEM_ENCODER;
-    public static Encoder SHOOTER_WHINCH_ENCODER;
-    public static DigitalInput BALL_READY_TO_LIFT_LIM;
-    public static DigitalInput PICKUP_ROLLER_ARM_DOWN_LIM;
-    public static DigitalInput PICKUP_ROLLER_ARM_UP_LIM;
-    public static DigitalInput SHOOTER_LOADED_LIM;
-    public static DigitalInput SHOOTER_UNLOADED_LIM;
-    public static DigitalInput SHOOTER_LATCHED_LIM;
-    public static DigitalInput PREASSURE_SWITCH;
-    public static ADXL345_I2C ACCELEROMETER;
+    public static Gyro gyro;
+    public static AnalogPotentiometer pickUpSystemPot;
+    public static AnalogChannel currentSensor;
+    public static AnalogChannel configSwitchA;
+    public static AnalogChannel configSwitchB;
+    public static AnalogChannel configSwitchC;
+    public static Counter rightDriveEncoder;
+    public static Counter leftDriveEncoder;
+    public static Counter pickupSystemEncoder;
+    public static Counter shooterWinchEncoder;
+    public static DigitalInput ballReadyToLeftLim;
+    public static DigitalInput pickupSystemDownLim;
+    public static DigitalInput pickupSystemUpLim;
+    public static DigitalInput shooterLoadedLim;
+    public static DigitalInput shooterUnloadedLim;
+    public static DigitalInput shooterLatchedLim;
+    public static DigitalInput PressureSwitch;
+    public static ADXL345_I2C accelerometer;
 
     public void initialize() {
-        //INSERT CODE HERE
+	//// Analog
+        gyro = new Gyro(1);
+	pickUpSystemPot = new AnalogPotentiometer(2);
+	currentSensor = new AnalogChannel(3);
+	configSwitchA = new AnalogChannel(4);
+	configSwitchB = new AnalogChannel(5);
+	configSwitchC = new AnalogChannel(6);
+	
+	//// Digital In 1
+	rightDriveEncoder = new Counter(1);
+	leftDriveEncoder = new Counter(2);
+	ballReadyToLeftLim = new DigitalInput(3);
+	shooterWinchEncoder = new Counter(4);
+	pickupSystemDownLim = new DigitalInput(5);
+	pickupSystemUpLim = new DigitalInput(6);
+	shooterLoadedLim = new DigitalInput(7);
+	shooterUnloadedLim = new DigitalInput(8);
+	shooterLatchedLim = new DigitalInput(9);
+	pickupSystemEncoder = new Counter(10);
+	PressureSwitch = new DigitalInput(14);
+	
+	//// Digital 1 Serial
+	accelerometer = new ADXL345_I2C(1, ADXL345_I2C.DataFormat_Range.k2G);
     }
 }
