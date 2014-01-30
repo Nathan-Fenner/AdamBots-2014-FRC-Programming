@@ -18,8 +18,7 @@ public class RobotDrive {
 ////CONSTANTS-------------------------------------------------------------------
 	public static final double WHEEL_DIAMETER = 0.5;//Feet
 	private static double encoderR;//Single Channel
-	private static double encoderL;//Single Channel
-	private static final double encoderAvg = (encoderL + encoderR) / 2.0;
+	private static double encoderL;//Single Channel	
 	public static final double STOP = 0.0;
 ////INIT------------------------------------------------------------------------    
 
@@ -30,6 +29,7 @@ public class RobotDrive {
 ////TESTMETHOD------------------------------------------------------------------
 
 	public static void test() {
+		System.out.println("Encoder Left: "+encoderL+" Encoder Right: "+encoderR);
 		RobotDrive.distanceCorrection(10, 5, (Math.PI * 0.5) / 360);
 	}
 ////METHODS---------------------------------------------------------------------
@@ -47,21 +47,22 @@ public class RobotDrive {
 	 */
 
 	public static void distanceCorrection(double targetDist, double dist, double distPerTick) {
+		double encoderAvg = (encoderL + encoderR) / 2.0;
 		//displacment = initial distance needed to travel to get to target
 		double displacement = dist - targetDist;
 		//distance in feet from start of encoder;
 		double currentDist = encoderAvg * distPerTick;
 		//if displacement is +
-		double posDiff = displacement - currentDist;
+		double difference = Math.abs(displacement - currentDist);
 		//if displacement is -
-		double negDiff = displacement + currentDist;
-		double distToDisplace = (displacement > 0 ? posDiff : negDiff);
+		//double negDiff = displacement + currentDist;
+		//double distToDisplace = (displacement > 0 ? difference : negDiff);
 		// gets the speed as a percent error. Slows down as it get's closer
-		double rawSpeed = distToDisplace / displacement;
+		double rawSpeed = difference / displacement;
 		//victor's can't take values less than 0.15
 		double realSpeed = (rawSpeed >= 0.15 ? rawSpeed : 0.15);
 		//sets the speed until displa
-		if(rawSpeed!=0){
+		if(rawSpeed<0.01){
 			driveStraight(realSpeed >= 0 ? realSpeed : -realSpeed);
 		}else{
 			robotStop();
