@@ -25,14 +25,17 @@ public class RobotActuators {
     public static Solenoid latch;
 
     public void initialize() {
-        //INSERT CODE HERE
+        //Motors
         rightDrive = new Victor(1);
         leftDrive = new Victor(2);
         pickupSystemMotor = new Talon(3);
         pickupRollerArmMotor = new Talon(4);
         shooterWinch = new Talon(5);
-        
+
+        //Relays
         compressor = new Relay(1);
+
+        //Solenoids
         shifterPiston = new Solenoid(1);
         rollerArmUp = new Solenoid(2);
         rollerArmDown = new Solenoid(3);
