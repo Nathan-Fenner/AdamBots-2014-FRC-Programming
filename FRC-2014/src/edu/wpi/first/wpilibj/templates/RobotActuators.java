@@ -13,20 +13,29 @@ import edu.wpi.first.wpilibj.*;
  */
 public class RobotActuators {
 
-////VARIABLES-------------------------------------------------------------------
-    public static Victor LEFT_DRIVE;
-    public static Victor RIGHT_DRIVE;
-    public static Talon PICKUP_ROLLER_ARM_MOTOR;
-    public static Talon PICKUP_SYSTEM_MOTOR;
-    public static Talon SHOOTER_WINCH;
-    public static Relay COMPRESSOR;
-    public static Solenoid SHIFTER_PISTON;
-    public static Solenoid ROLLER_ARM_UP;
-    public static Solenoid ROLLER_ARM_DOWN;
-    public static Solenoid LATCH;
+    public static Victor leftDrive;
+    public static Victor rightDrive;
+    public static Talon pickupRollerArmMotor;
+    public static Talon pickupSystemMotor;
+    public static Talon shooterWinch;
+    public static Relay compressor;
+    public static Solenoid shifterPiston;
+    public static Solenoid rollerArmUp;
+    public static Solenoid rollerArmDown;
+    public static Solenoid latch;
 
-////CONSTANTS-------------------------------------------------------------------
     public void initialize() {
         //INSERT CODE HERE
+        rightDrive = new Victor(1);
+        leftDrive = new Victor(2);
+        pickupSystemMotor = new Talon(3);
+        pickupRollerArmMotor = new Talon(4);
+        shooterWinch = new Talon(5);
+        
+        compressor = new Relay(1);
+        shifterPiston = new Solenoid(1);
+        rollerArmUp = new Solenoid(2);
+        rollerArmDown = new Solenoid(3);
+        latch = new Solenoid(4); //IS THIS ONE RIGHT?
     }
 }
