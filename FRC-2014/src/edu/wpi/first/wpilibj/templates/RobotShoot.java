@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
- * @author Nathan
+ * @author Roi
  */
 public class RobotShoot {
     public static boolean limitShooter;
@@ -45,57 +45,49 @@ public class RobotShoot {
     /**
      * this will initialize the victors limit switches and pneumatics
      */
+    
+    // change name to initialize
     public static void init() {  //this is the initialization method-surprise surpriise
         timerLatch = new Timer();
         time = 0;
         b = 0;
     }
-    
-    public static void AutomatedShoot(){  //this does an automatic shot and reload
-        RobotShoot.update();
+    public static void testShooter(){  //this is just for testing purposes and will be ccommented out
         RobotShoot.releaseBall();
         RobotShoot.unwindShooter();
         RobotShoot.rewindShooter();
     }
+    public static void AutomatedShoot(){  //this does an automatic shot and reload
+        RobotShoot.releaseBall();
+        if(!limitShooter){
+            RobotShoot.unwindShooter();
+        }
+        else if(!limitBuckleValue){
+            RobotShoot.rewindShooter();
+        }
+    }
     public static void releaseBall() {  //this will release the ball when it is loaded
         if (RobotPickUp.ifLoaded()) {
             RobotActuators.LATCH.set(false);
-            
         } else {
             SmartDashboard.putString("Error", "Ball not loaded");
             //or blink a light
         }
-        
     }
-
-    /*public static void timerForRelatch() {
-        timerRelatch = new Timer();
-        a = timerRelatch.get();
-    }*/
-
     private static int getEncoderValue() {  //this gets the encoder value to be used by the unwindShooter method
         revolutionsOfShooter = RobotSensors.SHOOTER_WHINCH_ENCODER.get();
         return revolutionsOfShooter;
     }
-    
     public static void unwindShooter() {    //this uwnids the shooter     
-        boolean getOut = true;
-        while (!limitLatched || !getOut) {
-            RobotActuators.SHOOTER_WINCH.set(UNIWIND_SPEED);
-            if(RobotShoot.getEncoderValue()== rewindMaxRevolutions){
-                RobotActuators.SHOOTER_WINCH.set(0);
-            }
-            time = timerLatch.get();
-            if(time>500){
-                RobotActuators.SHOOTER_WINCH.set(0);
-                SmartDashboard.putString("Error", "The shooter is reloading, try Shooting again");
-                getOut = false;
-            }
+       RobotActuators.SHOOTER_WINCH.set(UNIWIND_SPEED);
+       if(RobotShoot.getEncoderValue()== rewindMaxRevolutions){
+           RobotActuators.SHOOTER_WINCH.set(0);
         }
     }
     public static void rewindShooter() {  //this rewinds the shooter at the wind speed
-        while (!limitBuckleValue) {
-            RobotActuators.SHOOTER_WINCH.set(WIND_SPEED);
+        RobotActuators.SHOOTER_WINCH.set(WIND_SPEED);
+        if(RobotShoot.getEncoderValue() == rewindMaxRevolutions){
+            RobotActuators.SHOOTER_WINCH.set(0);
         }
     }
 
