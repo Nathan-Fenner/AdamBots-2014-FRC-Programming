@@ -17,13 +17,13 @@ import edu.wpi.first.wpilibj.*;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class RobotMain extends IterativeRobot {
+public class MainRobot extends IterativeRobot {
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
    
-	public void robotInit() {
+    public void robotInit() {
 
     }
 
@@ -31,14 +31,14 @@ public class RobotMain extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-
+	runCompressor();
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        
+        runCompressor();
     }
     
     /**
@@ -46,6 +46,14 @@ public class RobotMain extends IterativeRobot {
      */
     public void testPeriodic() {
     
+    }
+    
+    private void runCompressor() {
+	if (!RobotSensors.PressureSwitch.get()) {
+	    RobotActuators.COMPRESSOR.set(Relay.Value.kOn);
+	} else {
+	    RobotActuators.COMPRESSOR.set(Relay.Value.kOff);
+	}
     }
     
 }
