@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
@@ -13,28 +12,21 @@ import edu.wpi.first.wpilibj.*;
  * @author Tyler
  */
 public class RobotActuators {
-    
+
 ////VARIABLES-------------------------------------------------------------------
-    public static final Victor LEFT_DRIVE;
-    public static final Victor RIGHT_DRIVE;
-    public static final Talon PICKUP_ROLLER_ARM_MOTOR;
-    public static final Talon PICKUP_SYSTEM_MOTOR;
-    public static final Talon SHOOTER_WINCH;
-    public static final Relay COMPRESSOR;
-	public static final Solenoid SHIFTER_PISTON;
-	public static final Solenoid ROLLER_ARM_UP;
-	public static final Solenoid ROLLER_ARM_DOWN;
-	public static final Solenoid LATCH;
-	 
-   
-    
-    
-    
+    public static Victor LEFT_DRIVE;
+    public static Victor RIGHT_DRIVE;
+    public static Talon PICKUP_ROLLER_ARM_MOTOR;
+    public static Talon PICKUP_SYSTEM_MOTOR;
+    public static Talon SHOOTER_WINCH;
+    public static Relay COMPRESSOR;
+    public static Solenoid SHIFTER_PISTON;
+    public static Solenoid ROLLER_ARM_UP;
+    public static Solenoid ROLLER_ARM_DOWN;
+    public static Solenoid LATCH;
+
 ////CONSTANTS-------------------------------------------------------------------
-    
-    
-    public void init() {
-	//INSERT CODE HERE
+    public void initialize() {
+        //INSERT CODE HERE
     }
-    
 }
