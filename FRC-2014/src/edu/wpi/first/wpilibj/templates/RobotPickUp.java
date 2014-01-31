@@ -152,7 +152,7 @@ public class RobotPickUp {
             moveFromCatchToShoot(500, 1, true);
         }
     }
-
+    
     /*public static void testMethodMoveToShoot(boolean buttonTestA) {
      if(buttonTestA) 
      moveToShootPosition();
