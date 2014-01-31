@@ -41,7 +41,7 @@ public class RobotShoot {
     }
     public static void releaseBall() {  //this will release the ball when it is loaded
         if (RobotPickUp.ifLoaded()) {
-            RobotActuators.LATCH.set(false);
+            RobotActuators.latch.set(false);
             hasBeenUnwinded = false;
         } else {
             SmartDashboard.putString("Error", "Ball not loaded");
@@ -49,7 +49,7 @@ public class RobotShoot {
         }
     }
     private static int getEncoderValue() {  //this gets the encoder value to be used by the unwindShooter method
-        revolutionsOfShooter = RobotSensors.SHOOTER_WHINCH_ENCODER.get();
+        revolutionsOfShooter = RobotSensors.shooterWinchEncoder.get();
         return revolutionsOfShooter;
     }
     //true meaning unwind, false means dont unwind
@@ -79,19 +79,19 @@ public class RobotShoot {
         if (timerRelatch != null) {
             b = timerRelatch.get();
             if (time - b > 500) {
-                RobotActuators.LATCH.set(true);
+                RobotActuators.latch.set(true);
                 timerRelatch = null;
             }
         }
         if(needsToBeWound && hasBeenUnwinded){
-            RobotActuators.SHOOTER_WINCH.set(WIND_SPEED);
+            RobotActuators.shooterWinch.set(WIND_SPEED);
         }
         if(needsToBeUnwound && !hasBeenUnwinded){
-            RobotActuators.SHOOTER_WINCH.set(WIND_SPEED);
+            RobotActuators.shooterWinch.set(WIND_SPEED);
         }
-        limitBuckleValue = RobotSensors.SHOOTER_LOADED_LIM.get();   //SHOOTER_LOADED_LIM
-        limitShooter = RobotSensors.SHOOTER_UNLOADED_LIM.get();    //SHOOTER_UNLOADED_LIM
-        limitLatched = RobotSensors.SHOOTER_LATCHED_LIM.get();   //SHOOTER_LATCHED_LIM
+        limitBuckleValue = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
+        limitShooter = RobotSensors.shooterUnloadedLim.get();    //SHOOTER_UNLOADED_LIM
+        limitLatched = RobotSensors.shooterLatchedLim.get();   //SHOOTER_LATCHED_LIM
     }
 }
 //IF WE WANT A MANUAL SHOT YOU WILL NEED TO SET THE MOTOR IN TELEOP
