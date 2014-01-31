@@ -30,10 +30,10 @@ public class RobotPickUp {
     }
 
     public static void update() { //updates arm encoder value
-        armEncoder = RobotSensors.PICKUP_SYSTEM_ENCODER.get();
-        upperLimit = RobotSensors.PICKUP_ROLLER_ARM_UP_LIM.get();
-        ballInPickUpLimit = RobotSensors.BALL_READY_TO_LIFT_LIM.get();
-        lowerLimit = RobotSensors.PICKUP_ROLLER_ARM_DOWN_LIM.get();
+        armEncoder = RobotSensors.pickupSystemEncoder.get();
+        upperLimit = RobotSensors.pickupSystemUpLim.get();
+        ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
+        lowerLimit = RobotSensors.pickupSystemDownLim.get();
     }
 
     public static boolean ifLoaded() {
@@ -75,13 +75,13 @@ public class RobotPickUp {
     }
 
     public static void liftRollerArm() { //raises upper roller arm for shooting
-        RobotActuators.ROLLER_ARM_UP.set(true);
-        RobotActuators.ROLLER_ARM_DOWN.set(false);
+        RobotActuators.rollerArmUp.set(true);
+        RobotActuators.rollerArmDown.set(false);
     }
 
     public static void lowerRollerArm() { //lowers upper roller arm
-        RobotActuators.ROLLER_ARM_UP.set(false);
-        RobotActuators.ROLLER_ARM_DOWN.set(true);
+        RobotActuators.rollerArmUp.set(false);
+        RobotActuators.rollerArmDown.set(true);
     }
 
     /*
@@ -91,11 +91,11 @@ public class RobotPickUp {
      }
      */
     public static void moveGamePiece(double speed) { //turns on pickup rollers for ball intake
-        RobotActuators.PICKUP_ROLLER_ARM_MOTOR.set(speed);
+        RobotActuators.pickupRollerArmMotor.set(speed);
     }
 
     public static void movePickUpMechanism(double speed) { //moves pickup mechanism up and down
-        RobotActuators.PICKUP_SYSTEM_MOTOR.set(speed);
+        RobotActuators.pickupSystemMotor.set(speed);
     }
 
     public static void moveToShootPosition() {  //automatically sucks in game piece and moves to shooting position
@@ -132,8 +132,8 @@ public class RobotPickUp {
         if (buttonFail) {
             movePickUpMechanism(0);
             moveGamePiece(0);
-            RobotActuators.ROLLER_ARM_UP.set(false);
-            RobotActuators.ROLLER_ARM_UP.set(false);
+            RobotActuators.rollerArmUp.set(false);
+            RobotActuators.rollerArmDown.set(false);
 
         }
 
