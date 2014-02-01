@@ -7,12 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotShoot {
     ////VARIABLES AND CONSTANTS-------------------------------------------------
-    public static boolean hasBeenUnwinded;
+    public static boolean notNeedingToBeUnwound;
     public static boolean needsToBeWound;
     public static boolean needsToBeUnwound;
-    public static boolean limitShooter;
-    public static boolean limitLatched;
-    public static boolean limitBuckleValue;
+    public static boolean unwindMax;
+    public static boolean latched;
+    public static boolean windMax;
     public static double WIND_SPEED;
     public static Timer timerRelatch;
     public static Timer timerLatch;
@@ -27,54 +27,72 @@ public class RobotShoot {
         time = 0;
         b = 0;
     }
-    public static void testShooter(){  //this is just for testing purposes and will be ccommented out
+    /**
+     * It is a test method to test the shooter
+     */
+    public static void testShooter(){  
+        RobotShoot.automatedShoot();
+    }
+    /**
+     * This is an automated Shooter to be used
+     */
+    public static void automatedShoot(){  
         RobotShoot.update();
         RobotShoot.releaseBall();
         RobotShoot.unwindShooter();
         RobotShoot.rewindShooter();
     }
-    public static void automatedShoot(){  //this does an automatic shot and reload
-        RobotShoot.update();
-        RobotShoot.releaseBall();
-        RobotShoot.unwindShooter();
-        RobotShoot.rewindShooter();
-    }
-    public static void releaseBall() {  //this will release the ball when it is loaded
+    /**
+     * This releases the ball if it is loaded, and if it is not, it displays that it is not.
+     */
+    public static void releaseBall() {  
         if (RobotPickUp.ifLoaded()) {
             RobotActuators.latch.set(false);
-            hasBeenUnwinded = false;
+            notNeedingToBeUnwound = false;
         } else {
             SmartDashboard.putString("Error", "Ball not loaded");
             //or blink a light
         }
     }
-    private static int getEncoderValue() {  //this gets the encoder value to be used by the unwindShooter method
+   /**
+    * it gets the encoder value of the shooter wheel 
+    * @returns the encoderValue
+    */
+    private static int getEncoderValue() { 
         revolutionsOfShooter = RobotSensors.shooterWinchEncoder.get();
         return revolutionsOfShooter;
     }
-    //true meaning unwind, false means dont unwind
+    /**
+     * This will unwind the shooter if .5 seconds have passed, and until the limit switch
+     * is reached or until it has exceeded the max number of revolutions.
+     */
     public static void unwindShooter() {     
-       if(timerRelatch==null && !limitShooter){
-           hasBeenUnwinded = false;
+       if(timerRelatch==null && !unwindMax){
+           notNeedingToBeUnwound = false;
            needsToBeUnwound = true;
             }
        if(RobotShoot.getEncoderValue()>= rewindMaxRevolutions){
            needsToBeUnwound = false;
-           hasBeenUnwinded = true;
+           notNeedingToBeUnwound = true;
         }
        else{
            needsToBeUnwound = false;
        }
     }
-    public static void rewindShooter() {  //this rewinds the shooter at the wind speed limitBuckleValue
+    /**
+     * It rewinds the shooter until the limit switch has been reached or again max number of revolutions
+     */
+    public static void rewindShooter() {  
         if(RobotShoot.getEncoderValue() == rewindMaxRevolutions){
             needsToBeWound = false;
         }
-        if(!limitBuckleValue){
+        if(!windMax){
             needsToBeWound = true;
         }
     }
-
+    /**
+     * this will get all of the new values that we need as well as setting the shooter speed
+     */
     public static void update() {  //this is the update method to get all of our values that are needed
         if (timerRelatch != null) {
             b = timerRelatch.get();
@@ -83,15 +101,15 @@ public class RobotShoot {
                 timerRelatch = null;
             }
         }
-        if(needsToBeWound && hasBeenUnwinded){
+        if(needsToBeWound && notNeedingToBeUnwound){
             RobotActuators.shooterWinch.set(WIND_SPEED);
         }
-        if(needsToBeUnwound && !hasBeenUnwinded){
+        if(needsToBeUnwound && !notNeedingToBeUnwound){
             RobotActuators.shooterWinch.set(WIND_SPEED);
         }
-        limitBuckleValue = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
-        limitShooter = RobotSensors.shooterUnloadedLim.get();    //SHOOTER_UNLOADED_LIM
-        limitLatched = RobotSensors.shooterLatchedLim.get();   //SHOOTER_LATCHED_LIM
+        windMax = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
+        unwindMax = RobotSensors.shooterUnloadedLim.get();    //SHOOTER_UNLOADED_LIM
+        latched = RobotSensors.shooterLatchedLim.get();   //SHOOTER_LATCHED_LIM
     }
 }
 //IF WE WANT A MANUAL SHOT YOU WILL NEED TO SET THE MOTOR IN TELEOP
