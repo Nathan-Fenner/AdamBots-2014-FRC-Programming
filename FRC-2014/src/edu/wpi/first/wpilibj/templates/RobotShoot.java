@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Roi and Simon
  */
 public class RobotShoot {
+
     ////VARIABLES AND CONSTANTS-------------------------------------------------
-    private static boolean latch;
     private static boolean needsToBeWound;
     private static boolean needsToBeUnwound;
     private static boolean latched;
@@ -17,15 +17,13 @@ public class RobotShoot {
     public static double WIND_SPEED;
     private static Timer timerRelatch;
     public static final int ENCODER_REVOLUTIONS = 5;
-    public static final double UNIWIND_SPEED = -.5;
+    public static final double UNWIND_SPEED = -.5;
     public static int revolutionsOfShooter;
     private static double time;
-    private static double b;
     private static final double rewindMaxRevolutions = 5000;
 
     public static void initialize() {
         time = 0;
-        b = 0;
     }
 
     /**
@@ -39,19 +37,23 @@ public class RobotShoot {
      * This is an automated Shooter to be used
      */
     public static void automatedShoot() {
-        RobotShoot.releaseBall();
-        RobotShoot.unwindShooter();
+        //RobotShoot.releaseBall();
+        if (timerRelatch == null) {
+            timerRelatch = new Timer();
+            timerRelatch.start();
+            time = timerRelatch.get();
+        }
         RobotShoot.rewindShooter();
-     }
+    }
 
     /**
      * This releases the ball if it is loaded, and if it is not, it displays
      * that it is not.
      */
     public static void releaseBall() {
-        if (RobotPickUp.ifLoaded()) {
+        if (true || RobotPickUp.ifLoaded()) { //TODO: Remove true||, and start the timer here
             RobotActuators.latch.set(false);
-            SmartDashboard.putString("Success", "Ball has been shot");
+            System.out.println("Success: Ball has been shot");
         } else {
             SmartDashboard.putString("Error", "Ball not loaded");
             //or blink a light
@@ -65,9 +67,8 @@ public class RobotShoot {
      */
     /*private static int getEncoderValue() {
      *  revolutionsOfShooter = RobotSensors.shooterWinchEncoder.get();
-        return revolutionsOfShooter;
-    } */
-
+     return revolutionsOfShooter;
+     } */
     /**
      * This will unwind the shooter if .5 seconds have passed, and until the
      * limit switch is reached or until it has exceeded the max number of
@@ -77,9 +78,7 @@ public class RobotShoot {
         if (timerRelatch == null && !latched) {
             needsToBeUnwound = true;
         }
-        else if(timerRelatch == null && latched){
-            latch = true;
-        }
+
     }
 
     /**
@@ -91,37 +90,45 @@ public class RobotShoot {
             needsToBeWound = true;
         }
     }
-    public static void stopShooter(){
+
+    public static void stopShooter() {
         RobotActuators.shooterWinch.set(0);
     }
+
     /**
      * This will get all of the new values that we need as well as setting the
      * shooter speed
      */
     public static void update() {
         if (timerRelatch != null) {
-            b = timerRelatch.get();
-            if (time - b > 500) {
-                RobotActuators.latch.set(true);
+            double b = timerRelatch.get();
+            if (b - time > .5) {
                 timerRelatch = null;
+                unwindShooter();
             }
         }
-       /* if (RobotShoot.getEncoderValue() >= rewindMaxRevolutions) {
-            needsToBeUnwound = false;
-            needsToBeWound = false;
-          }*/
+        /* if (RobotShoot.getEncoderValue() >= rewindMaxRevolutions) {
+         needsToBeUnwound = false;
+         needsToBeWound = false;
+         }*/
         if (needsToBeWound && latched) {
             RobotActuators.shooterWinch.set(WIND_SPEED);
         }
         if (needsToBeUnwound && !latched) {
-            RobotActuators.shooterWinch.set(WIND_SPEED);
+            RobotActuators.shooterWinch.set(UNWIND_SPEED);
+        }
+        if (!needsToBeUnwound && latched) {
+            RobotShoot.rewindShooter();
         }
         windMax = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
         latched = RobotSensors.shooterAtBack.get();   //SHOOTER_LATCHED_LIM
-        if(latched && !windMax){
+        if (latched && !windMax) {
             RobotActuators.latch.set(true);  //true means it goes in
         }
-        
+        System.out.println("\nlatched: " + latched);
+        System.out.println("needsToBeUnwound: " + needsToBeUnwound);
+        System.out.println("needsToBeWound: " + needsToBeWound);
+        System.out.println("windMax: " + windMax);
     }
 }
 //IF WE WANT A MANUAL SHOT YOU WILL NEED TO SET THE MOTOR IN TELEOP
