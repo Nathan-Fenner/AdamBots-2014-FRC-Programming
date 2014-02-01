@@ -33,7 +33,7 @@ public class RobotSensors {
     public static DigitalInput pressureSwitch;
     public static ADXL345_I2C accelerometer;
 
-    public void initialize() {
+    public static void initialize() {
 	//// Analog
         gyro = new Gyro(1);
 	pickUpSystemPot = new AnalogPotentiometer(2);
@@ -54,7 +54,8 @@ public class RobotSensors {
 	pickupSystemEncoder = new Counter(10);
 	pressureSwitch = new DigitalInput(14);
 	
-	//// Digital 1 Serial
+	
+//// Digital 1 Serial
 	accelerometer = new ADXL345_I2C(1, ADXL345_I2C.DataFormat_Range.k2G);
     }
 }
