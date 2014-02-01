@@ -7,6 +7,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.templates.RobotSensors;
 import edu.wpi.first.wpilibj.templates.RobotActuators;
+import edu.wpi.first.wpilibj.Talon;
 
 /**
  *
@@ -23,10 +24,13 @@ public class RobotPickUp {
     public static final double MIN_SPEED = -1.0;
     public static final double NO_SPEED = 0.0;
     public static final double MAX_SPEED = 1.0;
-
+    public static double armMotorSpeed;
+    public static double rollerMotorSpeed;
 ////INIT------------------------------------------------------------------------
     public static void initialize() { //initializes encoder
-        //RobotSensors.PICKUP_SYSTEM_ENCODER.start();  //assumed that it is initialized in RobotSensors class
+        rollerMotorSpeed = 0.5;
+        armMotorSpeed = 0.5;
+    //RobotSensors.PICKUP_SYSTEM_ENCODER.start();  //assumed that it is initialized in RobotSensors class
     }
 
     public static void update() { //updates arm encoder value
@@ -34,16 +38,13 @@ public class RobotPickUp {
         upperLimit = RobotSensors.pickupSystemUpLim.get();
         ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
         lowerLimit = RobotSensors.pickupSystemDownLim.get();
+        RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
+        RobotActuators.pickupSystemMotor.set(armMotorSpeed);
     }
-
     public static boolean ifLoaded() {
-        if (ballInPickUpLimit) {
-
-            return true;
-        } else {
-            return false;
-        }
+        return ballInPickUpLimit;
     }
+    
 
     //INSERT CODE HERE
 
@@ -91,42 +92,50 @@ public class RobotPickUp {
      }
      */
     public static void moveGamePiece(double speed) { //turns on pickup rollers for ball intake
-        RobotActuators.pickupRollerArmMotor.set(speed);
+        rollerMotorSpeed = speed;
     }
 
     public static void movePickUpMechanism(double speed) { //moves pickup mechanism up and down
-        RobotActuators.pickupSystemMotor.set(speed);
+        armMotorSpeed = speed;
     }
-
-    public static void moveToShootPosition() {  //automatically sucks in game piece and moves to shooting position
-        if (!ballInPickUpLimit) {
+    
+     public static void moveToShootWithEncoder(double targetCatchPosition, double speed, boolean buttonShoot) { //moves pickup mechanism into position for catching
+        double remainingDistance = targetCatchPosition - armEncoder; //assuming armEncoderVal is positive
+        if(!ballInPickUpLimit) {
             moveGamePiece(1.0);
         }
-        if (!upperLimit) {
-            movePickUpMechanism(1.0);
-        }
-    }
-
-    public static void moveUpperArmToShoot() { //moves upper arm in the shoot process
-        liftRollerArm(); //same as liftRollerArm class
-
-    }
-
-    public static void moveToCatchWithEncoder(double targetCatchPosition, double speed, boolean buttonCatch) { //moves pickup mechanism into position for catching
-        double remainingDistance = targetCatchPosition - armEncoder; //assuming armEncoderVal is positive
-        if ((!upperLimit || buttonCatch) && (remainingDistance > 0)) {
+        
+        if ((!upperLimit || buttonShoot) && (remainingDistance > 0)) {
             movePickUpMechanism(speed);
         }
     }
 
-    public static void moveFromCatchToShoot(double targetShootPosition, double speed, boolean buttonCatchToShoot) { //moves pickup mechanism into position for shooting, only to be used after catching ball
+    public static void moveToCatchPosition() {  //automatically sucks in game piece and moves to shooting position
+        if (!upperLimit) {
+            movePickUpMechanism(1.0);
+        }
+        liftRollerArm();
+    }
+
+    /*public static void moveUpperArmToShoot() { //moves upper arm in the shoot process
+        liftRollerArm(); //same as liftRollerArm class
+
+    }*/
+    
+    public static void moveToBottomPosition() {
+        if (!lowerLimit) {
+            movePickUpMechanism(-1.0);
+        }
+    }
+
+    /*public static void moveFromCatchToShoot(double targetShootPosition, double speed, boolean buttonCatchToShoot) { //moves pickup mechanism into position for shooting, only to be used after catching ball
         double remainingDistance = targetShootPosition - armEncoder; //assuming armEncoderVal is negative
 
         if ((!upperLimit || buttonCatchToShoot) && (remainingDistance < 0)) {
             movePickUpMechanism(speed);
 
         }
-    }
+    }*/
 
     public static void pickUpFailMode(boolean buttonFail) {
         if (buttonFail) {
@@ -139,17 +148,21 @@ public class RobotPickUp {
 
     }
 
-    public static void test(boolean buttonTestA, boolean buttonTestB, boolean buttonTestC) {
-        if (buttonTestA && !buttonTestB && !buttonTestC) {
-            moveToShootPosition();
+    public static void test(boolean buttonTestA, boolean buttonTestB, boolean buttonTestC, boolean buttonTestD) {
+        if (buttonTestA && !buttonTestB && !buttonTestC && !buttonTestD) {
+            moveToShootWithEncoder(500, 1.0, true);
         }
 
-        if (buttonTestB && !buttonTestA && !buttonTestC) {
-            moveToCatchWithEncoder(1000, 1, true);
+        if (buttonTestB && !buttonTestA && !buttonTestC && !buttonTestD) {
+            moveToBottomPosition();
         }
 
-        if (buttonTestC && !buttonTestA && !buttonTestB) {
-            moveFromCatchToShoot(500, 1, true);
+        if (buttonTestC && !buttonTestA && !buttonTestB && !buttonTestD) {
+            moveToCatchPosition();
+        }
+        
+        if (buttonTestD && !buttonTestA && !buttonTestB && !buttonTestC) {
+            liftRollerArm();
         }
     }
 
