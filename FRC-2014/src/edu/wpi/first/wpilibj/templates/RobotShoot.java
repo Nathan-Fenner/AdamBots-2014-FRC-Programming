@@ -12,7 +12,6 @@ public class RobotShoot {
     private static boolean latch;
     private static boolean needsToBeWound;
     private static boolean needsToBeUnwound;
-    private static boolean unwindMax;
     private static boolean latched;
     private static boolean windMax;
     public static double WIND_SPEED;
@@ -116,8 +115,7 @@ public class RobotShoot {
             RobotActuators.shooterWinch.set(WIND_SPEED);
         }
         windMax = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
-        unwindMax = RobotSensors.shooterUnloadedLim.get();    //SHOOTER_UNLOADED_LIM
-        latched = RobotSensors.shooterLatchedLim.get();   //SHOOTER_LATCHED_LIM
+        latched = RobotSensors.shooterAtBack.get();   //SHOOTER_LATCHED_LIM
         if(latched && !windMax){
             RobotActuators.latch.set(true);  //true means it goes in
         }
