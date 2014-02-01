@@ -46,7 +46,7 @@ public class MainRobot extends IterativeRobot {
 //        RobotDrive.driveStraight(0.5);
         RobotShoot.update();
         boolean shoot = RobotSensors.ballReadyToLiftLim.get();  //this is just for testing 3rd switch
-        System.out.println("this is the value of shoot: " + shoot);
+        //System.out.println("this is the value of shoot: " + shoot);
         if (shoot) {
             RobotShoot.testShooter();
         }
