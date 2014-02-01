@@ -106,6 +106,14 @@ public class RobotShoot {
      * This will get all of the new values that we need as well as setting the
      * shooter speed
      */
+    public static void manualWinds(boolean forward, boolean backward){
+        if(forward && !backward){
+            RobotActuators.shooterWinch.set(WIND_SPEED);
+        }
+        else if(!forward && backward){
+            RobotActuators.shooterWinch.set(UNWIND_SPEED);
+        }
+    }
     public static void update() {
         if (timerRelatch != null) {
             double b = timerRelatch.get();
