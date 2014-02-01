@@ -100,19 +100,17 @@ public class RobotPickUp {
     }
     
      public static void moveToShoot(double targetCatchPosition, double speed, boolean buttonShoot) { //moves pickup mechanism into position for catching
-          double remainingDistance = targetCatchPosition - armEncoder; 
-         if (lowerLimit) {
+        double remainingDistance = targetCatchPosition - armEncoder; 
+        if (lowerLimit) {
             if(!ballInPickUpLimit) {
-            moveGamePiece(1.0);
+                moveGamePiece(1.0);
+            } else if (buttonShoot && (remainingDistance > 0)) {
+                movePickUpMechanism(speed);
             }
-         
-        if (buttonShoot && (remainingDistance > 0)) {
-            movePickUpMechanism(speed);
-        }
        }
         
        if (upperLimit & buttonShoot && (remainingDistance < 0)) {
-            movePickUpMechanism(speed);
+            movePickUpMechanism(-speed);
        }
     }
     
@@ -120,16 +118,18 @@ public class RobotPickUp {
     public static void moveToCatchPosition() {  //automatically sucks in game piece and moves to shooting position
         if (!upperLimit) {
             movePickUpMechanism(1.0);
-        }
-        liftRollerArm();
+        } else { 
+            movePickUpMechanism(0.0); 
+            liftRollerArm();
+        }   
     }
     
-    public static void moveToShootFromCatch(double targetCatchPosition, double speed, boolean buttonShootFromCatch) {
+    /*public static void moveToShootFromCatch(double targetCatchPosition, double speed, boolean buttonShootFromCatch) {
         double remainingDistance = targetCatchPosition - armEncoder;
         if (buttonShootFromCatch && (remainingDistance < 0)) {
             movePickUpMechanism(speed);
         }
-    }
+    }*/
 
     /*public static void moveUpperArmToShoot() { //moves upper arm in the shoot process
         liftRollerArm(); //same as liftRollerArm class
@@ -139,6 +139,8 @@ public class RobotPickUp {
     public static void moveToBottomPosition() {
         if (!lowerLimit) {
             movePickUpMechanism(-1.0);
+        } else {
+            movePickUpMechanism(0.0);
         }
     }
 
@@ -162,21 +164,13 @@ public class RobotPickUp {
 
     }
 
-    public static void test(boolean buttonTestA, boolean buttonTestB, boolean buttonTestC, boolean buttonTestD) {
-        if (buttonTestA && !buttonTestB && !buttonTestC && !buttonTestD) {
-            moveToShootFromCatch(500, 1.0, true);
-        }
-
-        if (buttonTestB && !buttonTestA && !buttonTestC && !buttonTestD) {
-            moveToBottomPosition();
-        }
-
-        if (buttonTestC && !buttonTestA && !buttonTestB && !buttonTestD) {
-            moveToCatchPosition();
-        }
-        
-        if (buttonTestD && !buttonTestA && !buttonTestB && !buttonTestC) {
+    public static void test(boolean buttonTestA, boolean buttonTestB, boolean buttonTestC) {
+        if (buttonTestA && !buttonTestB && !buttonTestC) {
             moveToShoot(500, 1.0, true);
+        } else if (buttonTestB && !buttonTestA && !buttonTestC) {
+            moveToBottomPosition();
+        } else if (buttonTestC && !buttonTestA && !buttonTestB) {
+            moveToCatchPosition();
         }
     }
     
