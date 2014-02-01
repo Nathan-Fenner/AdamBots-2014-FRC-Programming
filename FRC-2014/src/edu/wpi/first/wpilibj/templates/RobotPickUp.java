@@ -8,6 +8,7 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.templates.RobotSensors;
 import edu.wpi.first.wpilibj.templates.RobotActuators;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -39,7 +40,11 @@ public class RobotPickUp {
         ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
         lowerLimit = RobotSensors.pickupSystemDownLim.get();
         RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
-        RobotActuators.pickupSystemMotor.set(armMotorSpeed);
+        RobotActuators.leftDrive.set(armMotorSpeed);
+        SmartDashboard.putBoolean("upperLimit", upperLimit);
+        SmartDashboard.putBoolean("lowerLimit", lowerLimit);
+        SmartDashboard.putBoolean("ballInPickUpLimit", ballInPickUpLimit);
+        //CHANGE LEFT DRIVE BACK TO PICKUPSYSTEMMOTOR AFTER TESTING
     }
     public static boolean ifLoaded() {
         return ballInPickUpLimit;

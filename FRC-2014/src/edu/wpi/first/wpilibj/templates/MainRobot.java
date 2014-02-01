@@ -24,9 +24,10 @@ public class MainRobot extends IterativeRobot {
      */
    
     public void robotInit() {
-        RobotShoot.initialize();
+        
         RobotActuators.initialize();
         RobotSensors.initialize();
+        RobotDrive.initialize();
     }
 
     /**
@@ -40,9 +41,10 @@ public class MainRobot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        //runCompressor();
-        RobotShoot.update();
-        RobotShoot.testShooter();
+        runCompressor();
+        RobotDrive.update();
+        RobotDrive.driveStraight(0.5);
+        
     }
     
     /**
@@ -55,9 +57,11 @@ public class MainRobot extends IterativeRobot {
     private void runCompressor() {
 	if (!RobotSensors.pressureSwitch.get()) {
 	    RobotActuators.compressor.set(Relay.Value.kOn);
+            System.out.println("Setting the compressor to ON");
 	} else {
 	    RobotActuators.compressor.set(Relay.Value.kOff);
 	}
+        System.out.println("runCompressor finished");
     }
     
 }
