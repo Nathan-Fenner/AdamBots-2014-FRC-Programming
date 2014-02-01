@@ -14,7 +14,7 @@ public class RobotShoot {
     private static boolean needsToBeUnwound;
     private static boolean latched;
     private static boolean windMax;
-    public static double WIND_SPEED;
+    public static double WIND_SPEED = .5;
     private static Timer timerRelatch;
     public static final int ENCODER_REVOLUTIONS = 5;
     public static final double UNWIND_SPEED = -.5;
@@ -78,7 +78,9 @@ public class RobotShoot {
         if (timerRelatch == null && !latched) {
             needsToBeUnwound = true;
         }
-
+        else{
+            needsToBeUnwound = false;
+        }
     }
 
     /**
@@ -89,16 +91,29 @@ public class RobotShoot {
         if (!windMax) {
             needsToBeWound = true;
         }
+        else{
+            needsToBeWound = false;
+        }
     }
 
     public static void stopShooter() {
         RobotActuators.shooterWinch.set(0);
     }
 
+    static int rc = 0;
+
     /**
      * This will get all of the new values that we need as well as setting the
      * shooter speed
      */
+    public static void manualWinds(boolean forward, boolean backward){
+        if(forward && !backward){
+            RobotActuators.shooterWinch.set(WIND_SPEED);
+        }
+        else if(!forward && backward){
+            RobotActuators.shooterWinch.set(UNWIND_SPEED);
+        }
+    }
     public static void update() {
         if (timerRelatch != null) {
             double b = timerRelatch.get();
@@ -120,15 +135,19 @@ public class RobotShoot {
         if (!needsToBeUnwound && latched) {
             RobotShoot.rewindShooter();
         }
+        
         windMax = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
         latched = RobotSensors.shooterAtBack.get();   //SHOOTER_LATCHED_LIM
         if (latched && !windMax) {
             RobotActuators.latch.set(true);  //true means it goes in
         }
-        System.out.println("\nlatched: " + latched);
-        System.out.println("needsToBeUnwound: " + needsToBeUnwound);
-        System.out.println("needsToBeWound: " + needsToBeWound);
-        System.out.println("windMax: " + windMax);
+
+        //System.out.println("sneedsToBeUnwound: " + needsToBeUnwound);
+        //System.out.println("needsToBeWound: " + needsToBeWound);
+        System.out.println("latched: " + latched + rc++);
+
+        System.out.println("windMax: " + windMax + rc++);
+
     }
 }
 //IF WE WANT A MANUAL SHOT YOU WILL NEED TO SET THE MOTOR IN TELEOP
