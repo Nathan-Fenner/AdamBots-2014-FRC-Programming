@@ -31,7 +31,7 @@ public class RobotSensors {
     public static DigitalInput shooterLoadedLim;
     public static DigitalInput shooterUnloadedLim;
     public static DigitalInput shooterLatchedLim;
-    public static DigitalInput PressureSwitch;
+    public static DigitalInput pressureSwitch;
     public static ADXL345_I2C accelerometer;
 
     public void initialize() {
@@ -54,7 +54,7 @@ public class RobotSensors {
 	shooterUnloadedLim = new DigitalInput(8);
 	shooterLatchedLim = new DigitalInput(9);
 	pickupSystemEncoder = new Counter(10);
-	PressureSwitch = new DigitalInput(14);
+	pressureSwitch = new DigitalInput(14);
 	
 	//// Digital 1 Serial
 	accelerometer = new ADXL345_I2C(1, ADXL345_I2C.DataFormat_Range.k2G);
