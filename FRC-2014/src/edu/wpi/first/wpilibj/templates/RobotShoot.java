@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotShoot {
     ////VARIABLES AND CONSTANTS-------------------------------------------------
-
+    private static boolean latch;
     private static boolean needsToBeWound;
     private static boolean needsToBeUnwound;
     private static boolean unwindMax;
@@ -41,9 +41,7 @@ public class RobotShoot {
      */
     public static void automatedShoot() {
         RobotShoot.releaseBall();
-        RobotShoot.unwindShooter();
-        RobotShoot.rewindShooter();
-    }
+     }
 
     /**
      * This releases the ball if it is loaded, and if it is not, it displays
@@ -78,6 +76,9 @@ public class RobotShoot {
         if (timerRelatch == null && !latched) {
             needsToBeUnwound = true;
         }
+        else if(timerRelatch == null && latched){
+            latch = true;
+        }
     }
 
     /**
@@ -89,7 +90,9 @@ public class RobotShoot {
             needsToBeWound = true;
         }
     }
-
+    public static void stopShooter(){
+        RobotActuators.shooterWinch.set(0);
+    }
     /**
      * This will get all of the new values that we need as well as setting the
      * shooter speed
@@ -115,7 +118,9 @@ public class RobotShoot {
         windMax = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
         unwindMax = RobotSensors.shooterUnloadedLim.get();    //SHOOTER_UNLOADED_LIM
         latched = RobotSensors.shooterLatchedLim.get();   //SHOOTER_LATCHED_LIM
-
+        if(latched && !windMax){
+            RobotActuators.latch.set(true);  //true means it goes in
+        }
         
     }
 }
