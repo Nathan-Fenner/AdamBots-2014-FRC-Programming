@@ -24,8 +24,8 @@ public class RobotSensors {
     public static AnalogChannel configSwitchC;
     public static Counter rightDriveEncoder;
     public static Counter leftDriveEncoder;
-    public static Counter pickupSystemEncoder;
     public static Counter shooterWinchEncoder;
+    public static Encoder pickupSystemEncoder;
     public static DigitalInput ballReadyToLiftLim;
     public static DigitalInput pickupSystemDownLim;
     public static DigitalInput pickupSystemUpLim;
@@ -52,7 +52,8 @@ public class RobotSensors {
 	pickupSystemUpLim = new DigitalInput(6);
 	shooterLoadedLim = new DigitalInput(7);
 	shooterAtBack = new DigitalInput(9);
-	pickupSystemEncoder = new Counter(10);
+	pickupSystemEncoder = new Encoder(10, 11);
+        
 	pressureSwitch = new DigitalInput(14);
 	
 	
