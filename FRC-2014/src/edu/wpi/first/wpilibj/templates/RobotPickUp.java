@@ -40,11 +40,12 @@ public class RobotPickUp {
         ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
         lowerLimit = RobotSensors.pickupSystemDownLim.get();
         RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
-        RobotActuators.leftDrive.set(armMotorSpeed);
+        RobotActuators.pickupSystemMotor.set(armMotorSpeed);
         SmartDashboard.putBoolean("upperLimit", upperLimit);
         SmartDashboard.putBoolean("lowerLimit", lowerLimit);
         SmartDashboard.putBoolean("ballInPickUpLimit", ballInPickUpLimit);
-        //CHANGE LEFT DRIVE BACK TO PICKUPSYSTEMMOTOR AFTER TESTING
+        SmartDashboard.putNumber("Arm Encoder", armEncoder);
+
     }
     public static boolean ifLoaded() {
         return ballInPickUpLimit;
@@ -171,7 +172,7 @@ public class RobotPickUp {
 
     public static void test(boolean buttonTestA, boolean buttonTestB, boolean buttonTestC) {
         if (buttonTestA && !buttonTestB && !buttonTestC) {
-            moveToShoot(500, 1.0, true);
+            moveToShoot(180, 1.0, true);
         } else if (buttonTestB && !buttonTestA && !buttonTestC) {
             moveToBottomPosition();
         } else if (buttonTestC && !buttonTestA && !buttonTestB) {
