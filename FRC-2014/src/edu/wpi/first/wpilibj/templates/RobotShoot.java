@@ -43,7 +43,7 @@ public class RobotShoot {
             timerRelatch.start();
             time = timerRelatch.get();
         }
-        RobotShoot.rewindShooter();
+        RobotShoot.unwindShooter();
     }
 
     /**
