@@ -24,7 +24,7 @@ public class RobotActuators {
     public static Solenoid rollerArmDown;
     public static Solenoid latch;
 
-    public void initialize() {
+    public static void initialize() {
         //Motors
         rightDrive = new Victor(1);
         leftDrive = new Victor(2);
