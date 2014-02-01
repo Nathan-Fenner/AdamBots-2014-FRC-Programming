@@ -22,7 +22,7 @@ public class RobotShoot {
     public static int revolutionsOfShooter;
     private static double time;
     private static double b;
-    private static double rewindMaxRevolutions = 5;
+    private static final double rewindMaxRevolutions = 5000;
 
     public static void initialize() {
         time = 0;
