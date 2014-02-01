@@ -24,30 +24,30 @@ public class Pneumatics{
 	public void shiftIt(boolean buttonShift/**true = high, false = low**/){
 		if(buttonShift){
 
-			RobotActuators.SHIFTER_PISTON.set(true);
+			RobotActuators.shifterPiston.set(true);
 		}else{		
-			RobotActuators.SHIFTER_PISTON.set(false);
+			RobotActuators.shifterPiston.set(false);
 		}
 	}
 	
 	public void runCompressor(){
-		if(RobotSensors.PREASSURE_SWITCH.get()){
-			RobotActuators.COMPRESSOR.set(Relay.Value.kOff);
+		if(RobotSensors.pressureSwitch.get()){
+			RobotActuators.compressor.set(Relay.Value.kOff);
 		}else{
-			RobotActuators.COMPRESSOR.set(Relay.Value.kOn);
+			RobotActuators.compressor.set(Relay.Value.kOn);
 		}
 	}
 	public void autoShift(double sensitvity, boolean shiftLow /* in G's*/){
-		double xAcceleration = RobotSensors.ACCELEROMETER.getAcceleration(ADXL345_I2C.Axes.kX);
-		double zAcceleration = RobotSensors.ACCELEROMETER.getAcceleration(ADXL345_I2C.Axes.kZ);
+		double xAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kX);
+		double zAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kZ);
 		if(xAcceleration > sensitvity && zAcceleration > sensitvity){
-			RobotActuators.SHIFTER_PISTON.set(false);
+			RobotActuators.shifterPiston.set(false);
 		}else if(shiftLow == true || xAcceleration < sensitvity && zAcceleration < sensitvity){
-			RobotActuators.SHIFTER_PISTON.set(true);
+			RobotActuators.shifterPiston.set(true);
 
-			RobotActuators.SHIFTER_PISTON.set(true);
+			RobotActuators.shifterPiston.set(true);
 		}else{		
-			RobotActuators.SHIFTER_PISTON.set(false);
+			RobotActuators.shifterPiston.set(false);
 		}
 	}	
 }
