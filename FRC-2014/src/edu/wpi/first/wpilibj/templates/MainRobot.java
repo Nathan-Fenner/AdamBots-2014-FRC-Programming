@@ -26,7 +26,7 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
-        RobotDrive.initialize();
+        //RobotDrive.initialize();
         RobotShoot.initialize();
     }
 
@@ -34,16 +34,16 @@ public class MainRobot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-	runCompressor();
+	//runCompressor();
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        runCompressor();
-        RobotDrive.update();
-        RobotDrive.driveStraight(0.5);
+//        runCompressor();
+//        RobotDrive.update();
+//        RobotDrive.driveStraight(0.5);
         RobotShoot.update();
         boolean shoot = RobotSensors.ballReadyToLiftLim.get();  //this is just for testing 3rd switch
         System.out.println("this is the value of shoot: " + shoot);
