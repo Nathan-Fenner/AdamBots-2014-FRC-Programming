@@ -40,6 +40,8 @@ public class RobotShoot {
      */
     public static void automatedShoot() {
         RobotShoot.releaseBall();
+        RobotShoot.unwindShooter();
+        RobotShoot.rewindShooter();
      }
 
     /**

@@ -24,7 +24,7 @@ public class MainRobot extends IterativeRobot {
      */
    
     public void robotInit() {
-
+        RobotShoot.initialize();
     }
 
     /**
@@ -39,6 +39,8 @@ public class MainRobot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         runCompressor();
+        RobotShoot.update();
+        RobotShoot.testShooter();
     }
     
     /**
