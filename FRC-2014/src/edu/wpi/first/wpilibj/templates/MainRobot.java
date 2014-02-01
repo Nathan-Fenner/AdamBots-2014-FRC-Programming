@@ -49,10 +49,10 @@ public class MainRobot extends IterativeRobot {
     }
     
     private void runCompressor() {
-	if (!RobotSensors.PressureSwitch.get()) {
-	    RobotActuators.COMPRESSOR.set(Relay.Value.kOn);
+	if (!RobotSensors.pressureSwitch.get()) {
+	    RobotActuators.compressor.set(Relay.Value.kOn);
 	} else {
-	    RobotActuators.COMPRESSOR.set(Relay.Value.kOff);
+	    RobotActuators.compressor.set(Relay.Value.kOff);
 	}
     }
     
