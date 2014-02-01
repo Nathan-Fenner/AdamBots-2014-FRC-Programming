@@ -27,10 +27,10 @@ public class RobotDrive {
 
 	public static void initialize() {
 		System.out.println("RobotDrive init");
-		RobotSensors.RIGHT_DRIVE_ENCODER.start();
-		RobotSensors.LEFT_DRIVE_ENCODER.start();
-		RobotSensors.RIGHT_DRIVE_ENCODER.setDistancePerPulse((Math.PI * 0.5) / 360);
-		RobotSensors.LEFT_DRIVE_ENCODER.setDistancePerPulse((Math.PI * 0.5) / 360);
+		RobotSensors.rightDriveEncoder.start();
+		RobotSensors.leftDriveEncoder.start();
+		RobotSensors.rightDriveEncoder.setDistancePerPulse((Math.PI * 0.5) / 360);
+		RobotSensors.leftDriveEncoder.setDistancePerPulse((Math.PI * 0.5) / 360);
 	}
 ////TESTMETHOD------------------------------------------------------------------
 
@@ -42,8 +42,8 @@ public class RobotDrive {
 ////METHODS---------------------------------------------------------------------
 
 	public static void update() {
-		encoderL = RobotSensors.LEFT_DRIVE_ENCODER.get();
-		encoderR = RobotSensors.RIGHT_DRIVE_ENCODER.get();
+		encoderL = RobotSensors.leftDriveEncoder.get();
+		encoderR = RobotSensors.rightDriveEncoder.get();
 		encoderAvg = (encoderL + encoderR) / 2.0;
 	}
 	/*
@@ -82,27 +82,27 @@ public class RobotDrive {
 	 */
 
 	public static void driveStraight(double speed) {
-		RobotActuators.RIGHT_DRIVE.set(-speed);
-		RobotActuators.LEFT_DRIVE.set(speed);
+		RobotActuators.rightDrive.set(-speed);
+		RobotActuators.leftDrive.set(speed);
 	}
 	/*
 	 sets victors to value in argument
 	 */
 
 	public static void drive(double rightSpeed, double leftSpeed) {
-		RobotActuators.RIGHT_DRIVE.set(-rightSpeed);
-		RobotActuators.LEFT_DRIVE.set(leftSpeed);
+		RobotActuators.rightDrive.set(-rightSpeed);
+		RobotActuators.leftDrive.set(leftSpeed);
 	}
 
 	//100% 180 right, -100% 180 left
 	//percent in decimal
 	public static void turn(double speed, double percent) {
 		if (percent >= 0) {
-			RobotActuators.RIGHT_DRIVE.set(-speed);
-			RobotActuators.LEFT_DRIVE.set(speed - percent);
+			RobotActuators.rightDrive.set(-speed);
+			RobotActuators.leftDrive.set(speed - percent);
 		} else {
-			RobotActuators.LEFT_DRIVE.set(speed);
-			RobotActuators.RIGHT_DRIVE.set(-speed + percent);
+			RobotActuators.leftDrive.set(speed);
+			RobotActuators.rightDrive.set(-speed + percent);
 		}
 	}
 	/*
@@ -110,7 +110,7 @@ public class RobotDrive {
 	 */
 
 	public static void robotStop() {
-		RobotActuators.LEFT_DRIVE.set(STOP);
-		RobotActuators.RIGHT_DRIVE.set(STOP);
+		RobotActuators.leftDrive.set(STOP);
+		RobotActuators.rightDrive.set(STOP);
 	}
 }
