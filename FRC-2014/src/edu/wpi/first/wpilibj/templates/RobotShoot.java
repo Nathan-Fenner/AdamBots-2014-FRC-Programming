@@ -63,10 +63,10 @@ public class RobotShoot {
      *
      * @returns the encoderValue
      */
-    private static int getEncoderValue() {
-        revolutionsOfShooter = RobotSensors.shooterWinchEncoder.get();
+    /*private static int getEncoderValue() {
+     *  revolutionsOfShooter = RobotSensors.shooterWinchEncoder.get();
         return revolutionsOfShooter;
-    }
+    } */
 
     /**
      * This will unwind the shooter if .5 seconds have passed, and until the
@@ -106,10 +106,10 @@ public class RobotShoot {
                 timerRelatch = null;
             }
         }
-        if (RobotShoot.getEncoderValue() >= rewindMaxRevolutions) {
+       /* if (RobotShoot.getEncoderValue() >= rewindMaxRevolutions) {
             needsToBeUnwound = false;
             needsToBeWound = false;
-        }
+          }*/
         if (needsToBeWound && latched) {
             RobotActuators.shooterWinch.set(WIND_SPEED);
         }
