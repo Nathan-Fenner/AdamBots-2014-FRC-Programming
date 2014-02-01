@@ -7,6 +7,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -57,5 +58,6 @@ public class RobotSensors {
 	
 //// Digital 1 Serial
 	accelerometer = new ADXL345_I2C(1, ADXL345_I2C.DataFormat_Range.k2G);
+        System.out.println("Sensor init done");
     }
 }
