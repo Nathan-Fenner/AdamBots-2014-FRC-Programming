@@ -77,9 +77,9 @@ public class RobotPickUp {
      public static void stopMovingPickUpMechanism() {
      RobotActuators.PICKUP_SYSTEM_MOTOR.set(0);
      } */
-    public static void pass() { //automated pass process, if necessary
+   /* public static void pass() { //automated pass process, if necessary
         //INSERT CODE IF NECESSARY- Drivers should be able to control process
-    }
+    }*/
 
     public static void liftRollerArm() { //raises upper roller arm for shooting
         RobotActuators.rollerArmUp.set(true);
