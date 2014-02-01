@@ -29,8 +29,7 @@ public class RobotSensors {
     public static DigitalInput pickupSystemDownLim;
     public static DigitalInput pickupSystemUpLim;
     public static DigitalInput shooterLoadedLim;
-    public static DigitalInput shooterUnloadedLim;
-    public static DigitalInput shooterLatchedLim;
+    public static DigitalInput shooterAtBack;
     public static DigitalInput pressureSwitch;
     public static ADXL345_I2C accelerometer;
 
@@ -51,8 +50,7 @@ public class RobotSensors {
 	pickupSystemDownLim = new DigitalInput(5);
 	pickupSystemUpLim = new DigitalInput(6);
 	shooterLoadedLim = new DigitalInput(7);
-	shooterUnloadedLim = new DigitalInput(8);
-	shooterLatchedLim = new DigitalInput(9);
+	shooterAtBack = new DigitalInput(9);
 	pickupSystemEncoder = new Counter(10);
 	pressureSwitch = new DigitalInput(14);
 	
