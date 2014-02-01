@@ -26,7 +26,7 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotShoot.initialize();
         RobotActuators.initialize();
-        
+        RobotSensors.initialize();
     }
 
     /**
