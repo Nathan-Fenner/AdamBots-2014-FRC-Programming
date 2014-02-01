@@ -26,8 +26,9 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
+        RobotPickUp.initialize();
         //RobotDrive.initialize();
-        RobotShoot.initialize();
+        //RobotShoot.initialize();
     }
 
     /**
@@ -44,12 +45,15 @@ public class MainRobot extends IterativeRobot {
 //        runCompressor();
 //        RobotDrive.update();
 //        RobotDrive.driveStraight(0.5);
-        RobotShoot.update();
+        
+        /*RobotShoot.update();
         boolean shoot = RobotSensors.ballReadyToLiftLim.get();  //this is just for testing 3rd switch
         System.out.println("this is the value of shoot: " + shoot);
         if (shoot) {
             RobotShoot.testShooter();
-        }
+        }*/
+        
+        RobotPickUp.test(true, false, false);
     }
     
     /**
