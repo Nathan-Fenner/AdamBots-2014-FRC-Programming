@@ -26,7 +26,7 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
-        RobotPickUp.initialize();
+        //RobotPickUp.initialize();
         //RobotDrive.initialize();
         //RobotShoot.initialize();
     }
@@ -42,7 +42,7 @@ public class MainRobot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-//        runCompressor();
+        runCompressor();
 //        RobotDrive.update();
 //        RobotDrive.driveStraight(0.5);
         
@@ -52,8 +52,8 @@ public class MainRobot extends IterativeRobot {
         if (shoot) {
             RobotShoot.testShooter();
         }*/
-        
-        RobotPickUp.test(true, false, false);
+        //RobotPickUp.update();
+        //RobotPickUp.test(false, false, true);
     }
     
     /**
