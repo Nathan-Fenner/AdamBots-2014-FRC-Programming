@@ -39,7 +39,8 @@ public class RobotPickUp {
         ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
         lowerLimit = RobotSensors.pickupSystemDownLim.get();
         RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
-        RobotActuators.pickupSystemMotor.set(armMotorSpeed);
+        RobotActuators.leftDrive.set(armMotorSpeed);
+        //CHANGE LEFT DRIVE BACK TO PICKUPSYSTEMMOTOR AFTER TESTING
     }
     public static boolean ifLoaded() {
         return ballInPickUpLimit;
