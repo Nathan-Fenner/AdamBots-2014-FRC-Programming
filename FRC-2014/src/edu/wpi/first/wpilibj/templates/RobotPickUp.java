@@ -99,16 +99,23 @@ public class RobotPickUp {
         armMotorSpeed = speed;
     }
     
-     public static void moveToShootFromGround(double targetCatchPosition, double speed, boolean buttonShootFromGround) { //moves pickup mechanism into position for catching
-        double remainingDistance = targetCatchPosition - armEncoder; //assuming armEncoderVal is positive
-        if(!ballInPickUpLimit) {
+     public static void moveToShoot(double targetCatchPosition, double speed, boolean buttonShoot) { //moves pickup mechanism into position for catching
+          double remainingDistance = targetCatchPosition - armEncoder; 
+         if (lowerLimit) {
+            if(!ballInPickUpLimit) {
             moveGamePiece(1.0);
-        }
-        
-        if (buttonShootFromGround && (remainingDistance > 0)) {
+            }
+         
+        if (buttonShoot && (remainingDistance > 0)) {
             movePickUpMechanism(speed);
         }
+       }
+        
+       if (upperLimit & buttonShoot && (remainingDistance < 0)) {
+            movePickUpMechanism(speed);
+       }
     }
+    
 
     public static void moveToCatchPosition() {  //automatically sucks in game piece and moves to shooting position
         if (!upperLimit) {
@@ -169,7 +176,7 @@ public class RobotPickUp {
         }
         
         if (buttonTestD && !buttonTestA && !buttonTestB && !buttonTestC) {
-            moveToShootFromGround(500, 1.0, true);
+            moveToShoot(500, 1.0, true);
         }
     }
     
