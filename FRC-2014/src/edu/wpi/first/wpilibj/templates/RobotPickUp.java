@@ -45,6 +45,10 @@ public class RobotPickUp {
         SmartDashboard.putBoolean("lowerLimit", lowerLimit);
         SmartDashboard.putBoolean("ballInPickUpLimit", ballInPickUpLimit);
         SmartDashboard.putNumber("Arm Encoder", armEncoder);
+        System.out.println("UpperLimit: " + upperLimit);
+        System.out.println("LowerLimit: " + lowerLimit);
+        System.out.println("BallInPickUpLimit" + ballInPickUpLimit);
+        System.out.println("Arm Encoder" + armEncoder);
 
     }
     public static boolean ifLoaded() {
@@ -172,7 +176,7 @@ public class RobotPickUp {
 
     public static void test(boolean buttonTestA, boolean buttonTestB, boolean buttonTestC) {
         if (buttonTestA && !buttonTestB && !buttonTestC) {
-            moveToShoot(180, 1.0, true);
+            moveToShoot(50, 1.0, true);
         } else if (buttonTestB && !buttonTestA && !buttonTestC) {
             moveToBottomPosition();
         } else if (buttonTestC && !buttonTestA && !buttonTestB) {
