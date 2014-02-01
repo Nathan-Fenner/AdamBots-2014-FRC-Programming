@@ -6,6 +6,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -40,5 +41,6 @@ public class RobotActuators {
         rollerArmUp = new Solenoid(2);
         rollerArmDown = new Solenoid(3);
         latch = new Solenoid(4); //IS THIS ONE RIGHT?
+        System.out.println("RobotActuautors init done");
     }
 }
