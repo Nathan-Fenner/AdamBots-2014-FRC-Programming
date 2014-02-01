@@ -12,7 +12,6 @@ public class RobotShoot {
     private static boolean latch;
     private static boolean needsToBeWound;
     private static boolean needsToBeUnwound;
-    private static boolean unwindMax;
     private static boolean latched;
     private static boolean windMax;
     public static double WIND_SPEED;
@@ -22,7 +21,7 @@ public class RobotShoot {
     public static int revolutionsOfShooter;
     private static double time;
     private static double b;
-    private static double rewindMaxRevolutions = 5;
+    private static final double rewindMaxRevolutions = 5000;
 
     public static void initialize() {
         time = 0;
@@ -41,6 +40,8 @@ public class RobotShoot {
      */
     public static void automatedShoot() {
         RobotShoot.releaseBall();
+        RobotShoot.unwindShooter();
+        RobotShoot.rewindShooter();
      }
 
     /**
@@ -116,8 +117,7 @@ public class RobotShoot {
             RobotActuators.shooterWinch.set(WIND_SPEED);
         }
         windMax = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
-        unwindMax = RobotSensors.shooterUnloadedLim.get();    //SHOOTER_UNLOADED_LIM
-        latched = RobotSensors.shooterLatchedLim.get();   //SHOOTER_LATCHED_LIM
+        latched = RobotSensors.shooterAtBack.get();   //SHOOTER_LATCHED_LIM
         if(latched && !windMax){
             RobotActuators.latch.set(true);  //true means it goes in
         }
