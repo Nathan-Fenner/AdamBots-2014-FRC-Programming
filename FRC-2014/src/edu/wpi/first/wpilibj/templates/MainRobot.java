@@ -26,7 +26,7 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
-        //RobotPickUp.initialize();
+        RobotPickUp.initialize();
         //RobotDrive.initialize();
         //RobotShoot.initialize();
     }
@@ -52,8 +52,8 @@ public class MainRobot extends IterativeRobot {
         if (shoot) {
             RobotShoot.testShooter();
         }*/
-        //RobotPickUp.update();
-        //RobotPickUp.test(false, false, true);
+        RobotPickUp.update();
+        RobotPickUp.test(true, false, false);
     }
     
     /**
