@@ -43,17 +43,17 @@ public class MainRobot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        runCompressor();
+        //runCompressor();
 //      RobotDrive.update();
 //      RobotDrive.driveStraight(0.5);
-        RobotDrive.update();
+        //RobotDrive.update();
 //      RobotDrive.test();
 //      RobotDrive.drive(0.5, 1);
-        RobotDrive.joystickDrive(); //HOLD X -> HIGH GEAR, HOLD Y -> STOP
+        //RobotDrive.joystickDrive(); //HOLD X -> HIGH GEAR, HOLD Y -> STOP
         //runCompressor();
 //        RobotDrive.update();
 //        RobotDrive.driveStraight(0.5);
-        RobotShoot.update();
+       RobotShoot.update();
         /*boolean shoot = RobotSensors.ballReadyToLiftLim.get();  //this is just for testing 3rd switch
         //System.out.println("this is the value of shoot: " + shoot);
         if (shoot) {
