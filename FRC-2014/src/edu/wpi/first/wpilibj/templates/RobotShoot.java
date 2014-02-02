@@ -109,12 +109,13 @@ public class RobotShoot {
      * @param backward
      */
     public static void manualWind(boolean forward, boolean backward) {
-        RobotActuators.shooterWinch.set(0);
 
         if (forward && !backward) {
             speed = WIND_SPEED;
         } else if (!forward && backward) {
             speed = UNWIND_SPEED;
+        } else {
+            speed = 0;
         }
     }
 
@@ -135,10 +136,10 @@ public class RobotShoot {
          needsToBeWound = false;
          }*/
         if (needsToBeWound && latched) {
-            RobotActuators.shooterWinch.set(WIND_SPEED);
+            RobotActuators.shooterWinch.set(speed); //TODO: Change speed to constant value WIND_SPEED
         }
         if (needsToBeUnwound && !latched) {
-            RobotActuators.shooterWinch.set(UNWIND_SPEED);
+            RobotActuators.shooterWinch.set(speed); //TODO: Change speed to constant value UNWIND_SPEED
         }
         if (!needsToBeUnwound && latched) {
             RobotShoot.rewindShooter();
@@ -152,10 +153,11 @@ public class RobotShoot {
 
         //System.out.println("sneedsToBeUnwound: " + needsToBeUnwound);
         //System.out.println("needsToBeWound: " + needsToBeWound);
-        System.out.println("latched: " + latched + rc++);
+        //System.out.println("latched: " + latched + rc++);
 
-        System.out.println("windMax: " + windMax + rc++);
-
+        //System.out.println("windMax: " + windMax + rc++);
+        
+        System.out.println(RobotSensors.shooterWinchEncoder.get()); //FOR TESTING PURPOSES ONLY
     }
 }
 //IF WE WANT A MANUAL SHOT YOU WILL NEED TO SET THE MOTOR IN TELEOP
