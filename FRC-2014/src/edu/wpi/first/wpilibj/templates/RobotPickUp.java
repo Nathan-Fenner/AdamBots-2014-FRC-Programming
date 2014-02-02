@@ -31,6 +31,7 @@ public class RobotPickUp {
     public static void initialize() { //initializes encoder
         rollerMotorSpeed = 0.5;
         armMotorSpeed = 0.5;
+        RobotSensors.pickupSystemEncoder.start();
     //RobotSensors.PICKUP_SYSTEM_ENCODER.start();  //assumed that it is initialized in RobotSensors class
     }
 
