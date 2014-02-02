@@ -26,6 +26,7 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
+        RobotDrive.initialize();
         //RobotPickUp.initialize();
         //RobotDrive.initialize();
         //RobotShoot.initialize();
@@ -43,8 +44,12 @@ public class MainRobot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         runCompressor();
-//        RobotDrive.update();
-//        RobotDrive.driveStraight(0.5);
+//      RobotDrive.update();
+//      RobotDrive.driveStraight(0.5);
+        RobotDrive.update();
+//      RobotDrive.test();
+//      RobotDrive.drive(0.5, 1);
+        RobotDrive.joystickDrive(); //HOLD X -> HIGH GEAR, HOLD Y -> STOP
         
         /*RobotShoot.update();
         boolean shoot = RobotSensors.ballReadyToLiftLim.get();  //this is just for testing 3rd switch
