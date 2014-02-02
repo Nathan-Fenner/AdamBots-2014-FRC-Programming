@@ -46,6 +46,10 @@ public class RobotPickUp {
         SmartDashboard.putBoolean("lowerLimit", lowerLimit);
         SmartDashboard.putBoolean("ballInPickUpLimit", ballInPickUpLimit);
         SmartDashboard.putNumber("Arm Encoder", armEncoder);
+        System.out.println("UpperLimit: " + upperLimit);
+        System.out.println("LowerLimit: " + lowerLimit);
+        System.out.println("BallInPickUpLimit" + ballInPickUpLimit);
+        System.out.println("Arm Encoder" + armEncoder);
 
     }
     public static boolean ifLoaded() {

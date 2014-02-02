@@ -13,12 +13,14 @@ import edu.wpi.first.wpilibj.Joystick;
  * @author Ben
  */
 public class FancyJoystick extends Joystick {
+    
+    
     //// CONSTANTS -------------------------------------------------------------
     
     /** Primary Driver Controller Port Number. */
-    public static final int PRIMARY_DRIVER = 1;
+    private static final int PRIMARY_DRIVER = 1;
     /** Secondary Driver Controller Port Number. */
-    public static final int SECONDARY_DRIVER = 2;
+    private static final int SECONDARY_DRIVER = 2;
     
     /** Axis values below this threshold will be ignored. */
     public static final double DEFAULT_DEAD_ZONE = 0.3;
@@ -69,6 +71,9 @@ public class FancyJoystick extends Joystick {
     /** The "live zone" is always equal to (1-_deadZone). */
     private double _liveZone = 1;
     
+    
+    public static FancyJoystick primary = new FancyJoystick(PRIMARY_DRIVER,.15);
+    public static FancyJoystick secondary = new FancyJoystick(SECONDARY_DRIVER,.15);
     //// CONSTRUCTOR -----------------------------------------------------------
     
     /**

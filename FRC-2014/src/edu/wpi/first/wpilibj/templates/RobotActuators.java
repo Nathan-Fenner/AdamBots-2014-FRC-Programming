@@ -34,8 +34,8 @@ public class RobotActuators {
         shooterWinch = new Talon(5);
 
         //Relays
-        compressor = new Relay(1);
-
+        compressor = new Relay(1, Relay.Direction.kForward);
+	
         //Solenoids
         shifterPiston = new Solenoid(1);
         rollerArmUp = new Solenoid(2);
