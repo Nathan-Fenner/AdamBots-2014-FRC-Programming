@@ -26,6 +26,7 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
+        RobotPickUp.initialize();
         RobotDrive.initialize();
         //RobotPickUp.initialize();
         //RobotDrive.initialize();
@@ -59,6 +60,9 @@ public class MainRobot extends IterativeRobot {
         if (shoot) {
             RobotShoot.testShooter();
         }*/
+        RobotPickUp.update();
+        RobotPickUp.test(true, false, false);
+    
         //RobotPickUp.update();
         //RobotPickUp.test(false, false, true);
         
@@ -76,10 +80,10 @@ public class MainRobot extends IterativeRobot {
 	if (!RobotSensors.pressureSwitch.get()) {
 	    RobotActuators.compressor.set(Relay.Value.kOn);
             System.out.println("Setting the compressor to ON");
-	} else {
+        } else {
 	    RobotActuators.compressor.set(Relay.Value.kOff);
-	}
+        }
         System.out.println("runCompressor finished");
     }
-    
+       
 }
