@@ -103,10 +103,14 @@ public class RobotShoot {
     static int rc = 0;
 
     /**
-     * This will get all of the new values that we need as well as setting the
-     * shooter speed
+     * This method will set the movement of the shooter winch based on two 
+     * booleans which represent two buttons
+     * @param forward
+     * @param backward 
      */
-    public static void manualWinds(boolean forward, boolean backward){
+    public static void manualWind(boolean forward, boolean backward){
+        RobotActuators.shooterWinch.set(0);
+        
         if(forward && !backward){
             RobotActuators.shooterWinch.set(WIND_SPEED);
         }
@@ -114,6 +118,11 @@ public class RobotShoot {
             RobotActuators.shooterWinch.set(UNWIND_SPEED);
         }
     }
+    
+    /**
+     * This will get all of the new values that we need as well as setting the
+     * shooter speed
+     */
     public static void update() {
         if (timerRelatch != null) {
             double b = timerRelatch.get();
