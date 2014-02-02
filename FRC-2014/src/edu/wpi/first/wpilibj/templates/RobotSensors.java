@@ -33,7 +33,9 @@ public class RobotSensors {
     public static DigitalInput shooterAtBack;
     public static DigitalInput pressureSwitch;
     public static ADXL345_I2C accelerometer;
-
+    //public static Joystick joy;
+    public static FancyJoystick fancyJoy;
+    
     public static void initialize() {
 	//// Analog
         gyro = new Gyro(1);
@@ -55,6 +57,9 @@ public class RobotSensors {
 	pickupSystemEncoder = new Encoder(10, 11);
         
 	pressureSwitch = new DigitalInput(14);
+        
+        //joy = new Joystick(2);
+        fancyJoy = new FancyJoystick(1);
 	
 	
 //// Digital 1 Serial
