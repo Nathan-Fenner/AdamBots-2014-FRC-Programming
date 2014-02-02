@@ -15,8 +15,8 @@ public class RobotShoot {
     private static boolean latched;
     private static boolean windMax;
     public static double speed;
-    public static double WIND_SPEED = .2;
-    public static final double UNWIND_SPEED = -.2;
+    public static double WIND_SPEED = .3;
+    public static final double UNWIND_SPEED = -.3;
     private static Timer timerRelatch;
     public static final int ENCODER_REVOLUTIONS = 5;
     public static int revolutionsOfShooter;
@@ -112,13 +112,15 @@ public class RobotShoot {
 
         if (forward && !backward) {
             speed = WIND_SPEED;
+            System.out.println("Wind Speed: " + WIND_SPEED);
         } else if (!forward && backward) {
             speed = UNWIND_SPEED;
+            System.out.println("Wind Speed: " + UNWIND_SPEED);
         } else {
             speed = 0;
         }
+        RobotActuators.shooterWinch.set(speed);
     }
-
     /**
      * This will get all of the new values that we need as well as setting the
      * shooter speed
@@ -136,10 +138,10 @@ public class RobotShoot {
          needsToBeWound = false;
          }*/
         if (needsToBeWound && latched) {
-            RobotActuators.shooterWinch.set(speed); //TODO: Change speed to constant value WIND_SPEED
+            RobotActuators.shooterWinch.set(WIND_SPEED); //TODO: Change speed to constant value WIND_SPEED
         }
         if (needsToBeUnwound && !latched) {
-            RobotActuators.shooterWinch.set(speed); //TODO: Change speed to constant value UNWIND_SPEED
+            RobotActuators.shooterWinch.set(UNWIND_SPEED); //TODO: Change speed to constant value UNWIND_SPEED
         }
         if (!needsToBeUnwound && latched) {
             RobotShoot.rewindShooter();
