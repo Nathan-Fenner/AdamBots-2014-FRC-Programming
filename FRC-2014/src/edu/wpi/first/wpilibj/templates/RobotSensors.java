@@ -25,7 +25,7 @@ public class RobotSensors {
     public static Counter rightDriveEncoder;
     public static Counter leftDriveEncoder;
     public static Encoder pickupSystemEncoder;
-    public static Counter shooterWinchEncoder;
+    public static Encoder shooterWinchEncoder;
     public static DigitalInput ballReadyToLiftLim;
     public static DigitalInput pickupSystemDownLim;
     public static DigitalInput pickupSystemUpLim;
@@ -49,7 +49,7 @@ public class RobotSensors {
 	rightDriveEncoder = new Counter(1);
 	leftDriveEncoder = new Counter(2);
 	ballReadyToLiftLim = new DigitalInput(3);
-	shooterWinchEncoder = new Counter(4);
+	shooterWinchEncoder = new Encoder(4, 12);
 	pickupSystemDownLim = new DigitalInput(5);
 	pickupSystemUpLim = new DigitalInput(6);
 	shooterLoadedLim = new DigitalInput(7);
