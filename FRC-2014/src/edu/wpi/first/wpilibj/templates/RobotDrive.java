@@ -121,7 +121,7 @@ public class RobotDrive {
             double leftJoy = FancyJoystick.primary.getDeadAxis(FancyJoystick.AXIS_LEFT_X);
             boolean gearShift = FancyJoystick.primary.getRawButton(3); //3 -> X Button
             boolean stopDrive = FancyJoystick.primary.getRawButton(4); //4 -> Y Button
-            Pneumatics.shiftIt(gearShift);
+            RobotPneumatics.shiftIt(gearShift);
             if(stopDrive){
                 robotStop();
             }

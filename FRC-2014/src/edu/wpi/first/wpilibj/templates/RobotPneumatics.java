@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.*;
  *
  * @author Robin Onsay
  */
-public class Pneumatics{
+public class RobotPneumatics{
 	////VARIABLES---------------------------------------------------------------	
 	
 	////CONSTRUCTOR-------------------------------------------------------------
