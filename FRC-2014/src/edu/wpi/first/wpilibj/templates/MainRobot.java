@@ -26,12 +26,9 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
-<<<<<<< HEAD
         RobotPickUp.initialize();
-=======
         RobotDrive.initialize();
         //RobotPickUp.initialize();
->>>>>>> b0dc13e62ae69ab6eedb5d2f34c9d2b54a466b8e
         //RobotDrive.initialize();
         RobotShoot.initialize();
     }
@@ -63,17 +60,14 @@ public class MainRobot extends IterativeRobot {
         if (shoot) {
             RobotShoot.testShooter();
         }*/
-<<<<<<< HEAD
         RobotPickUp.update();
         RobotPickUp.test(true, false, false);
-    }
-=======
+    
         //RobotPickUp.update();
         //RobotPickUp.test(false, false, true);
         
         RobotShoot.manualWind(FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A), FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B));
     }  
->>>>>>> b0dc13e62ae69ab6eedb5d2f34c9d2b54a466b8e
     
     /**
      * This function is called periodically during test mode
@@ -86,10 +80,10 @@ public class MainRobot extends IterativeRobot {
 	if (!RobotSensors.pressureSwitch.get()) {
 	    RobotActuators.compressor.set(Relay.Value.kOn);
             System.out.println("Setting the compressor to ON");
-	} else {
+        } else {
 	    RobotActuators.compressor.set(Relay.Value.kOff);
-	}
+        }
         System.out.println("runCompressor finished");
     }
-    
+       
 }
