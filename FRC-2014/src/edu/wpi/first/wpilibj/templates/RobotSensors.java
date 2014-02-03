@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotSensors {
 
 ////VARIABLES-------------------------------------------------------------------
-    public static Gyro gyro;
-    public static AnalogPotentiometer pickUpSystemPot;
     public static AnalogChannel currentSensor;
     public static AnalogChannel configSwitchA;
     public static AnalogChannel configSwitchB;
@@ -33,36 +31,29 @@ public class RobotSensors {
     public static DigitalInput shooterAtBack;
     public static DigitalInput pressureSwitch;
     public static ADXL345_I2C accelerometer;
-    //public static Joystick joy;
-    public static FancyJoystick fancyJoy;
     
     public static void initialize() {
 	//// Analog
-        gyro = new Gyro(1);
-	pickUpSystemPot = new AnalogPotentiometer(2);
-	currentSensor = new AnalogChannel(3);
-	configSwitchA = new AnalogChannel(4);
-	configSwitchB = new AnalogChannel(5);
-	configSwitchC = new AnalogChannel(6);
+	currentSensor = new AnalogChannel(1);
+	configSwitchA = new AnalogChannel(2);
+	configSwitchB = new AnalogChannel(3);
+	configSwitchC = new AnalogChannel(4);
 	
 	//// Digital In 1
 	rightDriveEncoder = new Counter(1);
 	leftDriveEncoder = new Counter(2);
 	ballReadyToLiftLim = new DigitalInput(3);
-	shooterWinchEncoder = new Encoder(4, 12);
-	pickupSystemDownLim = new DigitalInput(5);
-	pickupSystemUpLim = new DigitalInput(6);
-	shooterLoadedLim = new DigitalInput(7);
+	shooterWinchEncoder = new Encoder(4, 5);
+	pickupSystemDownLim = new DigitalInput(6);
+	pickupSystemUpLim = new DigitalInput(7);
+	shooterLoadedLim = new DigitalInput(8);
 	shooterAtBack = new DigitalInput(9);
 	pickupSystemEncoder = new Encoder(10, 11);
 	pressureSwitch = new DigitalInput(14);
-        
-        //joy = new Joystick(2);
-        fancyJoy = new FancyJoystick(1);
 	
-	
-//// Digital 1 Serial
+	//// Digital 1 Serial
 	accelerometer = new ADXL345_I2C(1, ADXL345_I2C.DataFormat_Range.k2G);
-        System.out.println("Sensor init done");
+        
+	System.out.println("Sensor init done");
     }
 }
