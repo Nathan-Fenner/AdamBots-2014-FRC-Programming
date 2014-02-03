@@ -26,9 +26,14 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
+<<<<<<< HEAD
         RobotPickUp.initialize();
+=======
+        RobotDrive.initialize();
+        //RobotPickUp.initialize();
+>>>>>>> b0dc13e62ae69ab6eedb5d2f34c9d2b54a466b8e
         //RobotDrive.initialize();
-        //RobotShoot.initialize();
+        RobotShoot.initialize();
     }
 
     /**
@@ -43,18 +48,32 @@ public class MainRobot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         runCompressor();
+//      RobotDrive.update();
+//      RobotDrive.driveStraight(0.5);
+        RobotDrive.update();
+//      RobotDrive.test();
+//      RobotDrive.drive(0.5, 1);
+        RobotDrive.joystickDrive(); //HOLD X -> HIGH GEAR, HOLD Y -> STOP
+        //runCompressor();
 //        RobotDrive.update();
 //        RobotDrive.driveStraight(0.5);
-        
-        /*RobotShoot.update();
-        boolean shoot = RobotSensors.ballReadyToLiftLim.get();  //this is just for testing 3rd switch
+        RobotShoot.update();
+        /*boolean shoot = RobotSensors.ballReadyToLiftLim.get();  //this is just for testing 3rd switch
         //System.out.println("this is the value of shoot: " + shoot);
         if (shoot) {
             RobotShoot.testShooter();
         }*/
+<<<<<<< HEAD
         RobotPickUp.update();
         RobotPickUp.test(true, false, false);
     }
+=======
+        //RobotPickUp.update();
+        //RobotPickUp.test(false, false, true);
+        
+        RobotShoot.manualWind(FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A), FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B));
+    }  
+>>>>>>> b0dc13e62ae69ab6eedb5d2f34c9d2b54a466b8e
     
     /**
      * This function is called periodically during test mode

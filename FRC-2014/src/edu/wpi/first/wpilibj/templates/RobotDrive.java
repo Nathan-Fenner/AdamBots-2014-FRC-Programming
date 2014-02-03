@@ -43,6 +43,7 @@ public class RobotDrive {
 
 	public static void update() {
 		encoderL = RobotSensors.leftDriveEncoder.get();
+                //encoderL = RobotSensors.rightDriveEncoder.get();
 		encoderR = RobotSensors.rightDriveEncoder.get();
 		encoderAvg = (encoderL + encoderR) / 2.0;
 	}
@@ -113,4 +114,34 @@ public class RobotDrive {
 		RobotActuators.leftDrive.set(STOP);
 		RobotActuators.rightDrive.set(STOP);
 	}
+        
+        public static void joystickDrive(/*double leftBumper, double rightBumper, double leftJoy, boolean gearShift*/) {
+            double bumpers = RobotSensors.fancyJoy.getDeadAxis(FancyJoystick.AXIS_TRIGGERS);
+            //double rightBumper = RobotSensors.fancyJoy.getRawAxis(6);
+            double leftJoy = RobotSensors.fancyJoy.getDeadAxis(FancyJoystick.AXIS_LEFT_X);
+            boolean gearShift = RobotSensors.fancyJoy.getRawButton(3); //3 -> X Button
+            boolean stopDrive = RobotSensors.fancyJoy.getRawButton(4); //4 -> Y Button
+            Pneumatics.shiftIt(gearShift);
+            if(stopDrive){
+                robotStop();
+            }
+            else 
+            {
+            if(bumpers != 0)
+            {
+                RobotActuators.leftDrive.set(bumpers + leftJoy);
+                RobotActuators.rightDrive.set(-(bumpers - leftJoy));
+            }
+            else if(bumpers == 0 && leftJoy != 0)
+            {
+                RobotActuators.leftDrive.set(-leftJoy);
+                RobotActuators.rightDrive.set(-(-(-leftJoy))); //:)
+            }
+            else
+            {
+                robotStop();
+            }
+                    
+            }
+        }
 }

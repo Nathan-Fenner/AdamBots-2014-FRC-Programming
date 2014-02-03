@@ -14,10 +14,11 @@ public class RobotShoot {
     private static boolean needsToBeUnwound;
     private static boolean latched;
     private static boolean windMax;
-    public static double WIND_SPEED = .5;
+    public static double speed;
+    public static double WIND_SPEED = .2;
+    public static final double UNWIND_SPEED = -.2;
     private static Timer timerRelatch;
     public static final int ENCODER_REVOLUTIONS = 5;
-    public static final double UNWIND_SPEED = -.5;
     public static int revolutionsOfShooter;
     private static double time;
     private static final double rewindMaxRevolutions = 5000;
@@ -77,8 +78,7 @@ public class RobotShoot {
     public static void unwindShooter() {
         if (timerRelatch == null && !latched) {
             needsToBeUnwound = true;
-        }
-        else{
+        } else {
             needsToBeUnwound = false;
         }
     }
@@ -90,8 +90,7 @@ public class RobotShoot {
     public static void rewindShooter() {
         if (!windMax) {
             needsToBeWound = true;
-        }
-        else{
+        } else {
             needsToBeWound = false;
         }
     }
@@ -103,17 +102,27 @@ public class RobotShoot {
     static int rc = 0;
 
     /**
+     * This method will set the movement of the shooter winch based on two
+     * booleans which represent two buttons
+     *
+     * @param forward
+     * @param backward
+     */
+    public static void manualWind(boolean forward, boolean backward) {
+
+        if (forward && !backward) {
+            speed = WIND_SPEED;
+        } else if (!forward && backward) {
+            speed = UNWIND_SPEED;
+        } else {
+            speed = 0;
+        }
+    }
+
+    /**
      * This will get all of the new values that we need as well as setting the
      * shooter speed
      */
-    public static void manualWinds(boolean forward, boolean backward){
-        if(forward && !backward){
-            RobotActuators.shooterWinch.set(WIND_SPEED);
-        }
-        else if(!forward && backward){
-            RobotActuators.shooterWinch.set(UNWIND_SPEED);
-        }
-    }
     public static void update() {
         if (timerRelatch != null) {
             double b = timerRelatch.get();
@@ -127,15 +136,15 @@ public class RobotShoot {
          needsToBeWound = false;
          }*/
         if (needsToBeWound && latched) {
-            RobotActuators.shooterWinch.set(WIND_SPEED);
+            RobotActuators.shooterWinch.set(speed); //TODO: Change speed to constant value WIND_SPEED
         }
         if (needsToBeUnwound && !latched) {
-            RobotActuators.shooterWinch.set(UNWIND_SPEED);
+            RobotActuators.shooterWinch.set(speed); //TODO: Change speed to constant value UNWIND_SPEED
         }
         if (!needsToBeUnwound && latched) {
             RobotShoot.rewindShooter();
         }
-        
+
         windMax = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
         latched = RobotSensors.shooterAtBack.get();   //SHOOTER_LATCHED_LIM
         if (latched && !windMax) {
@@ -144,10 +153,11 @@ public class RobotShoot {
 
         //System.out.println("sneedsToBeUnwound: " + needsToBeUnwound);
         //System.out.println("needsToBeWound: " + needsToBeWound);
-        System.out.println("latched: " + latched + rc++);
+        //System.out.println("latched: " + latched + rc++);
 
-        System.out.println("windMax: " + windMax + rc++);
-
+        //System.out.println("windMax: " + windMax + rc++);
+        
+        System.out.println(RobotSensors.shooterWinchEncoder.get()); //FOR TESTING PURPOSES ONLY
     }
 }
 //IF WE WANT A MANUAL SHOT YOU WILL NEED TO SET THE MOTOR IN TELEOP

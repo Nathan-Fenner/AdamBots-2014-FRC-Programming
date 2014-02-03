@@ -31,6 +31,7 @@ public class RobotPickUp {
     public static void initialize() { //initializes encoder
         rollerMotorSpeed = 0.5;
         armMotorSpeed = 0.5;
+        RobotSensors.pickupSystemEncoder.reset();
         RobotSensors.pickupSystemEncoder.start();
     //RobotSensors.PICKUP_SYSTEM_ENCODER.start();  //assumed that it is initialized in RobotSensors class
     }
@@ -115,13 +116,19 @@ public class RobotPickUp {
         if (lowerLimit) {
             if(!ballInPickUpLimit) {
                 moveGamePiece(1.0);
-            } else if (buttonShoot && (remainingDistance > 0)) {
+            } else if (buttonShoot && ballInPickUpLimit && (remainingDistance < 0)) {
+                moveGamePiece(0);
                 movePickUpMechanism(speed);
+            } else if (buttonShoot && ballInPickUpLimit && (remainingDistance >= 0)) {
+                moveGamePiece(0);
+                movePickUpMechanism(0);
             }
        }
         
-       if (upperLimit & buttonShoot && (remainingDistance < 0)) {
+       if (upperLimit & buttonShoot && (remainingDistance > 0)) {
             movePickUpMechanism(-speed);
+       } else if (buttonShoot && (remainingDistance <= 0)) {
+           movePickUpMechanism(0);
        }
     }
     
