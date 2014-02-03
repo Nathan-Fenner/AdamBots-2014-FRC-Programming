@@ -52,7 +52,7 @@ public class RobotShoot {
      * that it is not.
      */
     public static void releaseBall() {
-        if (true || RobotPickUp.ifLoaded()) { //TODO: Remove true||, and start the timer here
+        if (RobotPickUp.ifLoaded() || true) { //TODO: Remove true||, and start the timer here
             RobotActuators.latch.set(false);
             System.out.println("Success: Ball has been shot");
         } else {
@@ -66,10 +66,10 @@ public class RobotShoot {
      *
      * @returns the encoderValue
      */
-    /*private static int getEncoderValue() {
-     *  revolutionsOfShooter = RobotSensors.shooterWinchEncoder.get();
+    private static int getEncoderValue() {
+     revolutionsOfShooter = RobotSensors.shooterWinchEncoder.get();
      return revolutionsOfShooter;
-     } */
+     } 
     /**
      * This will unwind the shooter if .5 seconds have passed, and until the
      * limit switch is reached or until it has exceeded the max number of
@@ -130,13 +130,16 @@ public class RobotShoot {
             double b = timerRelatch.get();
             if (b - time > .5) {
                 timerRelatch = null;
+                RobotSensors.shooterWinchEncoder.reset();
                 unwindShooter();
             }
         }
-        /* if (RobotShoot.getEncoderValue() >= rewindMaxRevolutions) {
-         needsToBeUnwound = false;
-         needsToBeWound = false;
-         }*/
+        if (RobotShoot.getEncoderValue() >= rewindMaxRevolutions) {
+            needsToBeUnwound = false;
+         }
+        if (RobotShoot.getEncoderValue() <= 0){
+            needsToBeWound = true;
+        }
         if (needsToBeWound && latched) {
             RobotActuators.shooterWinch.set(WIND_SPEED); //TODO: Change speed to constant value WIND_SPEED
         }
