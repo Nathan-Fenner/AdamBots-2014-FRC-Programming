@@ -53,7 +53,7 @@ public class RobotShoot {
      */
     public static void releaseBall() {
         if (RobotPickUp.ifLoaded() || true) { //TODO: Remove true||, and start the timer here
-            RobotActuators.latch.set(false);
+            RobotActuators.latchRelease.set(false);
             System.out.println("Success: Ball has been shot");
         } else {
             SmartDashboard.putString("Error", "Ball not loaded");
@@ -153,7 +153,7 @@ public class RobotShoot {
         windMax = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
         latched = RobotSensors.shooterAtBack.get();   //SHOOTER_LATCHED_LIM
         if (latched && !windMax) {
-            RobotActuators.latch.set(true);  //true means it goes in
+            RobotActuators.latchRelease.set(true);  //true means it goes in
         }
 
         //System.out.println("sneedsToBeUnwound: " + needsToBeUnwound);

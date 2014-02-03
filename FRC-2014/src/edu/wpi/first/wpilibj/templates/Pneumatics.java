@@ -24,9 +24,9 @@ public class Pneumatics{
 	public static void shiftIt(boolean buttonShift/**true = high, false = low**/){
 		if(buttonShift){
 
-			RobotActuators.shifterPiston.set(true);
+			RobotActuators.shifter.set(true);
 		}else{		
-			RobotActuators.shifterPiston.set(false);
+			RobotActuators.shifter.set(false);
 		}
 	}
 	
@@ -41,13 +41,13 @@ public class Pneumatics{
 		double xAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kX);
 		double zAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kZ);
 		if(xAcceleration > sensitvity && zAcceleration > sensitvity){
-			RobotActuators.shifterPiston.set(false);
+			RobotActuators.shifter.set(false);
 		}else if(shiftLow == true || xAcceleration < sensitvity && zAcceleration < sensitvity){
-			RobotActuators.shifterPiston.set(true);
+			RobotActuators.shifter.set(true);
 
-			RobotActuators.shifterPiston.set(true);
+			RobotActuators.shifter.set(true);
 		}else{		
-			RobotActuators.shifterPiston.set(false);
+			RobotActuators.shifter.set(false);
 		}
 	}	
 }
