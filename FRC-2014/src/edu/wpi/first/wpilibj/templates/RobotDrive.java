@@ -121,7 +121,9 @@ public class RobotDrive {
             double leftJoy = FancyJoystick.primary.getDeadAxis(FancyJoystick.AXIS_LEFT_X);
             boolean gearShift = FancyJoystick.primary.getRawButton(3); //3 -> X Button
             boolean stopDrive = FancyJoystick.primary.getRawButton(4); //4 -> Y Button
-            RobotPneumatics.shiftIt(gearShift);
+            if (gearShift) {
+		shift();
+	    }
             if(stopDrive){
                 robotStop();
             }
@@ -144,4 +146,26 @@ public class RobotDrive {
                     
             }
         }
+	
+	// shifts gears
+	public static void shift(){
+	    if(RobotActuators.shifter.get()){
+		RobotActuators.shifter.set(false);
+	    }else{		
+		RobotActuators.shifter.set(true);
+	    }
+	}
+	
+	// autoshifts gears
+	public static void autoShift(double sensitvity, boolean shiftLow /* in G's*/){
+	    double xAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kX);
+	    double zAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kZ);
+	    if(xAcceleration > sensitvity && zAcceleration > sensitvity){
+		RobotActuators.shifter.set(false);
+	    }else if(shiftLow == true || xAcceleration < sensitvity && zAcceleration < sensitvity){
+		RobotActuators.shifter.set(true);
+	    }else{		
+		RobotActuators.shifter.set(false);
+	    }
+	}
 }
