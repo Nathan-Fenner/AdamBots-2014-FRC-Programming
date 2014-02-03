@@ -55,18 +55,15 @@ public class MainRobot extends IterativeRobot {
 //        RobotDrive.update();
 //        RobotDrive.driveStraight(0.5);
        RobotShoot.update();
-        /*boolean shoot = RobotSensors.ballReadyToLiftLim.get();  //this is just for testing 3rd switch
-        //System.out.println("this is the value of shoot: " + shoot);
-        if (shoot) {
-            RobotShoot.testShooter();
-        }*/
-        RobotPickUp.update();
-        RobotPickUp.test(true, false, false);
+       RobotShoot.testShooter();
+        
+        //RobotPickUp.update();
+        //RobotPickUp.test(true, false, false);
     
         //RobotPickUp.update();
         //RobotPickUp.test(false, false, true);
         
-        RobotShoot.manualWind(FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A), FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B));
+        //RobotShoot.manualWind(FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A), FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B));
     }  
     
     /**
