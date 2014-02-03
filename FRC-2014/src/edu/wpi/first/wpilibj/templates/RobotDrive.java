@@ -116,11 +116,11 @@ public class RobotDrive {
 	}
         
         public static void joystickDrive(/*double leftBumper, double rightBumper, double leftJoy, boolean gearShift*/) {
-            double bumpers = RobotSensors.fancyJoy.getDeadAxis(FancyJoystick.AXIS_TRIGGERS);
+            double bumpers = FancyJoystick.primary.getDeadAxis(FancyJoystick.AXIS_TRIGGERS);
             //double rightBumper = RobotSensors.fancyJoy.getRawAxis(6);
-            double leftJoy = RobotSensors.fancyJoy.getDeadAxis(FancyJoystick.AXIS_LEFT_X);
-            boolean gearShift = RobotSensors.fancyJoy.getRawButton(3); //3 -> X Button
-            boolean stopDrive = RobotSensors.fancyJoy.getRawButton(4); //4 -> Y Button
+            double leftJoy = FancyJoystick.primary.getDeadAxis(FancyJoystick.AXIS_LEFT_X);
+            boolean gearShift = FancyJoystick.primary.getRawButton(3); //3 -> X Button
+            boolean stopDrive = FancyJoystick.primary.getRawButton(4); //4 -> Y Button
             Pneumatics.shiftIt(gearShift);
             if(stopDrive){
                 robotStop();
