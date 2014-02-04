@@ -25,6 +25,8 @@ public class RobotShoot {
 
     public static void initialize() {
         time = 0;
+		RobotSensors.shooterWinchEncoder.start();
+		latched = false;
     }
 
     /**
@@ -41,8 +43,8 @@ public class RobotShoot {
         //RobotShoot.releaseBall();
         if (timerRelatch == null) {
             timerRelatch = new Timer();
-            timerRelatch.start();
-            time = timerRelatch.get();
+            //timerRelatch.start();
+            //time = timerRelatch.get();
         }
         RobotShoot.unwindShooter();
     }
@@ -52,8 +54,9 @@ public class RobotShoot {
      * that it is not.
      */
     public static void releaseBall() {
-        if (RobotPickUp.ifLoaded() || true) { //TODO: Remove true||, and start the timer here
+        if (RobotPickUp.ifLoaded()|| true) { //TODO: Remove true||, and start the timer here
             RobotActuators.latchRelease.set(false);
+			timerRelatch.start();
             System.out.println("Success: Ball has been shot");
         } else {
             SmartDashboard.putString("Error", "Ball not loaded");
@@ -67,8 +70,7 @@ public class RobotShoot {
      * @returns the encoderValue
      */
     private static int getEncoderValue() {
-     revolutionsOfShooter = RobotSensors.shooterWinchEncoder.get();
-     return revolutionsOfShooter;
+     return RobotSensors.shooterWinchEncoder.get();
      } 
     /**
      * This will unwind the shooter if .5 seconds have passed, and until the
@@ -128,9 +130,10 @@ public class RobotShoot {
     public static void update() {
         if (timerRelatch != null) {
             double b = timerRelatch.get();
-            if (b - time > .5) {
+            if (b /*- time*/ > .5) {
                 timerRelatch = null;
                 RobotSensors.shooterWinchEncoder.reset();
+				System.out.println("reset encoder");
                 unwindShooter();
             }
         }
@@ -162,7 +165,7 @@ public class RobotShoot {
 
         //System.out.println("windMax: " + windMax + rc++);
         
-        System.out.println(RobotSensors.shooterWinchEncoder.get()); //FOR TESTING PURPOSES ONLY
+        System.out.println(getEncoderValue()); //FOR TESTING PURPOSES ONLY
     }
 }
 //IF WE WANT A MANUAL SHOT YOU WILL NEED TO SET THE MOTOR IN TELEOP
