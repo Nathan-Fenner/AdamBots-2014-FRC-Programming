@@ -31,7 +31,7 @@ public class MainRobot extends IterativeRobot {
         //RobotPickUp.initialize();
         //RobotDrive.initialize();
 	//RobotShoot.initialize();
-        Shoot.initialize();
+        RobotShoot.initialize();
     }
 
     /**
@@ -55,8 +55,7 @@ public class MainRobot extends IterativeRobot {
         //runCompressor();
 //        RobotDrive.update();
 //        RobotDrive.driveStraight(0.5);
-        Shoot.update();
-        Shoot.automatedShoot();
+   RobotShootShoot.update()RobotShoot     Shoot.automatedShoot();
         
         //RobotPickUp.update();
         //RobotPickUp.test(true, false, false);

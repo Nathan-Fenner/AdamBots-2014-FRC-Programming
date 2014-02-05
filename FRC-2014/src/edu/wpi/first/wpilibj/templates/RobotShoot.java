@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  * @author Tyler
  */
-public class Shoot {
+public class RobotShoot {
     public static final double UNWIND_SPEED = 0.5;
     public static final double WAIT_TIME = 0.5;
     public static final double WIND_SHOOTER = -0.5;
@@ -104,7 +104,7 @@ public class Shoot {
 	}
     }
     
-    // Test Shoot
+    // RobotShootShoot
     public static void manualShoot() {
 	if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A)) 
 	    speed = 0.5;
