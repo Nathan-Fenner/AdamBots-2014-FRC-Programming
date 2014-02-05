@@ -21,12 +21,12 @@ public class RobotShoot {
     public static final int ENCODER_REVOLUTIONS = 5;
     public static int revolutionsOfShooter;
     private static double time;
-    private static final double rewindMaxRevolutions = 5000;
+    private static final double rewindMaxRevolutions = 50;
 
     public static void initialize() {
         time = 0;
-		RobotSensors.shooterWinchEncoder.start();
-		latched = false;
+	RobotSensors.shooterWinchEncoder.start();
+	latched = false;
     }
 
     /**
@@ -54,9 +54,9 @@ public class RobotShoot {
      * that it is not.
      */
     public static void releaseBall() {
-        if (RobotPickUp.ifLoaded()|| true) { //TODO: Remove true||, and start the timer here
+        if (RobotPickUp.ifLoaded()) { //TODO: Remove true||, and start the timer here
             RobotActuators.latchRelease.set(false);
-			timerRelatch.start();
+	    timerRelatch.start();
             System.out.println("Success: Ball has been shot");
         } else {
             SmartDashboard.putString("Error", "Ball not loaded");
@@ -78,11 +78,7 @@ public class RobotShoot {
      * revolutions.
      */
     public static void unwindShooter() {
-        if (timerRelatch == null && !latched) {
-            needsToBeUnwound = true;
-        } else {
-            needsToBeUnwound = false;
-        }
+	needsToBeUnwound = (timerRelatch == null && !latched);
     }
 
     /**
@@ -90,11 +86,7 @@ public class RobotShoot {
      * max number of revolutions
      */
     public static void rewindShooter() {
-        if (!windMax) {
-            needsToBeWound = true;
-        } else {
-            needsToBeWound = false;
-        }
+        needsToBeWound = !windMax;
     }
 
     public static void stopShooter() {
@@ -133,30 +125,33 @@ public class RobotShoot {
             if (b /*- time*/ > .5) {
                 timerRelatch = null;
                 RobotSensors.shooterWinchEncoder.reset();
-				System.out.println("reset encoder");
+		System.out.println("reset encoder");
                 unwindShooter();
             }
         }
-        if (RobotShoot.getEncoderValue() >= rewindMaxRevolutions) {
+        if (getEncoderValue() >= rewindMaxRevolutions) {
             needsToBeUnwound = false;
-         }
-        if (RobotShoot.getEncoderValue() <= 0){
+        }
+        if (getEncoderValue() <= 0){
             needsToBeWound = true;
         }
         if (needsToBeWound && latched) {
             RobotActuators.shooterWinch.set(WIND_SPEED); //TODO: Change speed to constant value WIND_SPEED
         }
-        if (needsToBeUnwound && !latched) {
+	else if (needsToBeUnwound && !latched) {
             RobotActuators.shooterWinch.set(UNWIND_SPEED); //TODO: Change speed to constant value UNWIND_SPEED
         }
-        if (!needsToBeUnwound && latched) {
+	else if (!needsToBeUnwound && latched) {
             RobotShoot.rewindShooter();
         }
+	else if (!needsToBeWound && latched) {
+	    RobotActuators.shooterWinch.set(0);
+	}
 
         windMax = RobotSensors.shooterLoadedLim.get();   //SHOOTER_LOADED_LIM
-        latched = RobotSensors.shooterAtBack.get();   //SHOOTER_LATCHED_LIM
+        latched = RobotSensors.shooterAtBack.get();      //SHOOTER_LATCHED_LIM
         if (latched && !windMax) {
-            RobotActuators.latchRelease.set(true);  //true means it goes in
+            RobotActuators.latchRelease.set(true);       //true means it goes in
         }
 
         //System.out.println("sneedsToBeUnwound: " + needsToBeUnwound);
@@ -165,7 +160,10 @@ public class RobotShoot {
 
         //System.out.println("windMax: " + windMax + rc++);
         
-        System.out.println(getEncoderValue()); //FOR TESTING PURPOSES ONLY
+        SmartDashboard.putNumber("Shooter Encoder", getEncoderValue()); //FOR TESTING PURPOSES ONLY
+	SmartDashboard.putBoolean("Needs to be Unwound", needsToBeUnwound);
+	SmartDashboard.putBoolean("Needs to be Wound", needsToBeWound);
+	SmartDashboard.putBoolean("latched", latched);
     }
 }
 //IF WE WANT A MANUAL SHOT YOU WILL NEED TO SET THE MOTOR IN TELEOP
