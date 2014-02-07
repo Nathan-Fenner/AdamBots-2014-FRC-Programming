@@ -26,7 +26,7 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
-        RobotPickUp.initialize();
+        RobotPickup.initialize();
         RobotDrive.initialize();
         //RobotPickUp.initialize();
         //RobotDrive.initialize();

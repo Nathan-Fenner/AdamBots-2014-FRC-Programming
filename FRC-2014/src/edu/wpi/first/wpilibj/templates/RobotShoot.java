@@ -18,7 +18,7 @@ public class RobotShoot {
     public static final double WAIT_TIME = 0.5;
     public static final double WIND_SHOOTER = -0.5;
     public static final double MAX_REVS = 50;
-    public static boolean unwindSafety;
+//  public static boolean unwindSafety;
     private static Timer timer;
     private static double speed;
     private static boolean stageOneDone;
@@ -81,10 +81,6 @@ public class RobotShoot {
 	    windShooter();
 	    return false;
 	}
-	if(RobotSensors.shooterLoadedLim.get()){
-	    unwindSafety = true;
-	    SmartDashboard.putString("Error", "we have unwound more than needed, next shot might not be perfect");
-	}
 	automatedShootOnce = true;
 	stage = "6";
 	return true;
@@ -92,7 +88,7 @@ public class RobotShoot {
     
     // Automated shoot
     public static void automatedShoot() {
-	
+	// shoots
 	if (!automatedShootOnce) {
 	    if (!stageOneDone) {
 		stageOne();
@@ -140,10 +136,15 @@ public class RobotShoot {
     
     //// UPDATE METHODS --------------------------------------------------------
     public static void update() {
-	if(unwindSafety){
-	    speed = UNWIND_SPEED;
+	// checks the safety
+	if(RobotSensors.shooterLoadedLim.get()){
+	    stopMotors();
 	}
+	
+	// sets motor
 	RobotActuators.shooterWinch.set(speed);
+	
+	// prints to smart dashboard
 	SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());
 	SmartDashboard.putString("Stage: ", stage);
 	SmartDashboard.putNumber("Time: ", timer.get());
