@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  * @author Tyler
  */
-public class RobotPickUp {
+public class RobotPickup {
 
 ////VARIABLES-------------------------------------------------------------------
     public static boolean upperLimit;
@@ -28,15 +28,17 @@ public class RobotPickUp {
     public static double armMotorSpeed;
     public static double rollerMotorSpeed;
 ////INIT------------------------------------------------------------------------
-    public static void initialize() { //initializes encoder
+    // initializes teh encoder
+    public static void initialize() {
         rollerMotorSpeed = 0.5;
         armMotorSpeed = 0.5;
         RobotSensors.pickupSystemEncoder.reset();
         RobotSensors.pickupSystemEncoder.start();
-    //RobotSensors.PICKUP_SYSTEM_ENCODER.start();  //assumed that it is initialized in RobotSensors class
+	//RobotSensors.PICKUP_SYSTEM_ENCODER.start();  //assumed that it is initialized in RobotSensors class
     }
 
-    public static void update() { //updates arm encoder value
+    // normal update method
+    public static void update() {
         armEncoder = RobotSensors.pickupSystemEncoder.get();
         upperLimit = RobotSensors.pickupSystemUpLim.get();
         ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
@@ -53,6 +55,8 @@ public class RobotPickUp {
         System.out.println("Arm Encoder" + armEncoder);
 
     }
+    
+    // checks if the shooter is loaded
     public static boolean ifLoaded() {
         return ballInPickUpLimit;
     }
@@ -87,12 +91,14 @@ public class RobotPickUp {
         //INSERT CODE IF NECESSARY- Drivers should be able to control process
     }*/
 
-    public static void liftRollerArm() { //raises upper roller arm for shooting
+    //raises upper roller arm for shooting
+    public static void liftRollerArm() { 
         RobotActuators.rollerArmUp.set(true);
         RobotActuators.rollerArmDown.set(false);
     }
 
-    public static void lowerRollerArm() { //lowers upper roller arm
+    //lowers upper roller arm
+    public static void lowerRollerArm() { 
         RobotActuators.rollerArmUp.set(false);
         RobotActuators.rollerArmDown.set(true);
     }
@@ -103,16 +109,21 @@ public class RobotPickUp {
      RobotActuators.ROLLER_ARM_UP.set(false);
      }
      */
-    public static void moveGamePiece(double speed) { //turns on pickup rollers for ball intake
+    
+    //turns on pickup rollers for ball intake
+    public static void moveGamePiece(double speed) { 
         rollerMotorSpeed = speed;
     }
 
-    public static void movePickUpMechanism(double speed) { //moves pickup mechanism up and down
+    //moves pickup mechanism up and down
+    public static void movePickUpMechanism(double speed) { 
         armMotorSpeed = speed;
     }
     
-     public static void moveToShoot(double targetCatchPosition, double speed, boolean buttonShoot) { //moves pickup mechanism into position for catching
-        double remainingDistance = targetCatchPosition - armEncoder; 
+    //moves pickup mechanism into position for catching
+     public static void moveToShoot(double targetCatchPosition, double speed, boolean buttonShoot) { 
+        double remainingDistance = targetCatchPosition - armEncoder;
+	
         if (lowerLimit) {
             if(!ballInPickUpLimit) {
                 moveGamePiece(1.0);
@@ -131,9 +142,9 @@ public class RobotPickUp {
            movePickUpMechanism(0);
        }
     }
-    
-
-    public static void moveToCatchPosition() {  //automatically sucks in game piece and moves to shooting position
+     
+    //automatically sucks in game piece and moves to shooting position
+    public static void moveToCatchPosition() {  
         if (!upperLimit) {
             movePickUpMechanism(1.0);
         } else { 
@@ -154,6 +165,7 @@ public class RobotPickUp {
 
     }*/
     
+    // moves from the bottom position to the shoot position
     public static void moveToBottomPosition() {
         if (!lowerLimit) {
             movePickUpMechanism(-1.0);
@@ -171,6 +183,7 @@ public class RobotPickUp {
         }
     }*/
 
+    // checks the fail mode
     public static void pickUpFailMode(boolean buttonFail) {
         if (buttonFail) {
             movePickUpMechanism(0);
@@ -182,6 +195,7 @@ public class RobotPickUp {
 
     }
 
+    // the test method
     public static void test(boolean buttonTestA, boolean buttonTestB, boolean buttonTestC) {
         if (buttonTestA && !buttonTestB && !buttonTestC) {
             moveToShoot(50, 1.0, true);
