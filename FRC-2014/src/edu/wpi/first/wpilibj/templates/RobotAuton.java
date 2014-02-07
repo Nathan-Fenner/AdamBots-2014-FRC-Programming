@@ -12,7 +12,12 @@ package edu.wpi.first.wpilibj.templates;
  */
 public class RobotAuton {
     
-    public static void auton() {
-	
+    public static double averageEncoder;
+    
+    public static void autonOne() {
+    }
+    
+    public static void update() {
+	averageEncoder = (RobotSensors.leftDriveEncoder.get() + RobotSensors.rightDriveEncoder.get())/2.0;
     }
 }
