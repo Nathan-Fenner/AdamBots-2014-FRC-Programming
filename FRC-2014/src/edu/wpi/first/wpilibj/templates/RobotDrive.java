@@ -6,6 +6,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -45,6 +46,7 @@ public class RobotDrive {
 		encoderL = RobotSensors.leftDriveEncoder.get();
                 //encoderL = RobotSensors.rightDriveEncoder.get();
 		encoderR = RobotSensors.rightDriveEncoder.get();
+                //System.out.println("Left: " + encoderL + "\tRight: " + encoderR);
 		encoderAvg = (encoderL + encoderR) / 2.0;
 	}
 	/*
@@ -126,25 +128,20 @@ public class RobotDrive {
 	    }
             if(stopDrive){
                 robotStop();
-            }
-            else 
-            {
-            if(bumpers != 0)
-            {
+            }else{
+            if(bumpers != 0){
                 RobotActuators.leftDrive.set(bumpers + leftJoy);
                 RobotActuators.rightDrive.set(-(bumpers - leftJoy));
-            }
-            else if(bumpers == 0 && leftJoy != 0)
-            {
+            }else if(bumpers == 0 && leftJoy != 0){
                 RobotActuators.leftDrive.set(-leftJoy);
-                RobotActuators.rightDrive.set(-(-(-leftJoy))); //:)
-            }
-            else
-            {
+                RobotActuators.rightDrive.set(-leftJoy);
+            }else{
                 robotStop();
             }
-                    
+            
             }
+            //SmartDashboard.putNumber("Left Drive: ", RobotActuators.leftDrive.get());
+            //SmartDashboard.putNumber("Right Drive: ", RobotActuators.rightDrive.get());
         }
 	
 	// shifts gears
