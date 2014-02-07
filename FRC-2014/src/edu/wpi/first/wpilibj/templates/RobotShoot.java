@@ -6,6 +6,8 @@
 
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -25,6 +27,16 @@ public class RobotShoot {
     private static String stage;
     private static boolean automatedShootOnce;
     private static boolean stageThreeDone;
+    
+    //These next few lines are for getting the current and voltage through an analog channel
+    public static final int ANALOG_CHANNEL_PORT = 1;
+    public static final int TALON_CHANNEL_PORT = 3;
+    public static final int VICTOR_CHANNEL_PORT = 1;
+    public static double voltage;
+    public static double current;
+    public static AnalogChannel anCh;
+    public static Talon tal;
+    //public static Victor vic;
     
     //// INIT ------------------------------------------------------------------
     public static void initialize() {
@@ -151,4 +163,25 @@ public class RobotShoot {
 	SmartDashboard.putBoolean("Shooter at back", RobotSensors.shooterAtBack.get());
     }
 //STOP METHOD
+    
+////CURRENT CHECK CODE (ask Debjit)
+    public static void initializeGetCurrent() {
+        anCh = new AnalogChannel(ANALOG_CHANNEL_PORT);
+        tal = new Talon(TALON_CHANNEL_PORT);
+        //vic = new Victor(VICTOR_CHANNEL_PORT);
+    }
+    
+    public static void getCurrent() {
+        voltage = anCh.getVoltage();
+        current = (voltage - 500) * 0.05 - 100;
+        //System.out.println("Voltage: " + voltage + " mV");
+        //System.out.println("Current: " + current + " amps");
+        System.out.println("Current = " + current + " Voltage = " + voltage); //Not too sure about the units, though. (most likely milli-)
+        
+        //For future reference
+        //http://www.allegromicro.com/en/Products/Current-Sensor-ICs/Fifty-To-Two-Hundred-Amp-Integrated-Conductor-Sensor-ICs/ACS758/ACS758-Frequently-Asked-Questions.aspx#Q4
+        //Question: What does radiometric mean? (for the link above)
+        //4500 mV -> 100 amps
+        //500 mV -> -100 amps
+    }
 }
