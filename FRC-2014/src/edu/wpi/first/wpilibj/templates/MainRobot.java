@@ -22,12 +22,12 @@ public class MainRobot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-   
+
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
         //RobotPickup.initialize();
-        //RobotDrive.initialize();
+        RobotDrive.initialize();
         RobotPickup.initialize();
         //RobotDrive.initialize();
 	//RobotShoot.initialize();
@@ -45,7 +45,7 @@ public class MainRobot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        RobotPickup.update();
+        //RobotPickup.update();
         //runCompressor();
 //      RobotDrive.update();
 //      RobotDrive.driveStraight(0.5);
@@ -58,23 +58,24 @@ public class MainRobot extends IterativeRobot {
 //        RobotDrive.driveStraight(0.5);
 	//RobotShoot.update();
 	//RobotShoot.automatedShoot();
-        
+
         //RobotPickUp.update();
         //RobotPickUp.test(true, false, false);
-    
+
         //RobotPickUp.update();
         //RobotPickUp.test(false, false, true);
-        
+        RobotTeleop.update();
+		RobotDrive.update();
         //RobotShoot.manualWind(FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A), FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B));
-    }  
-    
+    }
+
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-    
+
     }
-    
+
     private void runCompressor() {
 	if (!RobotSensors.pressureSwitch.get()) {
 	    RobotActuators.compressor.set(Relay.Value.kOn);
@@ -84,5 +85,5 @@ public class MainRobot extends IterativeRobot {
         }
         System.out.println("runCompressor finished");
     }
-       
+
 }

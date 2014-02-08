@@ -16,14 +16,26 @@ public class RobotTeleop {
 	private static final int cap_round = 1;
 
 	public static void update() {
+
 		if (Gamepad.primary.getA()) {
-			cap_mode = cap_limit;
+			//RobotDrive.shiftLow();
 		}
 		if (Gamepad.primary.getB()) {
+			//RobotDrive.shiftHigh();
+		}
+
+		if (Gamepad.primary.getX()) {
+			cap_mode = cap_limit;
+		}
+		if (Gamepad.primary.getY()) {
 			cap_mode = cap_round;
 		}
 		System.out.println("Cap mode " + cap_mode);
 		double forwardRate = Gamepad.primary.getTriggers();
+
+		// for "exponential control":
+		forwardRate *= Math.abs(forwardRate);
+
 		double turnRate = Gamepad.primary.getLeftX();
 		double leftDrive = forwardRate + turnRate;
 		double rightDrive = forwardRate - turnRate;
@@ -33,8 +45,8 @@ public class RobotTeleop {
 		// TWO: cap magnitude to scale both down together
 		if (cap_mode == cap_limit) {
 			// cap both left and right drive
-			leftDrive = Math.max(-1, Math.min(1, leftDrive));
-			rightDrive = Math.max(-1, Math.min(1, rightDrive));
+			leftDrive = Math.max(-1.0, Math.min(1.0, leftDrive));
+			rightDrive = Math.max(-1.0, Math.min(1.0, rightDrive));
 		}
 		if (cap_mode == cap_round) {
 			// find amount required to cap, then reduce by this amount
@@ -42,7 +54,6 @@ public class RobotTeleop {
 			leftDrive /= cap_scale;
 			rightDrive /= cap_scale;
 		}
-
 		RobotDrive.drive(leftDrive, rightDrive);
 
 	}
