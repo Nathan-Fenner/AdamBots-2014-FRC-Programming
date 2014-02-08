@@ -23,6 +23,7 @@ public class RobotSensors {
     public static Counter rightDriveEncoder;
     public static Counter leftDriveEncoder;
     public static Encoder pickupSystemEncoder;
+    public static AnalogPotentiometer pickupPotentiometer;
     public static Encoder shooterWinchEncoder;
     public static DigitalInput ballReadyToLiftLim;
     public static DigitalInput pickupSystemDownLim;
@@ -38,6 +39,7 @@ public class RobotSensors {
 	configSwitchA = new AnalogChannel(2);
 	configSwitchB = new AnalogChannel(3);
 	configSwitchC = new AnalogChannel(4);
+        pickupPotentiometer = new AnalogPotentiometer(1, 5, 1, 0);
 	
 	//// Digital In 1
 	rightDriveEncoder = new Counter(1);
