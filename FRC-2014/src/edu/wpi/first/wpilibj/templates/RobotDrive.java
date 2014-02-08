@@ -66,7 +66,7 @@ public class RobotDrive {
 			return;
 		}
 	}
-
+        
 	public static void calcSpeed() {
 		double rawSpeed = distanceToGo / displacement;
 		//victor's can't take values less than 0.15
@@ -80,18 +80,13 @@ public class RobotDrive {
 			return;
 		}
 	}
-	/*
-	 sets victors to same value
-	 */
-
+	//Sets drives to same speed to go in a straight line
 	public static void driveStraight(double speed) {
 		RobotActuators.rightDrive.set(-speed);
 		RobotActuators.leftDrive.set(speed);
 	}
-	/*
-	 sets victors to value in argument
-	 */
-
+	
+        //Sets drives to values given in parameters to allow different speeds for the drives
 	public static void drive(double rightSpeed, double leftSpeed) {
 		RobotActuators.rightDrive.set(-rightSpeed);
 		RobotActuators.leftDrive.set(leftSpeed);
@@ -111,12 +106,14 @@ public class RobotDrive {
 	/*
 	 sets victors to zero
 	 */
-
+        
+        //Stops the robot from moving while the button Y is held down
 	public static void robotStop() {
 		RobotActuators.leftDrive.set(STOP);
 		RobotActuators.rightDrive.set(STOP);
 	}
         
+        //Allows someone to use the bumpers, left joystick, and X and Y button to drive the robot
         public static void joystickDrive(/*double leftBumper, double rightBumper, double leftJoy, boolean gearShift*/) {
             double bumpers = FancyJoystick.primary.getDeadAxis(FancyJoystick.AXIS_TRIGGERS);
             //double rightBumper = RobotSensors.fancyJoy.getRawAxis(6);
