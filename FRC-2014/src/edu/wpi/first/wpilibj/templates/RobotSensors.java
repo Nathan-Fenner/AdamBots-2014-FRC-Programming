@@ -39,7 +39,7 @@ public class RobotSensors {
 	configSwitchA = new AnalogChannel(2);
 	configSwitchB = new AnalogChannel(3);
 	configSwitchC = new AnalogChannel(4);
-        pickupPotentiometer = new AnalogPotentiometer(1, 5, 1, 0);
+        pickupPotentiometer = new AnalogPotentiometer(5, 1, 0);
 	
 	//// Digital In 1
 	rightDriveEncoder = new Counter(1);
