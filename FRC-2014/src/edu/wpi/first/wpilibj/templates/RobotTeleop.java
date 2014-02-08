@@ -16,6 +16,12 @@ public class RobotTeleop {
 	private static final int cap_round = 1;
 
 	public static void update() {
+		if (Gamepad.primary.getA()) {
+			cap_mode = cap_limit;
+		}
+		if (Gamepad.primary.getB()) {
+			cap_mode = cap_round;
+		}
 		System.out.println("Cap mode " + cap_mode);
 		double forwardRate = Gamepad.primary.getTriggers();
 		double turnRate = Gamepad.primary.getLeftX();
