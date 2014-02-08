@@ -24,9 +24,9 @@ public class RobotShoot {
     public static final double QUICK_SHOOT_REVS =.8*MAX_REVS;
 //  public static boolean unwindSafety;
     private static Timer timer;
-    private static double speed;
+    private static double updatedSpeed;
     private static boolean stageOneDone;
-    private static String stage;
+    private static String currentStage;
     private static boolean automatedShootOnce;
     private static boolean stageThreeDone;
      //These next few lines are for getting the current and voltage through an analog channel
@@ -37,63 +37,63 @@ public class RobotShoot {
     public static void initialize() {
 	automatedShootOnce = false;
 	timer = new Timer();
-	speed = 0.0;
-	stage = new String();
+	updatedSpeed = 0.0;
+	currentStage = new String();
 	RobotSensors.shooterWinchEncoder.start();
     }
     
     //// STAGES ----------------------------------------------------------------
     // releases the latch
-    public static void stageOne() {
+    public static void releaseBall() {
 	if(RobotPickup.ifLoaded()){
             RobotActuators.latchRelease.set(false);
             timer.start();
             stageOneDone = true;
-            stage = "1";
+            currentStage = "1";
         }
     }
     
     // Is Shown in our diagram as the shooter head moving forward
     // Nothing that is controlled is happening now
-    public static void stageTwo() {
-	stage = "2";
+    public static void ballInMotion() {
+	currentStage = "2";
     }
     
     // waiting the 0.5 seconds before unwinding the shooter motor
-    public static void stageThree() {
+    public static void waitToUnwind() {
 	double time = timer.get();
 	if (time >= WAIT_TIME) {
 	    timer.stop();
 	    timer.reset();
 	    stageThreeDone = true;
 	}
-	stage = "3";
+	currentStage = "3";
     }
     
     // unwindes the shooter until it hits the back limit switch or reaches max revolutions
     //and returns the limit value
-    public static boolean stageFour() {
+    public static boolean unwind() {
 	if (!RobotSensors.shooterAtBack.get()&& RobotSensors.shooterWinchEncoder.get()<= MAX_REVS) {
-	    unwindShooter();
+	    manualUnwind();
 	}
-	stage = "4";
+	currentStage = "4";
 	return (RobotSensors.shooterAtBack.get());
     }
     
     // relatches the shooter
-    public static void stageFive() {
+    public static void latchShooter() {
 	RobotActuators.latchRelease.set(true);
-	stage = "5";
+	currentStage = "5";
     }
     
     // rewinds the shooter
-    public static boolean stageSix() {
+    public static boolean rewindShooter() {
 	if (RobotSensors.shooterWinchEncoder.get() <= MAX_REVS) {
-	    windShooter();
+	    manualWind();
 	    return false;
 	}
 	automatedShootOnce = true;
-	stage = "6";
+	currentStage = "6";
 	return true;
                
     }
@@ -114,13 +114,13 @@ public class RobotShoot {
 	// shoots
 	if (!automatedShootOnce) {
 	    if (!stageOneDone) {
-		stageOne();
-		stageTwo();
+		releaseBall();
+		ballInMotion();
 	    } else {
-		stageThree();
-		if (stageThreeDone && stageFour()) {
-		    stageFive();
-		    stageSix();
+		waitToUnwind();
+		if (stageThreeDone && unwind()) {
+		    latchShooter();
+		    rewindShooter();
 		}
 	    }
 	} else {
@@ -131,9 +131,9 @@ public class RobotShoot {
     // RobotShootShoot
     public static void manualShoot() {
 	if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A)) 
-	    speed = 0.5;
+	    updatedSpeed = 0.5;
 	else if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B)) 
-	    speed = -0.5;
+	    updatedSpeed = -0.5;
     }
     
     // resets to be able to shoot again
@@ -143,18 +143,18 @@ public class RobotShoot {
     
     //// PRIVATE METHODS -------------------------------------------------------
     // sets speed to the unwind speed
-    private static void unwindShooter() {
-	speed = UNWIND_SPEED;
+    private static void manualUnwind() {
+	updatedSpeed = UNWIND_SPEED;
     }
     
     // sets the speed to the wind speed
-    private static void windShooter() {
-	speed = WIND_SPEED;
+    private static void manualWind() {
+	updatedSpeed = WIND_SPEED;
     }
     
     // sets the speed to 0.0
     private static void stopMotors() {
-	speed = 0.0;
+	updatedSpeed = 0.0;
     }
     
     //// UPDATE METHODS --------------------------------------------------------
@@ -165,11 +165,11 @@ public class RobotShoot {
 	}
 	
 	// sets motor
-	RobotActuators.shooterWinch.set(speed);
+	RobotActuators.shooterWinch.set(updatedSpeed);
 	
 	// prints to smart dashboard
 	SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());
-	SmartDashboard.putString("Stage: ", stage);
+	SmartDashboard.putString("Stage: ", currentStage);
 	SmartDashboard.putNumber("Time: ", timer.get());
 	SmartDashboard.putBoolean("Shooter at back", RobotSensors.shooterAtBack.get());
     }
