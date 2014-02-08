@@ -29,34 +29,14 @@ public class RobotPickup {
     public static double rollerMotorSpeed;
     public static double armPotentiometer;
 ////INIT------------------------------------------------------------------------
-    // initializes teh encoder
+    // initializes the encoder
     public static void initialize() {
         rollerMotorSpeed = 0.5;
         armMotorSpeed = 0.5;
+        
         RobotSensors.pickupSystemEncoder.reset();
         RobotSensors.pickupSystemEncoder.start();
 	//RobotSensors.PICKUP_SYSTEM_ENCODER.start();  //assumed that it is initialized in RobotSensors class
-    }
-
-    // normal update method
-    public static void update() {
-        armEncoder = RobotSensors.pickupSystemEncoder.get();
-        upperLimit = RobotSensors.pickupSystemUpLim.get();
-        ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
-        lowerLimit = RobotSensors.pickupSystemDownLim.get();
-        armPotentiometer = RobotSensors.pickupPotentiometer.get();
-        RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
-        RobotActuators.pickupSystemMotor.set(armMotorSpeed);
-        System.out.println(armPotentiometer);
-        /*SmartDashboard.putBoolean("upperLimit", upperLimit);
-        SmartDashboard.putBoolean("lowerLimit", lowerLimit);
-        SmartDashboard.putBoolean("ballInPickUpLimit", ballInPickUpLimit);
-        SmartDashboard.putNumber("Arm Encoder", armEncoder);
-        System.out.println("UpperLimit: " + upperLimit);
-        System.out.println("LowerLimit: " + lowerLimit);
-        System.out.println("BallInPickUpLimit" + ballInPickUpLimit);
-        System.out.println("Arm Encoder" + armEncoder);*/
-
     }
     
     // checks if the shooter is loaded
@@ -248,4 +228,29 @@ public class RobotPickup {
         
      }
      */
+    
+        // normal update method
+    public static void update() {
+        armEncoder = RobotSensors.pickupSystemEncoder.get();
+        upperLimit = RobotSensors.pickupSystemUpLim.get();
+        ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
+        lowerLimit = RobotSensors.pickupSystemDownLim.get();
+        armPotentiometer = RobotSensors.pickupPotentiometer.get();
+        
+        RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
+        RobotActuators.pickupSystemMotor.set(armMotorSpeed);
+        
+        System.out.println(armPotentiometer);
+        
+        /*SmartDashboard.putBoolean("upperLimit", upperLimit);
+        SmartDashboard.putBoolean("lowerLimit", lowerLimit);
+        SmartDashboard.putBoolean("ballInPickUpLimit", ballInPickUpLimit);
+        SmartDashboard.putNumber("Arm Encoder", armEncoder);
+        System.out.println("UpperLimit: " + upperLimit);
+        System.out.println("LowerLimit: " + lowerLimit);
+        System.out.println("BallInPickUpLimit" + ballInPickUpLimit);
+        System.out.println("Arm Encoder" + armEncoder);*/
+
+    }
 }
+
