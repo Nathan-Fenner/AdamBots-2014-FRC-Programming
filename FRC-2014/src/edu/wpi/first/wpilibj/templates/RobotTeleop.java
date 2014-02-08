@@ -32,12 +32,12 @@ public class RobotTeleop {
 		}
 		if (cap_mode == cap_round) {
 			// find amount required to cap, then reduce by this amount
-			double cap_scale = Math.max(Math.abs(leftDrive), Math.abs(rightDrive));
+			double cap_scale = Math.max(1.0, Math.max(Math.abs(leftDrive), Math.abs(rightDrive)));
 			leftDrive /= cap_scale;
 			rightDrive /= cap_scale;
 		}
 
-		RobotDrive.drive( leftDrive, rightDrive );
+		RobotDrive.drive(leftDrive, rightDrive);
 
 	}
 }
