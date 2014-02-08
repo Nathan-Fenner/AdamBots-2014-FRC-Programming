@@ -27,6 +27,7 @@ public class RobotPickup {
     public static final double MAX_SPEED = 1.0;
     public static double armMotorSpeed;
     public static double rollerMotorSpeed;
+    public static double armPotentiometer;
 ////INIT------------------------------------------------------------------------
     // initializes teh encoder
     public static void initialize() {
@@ -43,16 +44,18 @@ public class RobotPickup {
         upperLimit = RobotSensors.pickupSystemUpLim.get();
         ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
         lowerLimit = RobotSensors.pickupSystemDownLim.get();
+        armPotentiometer = RobotSensors.pickupPotentiometer.get();
         RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
         RobotActuators.pickupSystemMotor.set(armMotorSpeed);
-        SmartDashboard.putBoolean("upperLimit", upperLimit);
+        System.out.println(armPotentiometer);
+        /*SmartDashboard.putBoolean("upperLimit", upperLimit);
         SmartDashboard.putBoolean("lowerLimit", lowerLimit);
         SmartDashboard.putBoolean("ballInPickUpLimit", ballInPickUpLimit);
         SmartDashboard.putNumber("Arm Encoder", armEncoder);
         System.out.println("UpperLimit: " + upperLimit);
         System.out.println("LowerLimit: " + lowerLimit);
         System.out.println("BallInPickUpLimit" + ballInPickUpLimit);
-        System.out.println("Arm Encoder" + armEncoder);
+        System.out.println("Arm Encoder" + armEncoder);*/
 
     }
     
@@ -123,7 +126,6 @@ public class RobotPickup {
     //moves pickup mechanism into position for catching
      public static void moveToShoot(double targetCatchPosition, double speed, boolean buttonShoot) { 
         double remainingDistance = targetCatchPosition - armEncoder;
-	
         if (lowerLimit) {
             if(!ballInPickUpLimit) {
                 moveGamePiece(1.0);
@@ -141,6 +143,10 @@ public class RobotPickup {
        } else if (buttonShoot && (remainingDistance <= 0)) {
            movePickUpMechanism(0);
        }
+    }
+     
+    public static void moveToShootPotentiometer() {
+        
     }
      
     //automatically sucks in game piece and moves to shooting position
