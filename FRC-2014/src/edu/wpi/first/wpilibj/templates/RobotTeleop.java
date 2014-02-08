@@ -17,8 +17,8 @@ public class RobotTeleop {
 
 	public static void update() {
 		System.out.println("Cap mode " + cap_mode);
-		double forwardRate = GamePad.primary.getTrigger();
-		double turnRate = GamePad.primary.getLeftX();
+		double forwardRate = Gamepad.primary.getTriggers();
+		double turnRate = Gamepad.primary.getLeftX();
 		double leftDrive = forwardRate + turnRate;
 		double rightDrive = forwardRate - turnRate;
 		// it is a problem if leftDrive or rightDrive has a magnitude exceeding 1.
