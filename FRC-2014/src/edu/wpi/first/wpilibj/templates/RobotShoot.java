@@ -19,8 +19,9 @@ public class RobotShoot {
     ////VARIABLES---------------------------------------------------------------
     public static final double UNWIND_SPEED = 0.5;
     public static final double WAIT_TIME = 0.5;
-    public static final double WIND_SHOOTER = -0.5;
+    public static final double WIND_SPEED = -0.5;
     public static final double MAX_REVS = 50;
+    public static final double QUICK_SHOOT_REVS =.8*MAX_REVS;
 //  public static boolean unwindSafety;
     private static Timer timer;
     private static double speed;
@@ -28,8 +29,7 @@ public class RobotShoot {
     private static String stage;
     private static boolean automatedShootOnce;
     private static boolean stageThreeDone;
-    
-    //These next few lines are for getting the current and voltage through an analog channel
+     //These next few lines are for getting the current and voltage through an analog channel
     public static double voltage;
     public static double current;
     
@@ -51,7 +51,7 @@ public class RobotShoot {
             stageOneDone = true;
             stage = "1";
         }
-}
+    }
     
     // Is Shown in our diagram as the shooter head moving forward
     // Nothing that is controlled is happening now
@@ -95,8 +95,20 @@ public class RobotShoot {
 	automatedShootOnce = true;
 	stage = "6";
 	return true;
+               
     }
-    
+    /**
+     * This is a method for a quick shot, it will be pretensioned by another method
+     * once this is called it will finish tensioning and then it will shoot the ball
+     */
+    public static void quickShoot(){
+       if(RobotSensors.shooterWinchEncoder.get() <= QUICK_SHOOT_REVS){
+            RobotActuators.shooterWinch.set(WIND_SPEED);
+       }
+       else{
+           RobotActuators.latchRelease.set(true);
+       }
+    }
     // Automated shoot
     public static void automatedShoot() {
 	// shoots
@@ -137,7 +149,7 @@ public class RobotShoot {
     
     // sets the speed to the wind speed
     private static void windShooter() {
-	speed = WIND_SHOOTER;
+	speed = WIND_SPEED;
     }
     
     // sets the speed to 0.0
