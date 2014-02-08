@@ -13,18 +13,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Robin Onsay
  */
 public class RobotDrive {
-////VARIABLES-------------------------------------------------------------------	
+////VARIABLES-------------------------------------------------------------------
 ////CONSTANTS-------------------------------------------------------------------
 
 	public static final double WHEEL_DIAMETER = 0.5;//Feet
 	private static double encoderR;//Single Channel
-	private static double encoderL;//Single Channel	
+	private static double encoderL;//Single Channel
 	private static final double STOP = 0.0;
 	private static double distanceToGo;
 	//displacment = initial distance needed to travel to get to target
 	private static double displacement;
 	private static double encoderAvg;
-////INIT------------------------------------------------------------------------    
+////INIT------------------------------------------------------------------------
 
 	public static void initialize() {
 		System.out.println("RobotDrive init");
@@ -44,13 +44,13 @@ public class RobotDrive {
 
 	public static void update() {
 		encoderL = RobotSensors.leftDriveEncoder.get();
-                //encoderL = RobotSensors.rightDriveEncoder.get();
+		//encoderL = RobotSensors.rightDriveEncoder.get();
 		encoderR = RobotSensors.rightDriveEncoder.get();
-                //System.out.println("Left: " + encoderL + "\tRight: " + encoderR);
+		//System.out.println("Left: " + encoderL + "\tRight: " + encoderR);
 		encoderAvg = (encoderL + encoderR) / 2.0;
 	}
 	/*
-	 Corrects distance	
+	 Corrects distance
 	 targetDist = feet needed to be from Refrence point
 	 dist = feet from Refrence point
 	 speed = voltage
@@ -62,11 +62,11 @@ public class RobotDrive {
 		double distanceTravled = encoderAvg * distPerTick;
 		displacement = dist - targetDist;
 		distanceToGo = Math.abs(displacement) - distanceTravled;
-		if(distanceToGo == 0){
+		if (distanceToGo == 0) {
 			return;
 		}
 	}
-        
+
 	public static void calcSpeed() {
 		double rawSpeed = distanceToGo / displacement;
 		//victor's can't take values less than 0.15
@@ -75,91 +75,98 @@ public class RobotDrive {
 		if (displacement > 0.01) {
 			driveStraight(displacement >= 0.01 ? realSpeed : -realSpeed);
 		}
-		if(distanceToGo==0){			
+		if (distanceToGo == 0) {
 			robotStop();
 			return;
 		}
 	}
-	//Sets drives to same speed to go in a straight line
+
+	/**
+	 * Sets drive speed to go forward
+	 *
+	 * @param speed
+	 */
 	public static void driveStraight(double speed) {
-		RobotActuators.rightDrive.set(-speed);
-		RobotActuators.leftDrive.set(speed);
-	}
-	
-        //Sets drives to values given in parameters to allow different speeds for the drives
-	public static void drive(double rightSpeed, double leftSpeed) {
-		RobotActuators.rightDrive.set(-rightSpeed);
-		RobotActuators.leftDrive.set(leftSpeed);
+		drive(speed, speed);
 	}
 
-	//100% 180 right, -100% 180 left
-	//percent in decimal
-	public static void turn(double speed, double percent) {
-		if (percent >= 0) {
-			RobotActuators.rightDrive.set(-speed);
-			RobotActuators.leftDrive.set(speed - percent);
-		} else {
-			RobotActuators.leftDrive.set(speed);
-			RobotActuators.rightDrive.set(-speed + percent);
-		}
+	/**
+	 * Sets the left and right drive safely, which it fits into the [-1,1] range.
+	 * @param leftSpeed
+	 * @param rightSpeed
+	 */
+	public static void drive(double leftSpeed, double rightSpeed) {
+		leftSpeed = Math.max(-1,Math.min(1,leftSpeed));
+		rightSpeed = Math.max(-1,Math.min(1,rightSpeed));
+		RobotActuators.leftDrive.set(leftSpeed);
+		RobotActuators.rightDrive.set(-rightSpeed);
+	}
+
+	/**
+	 * Sets the robot to turn in an arc
+	 * @param turnRate Positive values turn right (clockwise)
+	 * @param forwardSpeed Positive values go forward
+	 */
+	public static void turn(double turnRate, double forwardSpeed) {
+		drive(forwardSpeed + turnRate, forwardSpeed - turnRate);
 	}
 	/*
 	 sets victors to zero
 	 */
-        
-        //Stops the robot from moving while the button Y is held down
+
+	//Stops the robot from moving while the button Y is held down
 	public static void robotStop() {
 		RobotActuators.leftDrive.set(STOP);
 		RobotActuators.rightDrive.set(STOP);
 	}
-        
-        //Allows someone to use the bumpers, left joystick, and X and Y button to drive the robot
-        public static void joystickDrive(/*double leftBumper, double rightBumper, double leftJoy, boolean gearShift*/) {
-            double bumpers = FancyJoystick.primary.getDeadAxis(FancyJoystick.AXIS_TRIGGERS);
-            //double rightBumper = RobotSensors.fancyJoy.getRawAxis(6);
-            double leftJoy = FancyJoystick.primary.getDeadAxis(FancyJoystick.AXIS_LEFT_X);
-            boolean gearShift = FancyJoystick.primary.getRawButton(3); //3 -> X Button
-            boolean stopDrive = FancyJoystick.primary.getRawButton(4); //4 -> Y Button
-            if (gearShift) {
-		shift();
-	    }
-            if(stopDrive){
-                robotStop();
-            }else{
-            if(bumpers != 0){
-                RobotActuators.leftDrive.set(bumpers + leftJoy);
-                RobotActuators.rightDrive.set(-(bumpers - leftJoy));
-            }else if(bumpers == 0 && leftJoy != 0){
-                RobotActuators.leftDrive.set(-leftJoy);
-                RobotActuators.rightDrive.set(-leftJoy);
-            }else{
-                robotStop();
-            }
-            
-            }
-            //SmartDashboard.putNumber("Left Drive: ", RobotActuators.leftDrive.get());
-            //SmartDashboard.putNumber("Right Drive: ", RobotActuators.rightDrive.get());
-        }
-	
-	// shifts gears
-	public static void shift(){
-	    if(RobotActuators.shifter.get()){
-		RobotActuators.shifter.set(false);
-	    }else{		
-		RobotActuators.shifter.set(true);
-	    }
+
+	//Allows someone to use the bumpers, left joystick, and X and Y button to drive the robot
+	public static void joystickDrive(/*double leftBumper, double rightBumper, double leftJoy, boolean gearShift*/) {
+		double bumpers = FancyJoystick.primary.getDeadAxis(FancyJoystick.AXIS_TRIGGERS);
+		//double rightBumper = RobotSensors.fancyJoy.getRawAxis(6);
+		double leftJoy = FancyJoystick.primary.getDeadAxis(FancyJoystick.AXIS_LEFT_X);
+		boolean gearShift = FancyJoystick.primary.getRawButton(3); //3 -> X Button
+		boolean stopDrive = FancyJoystick.primary.getRawButton(4); //4 -> Y Button
+		if (gearShift) {
+			shift();
+		}
+		if (stopDrive) {
+			robotStop();
+		} else {
+			if (bumpers != 0) {
+				RobotActuators.leftDrive.set(bumpers + leftJoy);
+				RobotActuators.rightDrive.set(-(bumpers - leftJoy));
+			} else if (bumpers == 0 && leftJoy != 0) {
+				RobotActuators.leftDrive.set(-leftJoy);
+				RobotActuators.rightDrive.set(-leftJoy);
+			} else {
+				robotStop();
+			}
+
+		}
+		//SmartDashboard.putNumber("Left Drive: ", RobotActuators.leftDrive.get());
+		//SmartDashboard.putNumber("Right Drive: ", RobotActuators.rightDrive.get());
 	}
-	
+
+	// shifts gears
+	public static void shift() {
+		if (RobotActuators.shifter.get()) {
+			RobotActuators.shifter.set(false);
+		} else {
+			RobotActuators.shifter.set(true);
+		}
+	}
+
 	// autoshifts gears
-	public static void autoShift(double sensitvity, boolean shiftLow /* in G's*/){
-	    double xAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kX);
-	    double zAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kZ);
-	    if(xAcceleration > sensitvity && zAcceleration > sensitvity){
-		RobotActuators.shifter.set(false);
-	    }else if(shiftLow == true || xAcceleration < sensitvity && zAcceleration < sensitvity){
-		RobotActuators.shifter.set(true);
-	    }else{		
-		RobotActuators.shifter.set(false);
-	    }
+	public static void autoShift(double sensitvity, boolean shiftLow /* in G's*/) {
+		double xAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kX);
+		double zAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kZ);
+		if (xAcceleration > sensitvity && zAcceleration > sensitvity) {
+			RobotActuators.shifter.set(false);
+		} else if (shiftLow == true || xAcceleration < sensitvity && zAcceleration < sensitvity) {
+			RobotActuators.shifter.set(true);
+		} else {
+			RobotActuators.shifter.set(false);
+		}
 	}
 }
