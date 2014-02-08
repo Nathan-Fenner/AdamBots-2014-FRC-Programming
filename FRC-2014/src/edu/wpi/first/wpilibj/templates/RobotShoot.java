@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Tyler
  */
 public class RobotShoot {
+    ////VARIABLES---------------------------------------------------------------
     public static final double UNWIND_SPEED = 0.5;
     public static final double WAIT_TIME = 0.5;
     public static final double WIND_SHOOTER = -0.5;
@@ -44,18 +45,21 @@ public class RobotShoot {
     //// STAGES ----------------------------------------------------------------
     // releases the latch
     public static void stageOne() {
-	RobotActuators.latchRelease.set(false);
-	timer.start();
-	stageOneDone = true;
-	stage = "1";
-    }
+	if(RobotPickup.ifLoaded()){
+            RobotActuators.latchRelease.set(false);
+            timer.start();
+            stageOneDone = true;
+            stage = "1";
+        }
+}
     
-    // was just movement
+    // Is Shown in our diagram as the shooter head moving forward
+    // Nothing that is controlled is happening now
     public static void stageTwo() {
 	stage = "2";
     }
     
-    // waiting the 0.5 seconds before unwinding
+    // waiting the 0.5 seconds before unwinding the shooter motor
     public static void stageThree() {
 	double time = timer.get();
 	if (time >= WAIT_TIME) {
@@ -66,9 +70,10 @@ public class RobotShoot {
 	stage = "3";
     }
     
-    // unwindes the shooter until it hits the back limit switch and returns the limit value
+    // unwindes the shooter until it hits the back limit switch or reaches max revolutions
+    //and returns the limit value
     public static boolean stageFour() {
-	if (!RobotSensors.shooterAtBack.get()) {
+	if (!RobotSensors.shooterAtBack.get()&& RobotSensors.shooterWinchEncoder.get()<= MAX_REVS) {
 	    unwindShooter();
 	}
 	stage = "4";
