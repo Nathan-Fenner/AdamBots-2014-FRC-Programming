@@ -144,9 +144,25 @@ public class RobotPickup {
            movePickUpMechanism(0);
        }
     }
-     
-    public static void moveToShootPotentiometer() {
-        
+    //move to shoot position with potentiometer values
+    public static void moveToShootPotentiometer(double targetCatchPosition, double speed, boolean buttonShootPot) {
+        double remainingDistance = targetCatchPosition -  armPotentiometer; 
+        if(lowerLimit){
+            if(!ballInPickUpLimit){
+                moveGamePiece(1.0);
+            } else if (buttonShootPot && ballInPickUpLimit && (remainingDistance < 0)) {
+                moveGamePiece(0);
+                movePickUpMechanism(speed);
+            } else if (buttonShootPot && ballInPickUpLimit && (remainingDistance >= 0)) {
+                moveGamePiece(0);
+                movePickUpMechanism(0);
+            }
+        }
+        if (upperLimit & buttonShootPot && (remainingDistance > 0)) {
+                movePickUpMechanism(-speed);
+            } else if (buttonShootPot && (remainingDistance <= 0)) {
+                movePickUpMechanism(0);
+        }
     }
      
     //automatically sucks in game piece and moves to shooting position
@@ -204,7 +220,7 @@ public class RobotPickup {
     // the test method
     public static void test(boolean buttonTestA, boolean buttonTestB, boolean buttonTestC) {
         if (buttonTestA && !buttonTestB && !buttonTestC) {
-            moveToShoot(50, 1.0, true);
+            moveToShootPotentiometer(2.375, 1.0, true);
         } else if (buttonTestB && !buttonTestA && !buttonTestC) {
             moveToBottomPosition();
         } else if (buttonTestC && !buttonTestA && !buttonTestB) {
