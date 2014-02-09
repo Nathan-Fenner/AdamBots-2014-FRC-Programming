@@ -83,4 +83,16 @@ public class RobotAuton {
 	}
 	return false;
     }
+    
+    public static boolean initialIntake() {
+	if (time == null) {
+	    time = new Timer();
+	    time.start();
+	} else if (time.get() <= 0.4){
+	    RobotPickup.liftRollerArm();
+	} else {
+	    return true;
+	}
+	return false;
+    }
 }
