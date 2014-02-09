@@ -45,11 +45,11 @@ public class RobotShoot {
     //// STAGES ----------------------------------------------------------------
     // releases the latch
     public static void releaseBall() {
+	currentStage = "1";
 	if(RobotPickup.ifLoaded()){
             RobotActuators.latchRelease.set(false);
             timer.start();
             stageOneDone = true;
-            currentStage = "1";
         }
     }
     
@@ -61,39 +61,39 @@ public class RobotShoot {
     
     // waiting the 0.5 seconds before unwinding the shooter motor
     public static void waitToUnwind() {
+	currentStage = "3";
 	double time = timer.get();
 	if (time >= WAIT_TIME) {
 	    timer.stop();
 	    timer.reset();
 	    stageThreeDone = true;
 	}
-	currentStage = "3";
     }
     
     // unwindes the shooter until it hits the back limit switch or reaches max revolutions
     //and returns the limit value
     public static boolean unwind() {
+	currentStage = "4";
 	if (!RobotSensors.shooterAtBack.get()&& RobotSensors.shooterWinchEncoder.get()<= MAX_REVS) {
 	    manualUnwind();
 	}
-	currentStage = "4";
 	return (RobotSensors.shooterAtBack.get());
     }
     
     // relatches the shooter
     public static void latchShooter() {
-	RobotActuators.latchRelease.set(true);
 	currentStage = "5";
+	RobotActuators.latchRelease.set(true);
     }
     
     // rewinds the shooter
     public static boolean rewindShooter() {
+	currentStage = "6";
 	if (RobotSensors.shooterWinchEncoder.get() <= MAX_REVS) {
 	    manualWind();
 	    return false;
 	}
 	automatedShootOnce = true;
-	currentStage = "6";
 	return true;
                
     }
