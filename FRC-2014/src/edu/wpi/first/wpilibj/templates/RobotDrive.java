@@ -10,107 +10,90 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
- * @author Robin Onsay
+ * @author Nathan Fenner
  */
-public class RobotDrive {
-////VARIABLES-------------------------------------------------------------------
-////CONSTANTS-------------------------------------------------------------------
+public abstract class RobotDrive {
 
+	public static final double distancePerTick = 0.066;
 	public static final double WHEEL_DIAMETER = 0.5;//Feet
-	private static double encoderR;//Single Channel
-	private static double encoderL;//Single Channel
-	private static final double STOP = 0.0;
-	private static double distanceToGo;
-	//displacment = initial distance needed to travel to get to target
-	private static double displacement;
-	private static double encoderAvg;
-	private static int encoderCountLeft = 0;
-	private static int encoderCountRight = 0;
 	private static int encoderLastLeft = 0;
 	private static int encoderLastRight = 0;
+	private static double velocityLeft = 0;
+	private static double velocityRight = 0;
 	private static double targetSpeedLeft = 0.0;
 	private static double targetSpeedRight = 0.0;
 	private static double currentSpeedLeft = 0.0;
 	private static double currentSpeedRight = 0.0;
+	private static Timer clock;
 
 ////INIT------------------------------------------------------------------------
 	public static void initialize() {
+		clock = new Timer();
+		clock.start();
 		System.out.println("RobotDrive init");
 		RobotSensors.rightDriveEncoder.start();
 		RobotSensors.leftDriveEncoder.start();
 		RobotSensors.rightDriveEncoder.setDistancePerPulse((Math.PI * 0.5) / 360);
 		RobotSensors.leftDriveEncoder.setDistancePerPulse((Math.PI * 0.5) / 360);
 	}
-////TESTMETHOD------------------------------------------------------------------
-
-	public static void test() {
-		System.out.println("Encoder Left: " + encoderL + " Encoder Right: " + encoderR);
-		distanceCorrection(10, 5, (Math.PI * 0.5) / 360);
-		calcSpeed();
-	}
 ////METHODS---------------------------------------------------------------------
+	private static double smooth_rate = 0.05;
+	private static double shift_rate = 1.00;
+
+	/**
+	 * In inches
+	 *
+	 * @return
+	 */
+	public static double getEncoderLeft() {
+		return RobotSensors.leftDriveEncoder.get() * distancePerTick;
+	}
+
+	/**
+	 * In inches
+	 *
+	 * @return
+	 */
+	public static double getEncoderRight() {
+		return -RobotSensors.rightDriveEncoder.get() * distancePerTick;
+		// it's negative
+	}
 
 	public static void update() {
 
-		int encoderNowLeft = RobotSensors.leftDriveEncoder.get();
-		int encoderNowRight = RobotSensors.rightDriveEncoder.get();
-
-		encoderCountLeft += (int) ((encoderNowLeft - encoderLastLeft) * MathUtils.sign(currentSpeedLeft));
-		encoderCountRight += (int) ((encoderNowRight - encoderLastRight) * MathUtils.sign(currentSpeedRight));
-
-		encoderLastLeft = encoderNowLeft;
-		encoderLastRight = encoderNowRight;
-
-		double smooth_rate = 0.1;
-		double shift_rate = 0.0;
-
 		currentSpeedLeft += smooth_rate * (targetSpeedLeft - currentSpeedLeft);
 		currentSpeedRight += smooth_rate * (targetSpeedRight - currentSpeedRight);
-		currentSpeedLeft += MathUtils.sign(targetSpeedLeft - currentSpeedLeft) * Math.min(Math.abs(targetSpeedLeft - currentSpeedLeft), shift_rate);
-		currentSpeedRight += MathUtils.sign(targetSpeedRight - currentSpeedRight) * Math.min(Math.abs(targetSpeedRight - currentSpeedRight), shift_rate);
+		currentSpeedLeft += MathUtils.sign(targetSpeedLeft - currentSpeedLeft)
+				* Math.min(Math.abs(targetSpeedLeft - currentSpeedLeft), shift_rate);
+		currentSpeedRight += MathUtils.sign(targetSpeedRight - currentSpeedRight)
+				* Math.min(Math.abs(targetSpeedRight - currentSpeedRight), shift_rate);
 
-		RobotDrive.driveSetRaw(currentSpeedLeft, currentSpeedRight);
+		double dt = clock.get();
+		clock.reset();
 
-		//encoderL = RobotSensors.leftDriveEncoder.get();
-		//encoderL = RobotSensors.rightDriveEncoder.get();
-		//encoderR = RobotSensors.rightDriveEncoder.get();
-		//System.out.println("Left: " + encoderL + "\tRight: " + encoderR);
-		//encoderAvg = (encoderL + encoderR) / 2.0;
+		int leftEncoder = RobotSensors.leftDriveEncoder.get();
+		int rightEncoder = RobotSensors.rightDriveEncoder.get();
 
-		System.out.println("Enc Left: " + encoderCountLeft + "\nEnc Right: " + encoderCountRight);
-		System.out.println("Tru Left: " + RobotSensors.leftDriveEncoder.get() + "\nTru Right: " + RobotSensors.rightDriveEncoder.get());
+		velocityLeft = (leftEncoder - encoderLastLeft) / dt;
+		velocityRight = -(rightEncoder - encoderLastRight) / dt;
 
-	}
-	/*
-	 Corrects distance
-	 targetDist = feet needed to be from Refrence point
-	 dist = feet from Refrence point
-	 speed = voltage
-	 distPerTick = (PI*WHEELDIAMETER)/360
-	 */
+		encoderLastLeft = leftEncoder;
+		encoderLastRight = rightEncoder;
 
-	public static void distanceCorrection(double targetDist, double dist, double distPerTick) {
-		//distance in feet from start of encoder;
-		double distanceTravled = encoderAvg * distPerTick;
-		displacement = dist - targetDist;
-		distanceToGo = Math.abs(displacement) - distanceTravled;
-		if (distanceToGo == 0) {
-			return;
-		}
+		// Use currentSpeed and velocity to set raw
+		double fastLeft = currentSpeedLeft + 0.3 * (pwmFromTPS(velocityLeft)
+				- currentSpeedLeft);
+		double fastRight = currentSpeedRight + 0.3 * (pwmFromTPS(velocityRight)
+				- currentSpeedRight);
+		RobotDrive.driveSetRaw(fastLeft, fastRight);
 	}
 
-	public static void calcSpeed() {
-		double rawSpeed = distanceToGo / displacement;
-		//victor's can't take values less than 0.15
-		double realSpeed = (rawSpeed >= 0.15 ? rawSpeed : 0.15);
-		//sets the speed until displa
-		if (displacement > 0.01) {
-			driveStraight(displacement >= 0.01 ? realSpeed : -realSpeed);
-		}
-		if (distanceToGo == 0) {
-			stopDrive();
-			return;
-		}
+	public static double pwmFromRPM(double rpm) {
+		return pwmFromTPS(rpm / 60 * 360);
+	}
+
+	public static double pwmFromTPS(double tps) {
+		return 0.1139 * MathUtils.exp(0.0024 * Math.abs(tps)) * MathUtils.sign(tps);
 	}
 
 	/**
@@ -158,19 +141,6 @@ public class RobotDrive {
 	public static void turn(double turnRate, double forwardSpeed) {
 		drive(forwardSpeed + turnRate, forwardSpeed - turnRate);
 	}
-	/*
-	 sets victors to zero
-	 */
-
-	//Stops the robot from moving while the button Y is held down
-	public static void stopDrive() {
-		RobotActuators.leftDrive.set(STOP);
-		RobotActuators.rightDrive.set(STOP);
-		targetSpeedLeft = 0.0;
-		targetSpeedRight = 0.0;
-		currentSpeedLeft = 0.0;
-		currentSpeedRight = 0.0;
-	}
 
 	public static void shiftHigh() {
 		RobotActuators.shifter.set(false);
@@ -186,7 +156,8 @@ public class RobotDrive {
 		double zAcceleration = RobotSensors.accelerometer.getAcceleration(ADXL345_I2C.Axes.kZ);
 		if (xAcceleration > sensitvity && zAcceleration > sensitvity) {
 			RobotActuators.shifter.set(false);
-		} else if (shiftLow == true || xAcceleration < sensitvity && zAcceleration < sensitvity) {
+		} else if (shiftLow == true || xAcceleration < sensitvity && zAcceleration
+				< sensitvity) {
 			RobotActuators.shifter.set(true);
 		} else {
 			RobotActuators.shifter.set(false);
