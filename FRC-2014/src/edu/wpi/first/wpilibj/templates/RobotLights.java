@@ -6,6 +6,7 @@
 
 package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Relay;
 
 /**
  *
@@ -22,6 +23,9 @@ public class RobotLights {
     
     public void init() {
 	//INSERT CODE HERE
+                 
+        
+      
     }
     
     public void shootingLights() {
@@ -53,8 +57,24 @@ public class RobotLights {
 	//INSERT CODE HERE
     }
     
-    public void underglow() {
+    public void underglowOn() {
 	//INSERT CODE HERE
+        // turns on
+        // RobotActuators.groundLEDStrip1.set(Relay.Value.kOn);
+        // turns off
+        // RobotActuators.groundLEDStrip1.set(Relay.Value.kOff);
+        RobotActuators.groundLEDStrip1.set(Relay.Value.kOn);
+        RobotActuators.groundLEDStrip2.set(Relay.Value.kOn);
+        RobotActuators.groundLEDStrip3.set(Relay.Value.kOn);
+        RobotActuators.groundLEDStrip4.set(Relay.Value.kOn);
+           
+    }
+    
+    public void underglowOff(){
+       RobotActuators.groundLEDStrip1.set(Relay.Value.kOff);
+       RobotActuators.groundLEDStrip2.set(Relay.Value.kOff);
+       RobotActuators.groundLEDStrip3.set(Relay.Value.kOff);
+       RobotActuators.groundLEDStrip4.set(Relay.Value.kOff);
     }
     
     public void cameraSpotlight() {
@@ -77,7 +97,7 @@ public class RobotLights {
 	} catch (InterruptedException e) {
 	    System.out.println(e);
 	
-    }
+        }
     }
 
 }
