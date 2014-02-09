@@ -108,7 +108,7 @@ public class RobotDrive {
 			driveStraight(displacement >= 0.01 ? realSpeed : -realSpeed);
 		}
 		if (distanceToGo == 0) {
-			robotStop();
+			stopDrive();
 			return;
 		}
 	}
@@ -163,7 +163,7 @@ public class RobotDrive {
 	 */
 
 	//Stops the robot from moving while the button Y is held down
-	public static void robotStop() {
+	public static void stopDrive() {
 		RobotActuators.leftDrive.set(STOP);
 		RobotActuators.rightDrive.set(STOP);
 		targetSpeedLeft = 0.0;
