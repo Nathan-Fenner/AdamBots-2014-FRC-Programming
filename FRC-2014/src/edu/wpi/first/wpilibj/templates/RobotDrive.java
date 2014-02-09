@@ -45,8 +45,11 @@ public abstract class RobotDrive {
 	 *
 	 * @return
 	 */
-	public static double getEncoderLeft() {
+	public static double getEncoderLeftInches() {
 		return RobotSensors.leftDriveEncoder.get() * distancePerTick;
+	}
+	public static int getEncoderLeftTicks() {
+		return RobotSensors.leftDriveEncoder.get();
 	}
 
 	/**
@@ -54,9 +57,12 @@ public abstract class RobotDrive {
 	 *
 	 * @return
 	 */
-	public static double getEncoderRight() {
+	public static double getEncoderRightInches() {
 		return -RobotSensors.rightDriveEncoder.get() * distancePerTick;
 		// it's negative
+	}
+		public static int getEncoderRightTicks() {
+		return RobotSensors.rightDriveEncoder.get();
 	}
 
 	public static void update() {
