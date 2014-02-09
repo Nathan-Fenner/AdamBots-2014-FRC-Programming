@@ -5,6 +5,8 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  *
  * @author Nathan
@@ -14,34 +16,32 @@ public class RobotTeleop {
 	private static int cap_mode = 0;
 	private static final int cap_limit = 0;
 	private static final int cap_round = 1;
+	static double fine_speed = 0.0;
 
 	public static void update() {
 
-		if (Gamepad.primary.getA()) {
-			//RobotDrive.shiftLow();
-		}
-		if (Gamepad.primary.getB()) {
-			//RobotDrive.shiftHigh();
-		}
-
 		if (Gamepad.primary.getX()) {
-			cap_mode = cap_limit;
+			// shift
 		}
 		if (Gamepad.primary.getY()) {
-			cap_mode = cap_round;
+			// shift
 		}
-		System.out.println("Cap mode " + cap_mode);
+
+		// Begin drive control
+
+		//System.out.println("Cap mode " + cap_mode);
 		double forwardRate = Gamepad.primary.getTriggers();
 
-		// for "exponential control":
-		forwardRate *= Math.abs(forwardRate);
 
 		double turnRate = Gamepad.primary.getLeftX();
-		double leftDrive = forwardRate + turnRate;
-		double rightDrive = forwardRate - turnRate;
+		double leftDrive = forwardRate - turnRate;
+		double rightDrive = forwardRate + turnRate;
 		// it is a problem if leftDrive or rightDrive has a magnitude exceeding 1.
 		// two strategies: both will be tested to see how they work
 		// ONE: cap them independently
+
+		//RobotActuators.pickupSystemMotor.set(0.3);
+		//RobotActuators.pickupRollerArmMotor.set(0.3);
 		// TWO: cap magnitude to scale both down together
 		if (cap_mode == cap_limit) {
 			// cap both left and right drive
@@ -56,5 +56,32 @@ public class RobotTeleop {
 		}
 		RobotDrive.drive(leftDrive, rightDrive);
 
+
+
+		SmartDashboard.putNumber("left drive", leftDrive + (r = (r + 0.001) % 1.0) / 800.0);
+		RobotDrive.driveSetRaw(leftDrive, rightDrive);
+
+		// End Drive Control
+
+		//TODO: check if sign is correct
+		RobotPickup.moveGamePiece(Gamepad.primary.getRightY() + Gamepad.secondary.getRightY());
+		// both can control it, if needed
+		// perhaps come up with a better way
+
+
+		//TODO: add override functionality to RobotPickup
+
+		if (Gamepad.secondary.getY()) {
+			RobotPickup.liftRollerArm();
+		} else if (Gamepad.secondary.getX()) {
+			RobotPickup.lowerRollerArm();
+		} else {
+			//RobotPickup.neutralRollerArm();
+		}
+
+		//TODO: make robotshoot possible to use
+
+
 	}
+	public static double r = 0.0;
 }
