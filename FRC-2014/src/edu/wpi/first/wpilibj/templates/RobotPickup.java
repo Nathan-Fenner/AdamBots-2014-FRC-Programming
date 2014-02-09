@@ -25,6 +25,8 @@ public class RobotPickup {
     public static final double MIN_SPEED = -1.0;
     public static final double NO_SPEED = 0.0;
     public static final double MAX_SPEED = 1.0;
+    public static final double SHOOT_POSITION = 50;
+    public static final double TOLERANCE = 2;
     public static double armMotorSpeed;
     public static double rollerMotorSpeed;
     public static double armPotentiometer;
@@ -99,7 +101,7 @@ public class RobotPickup {
     }
 
     //moves pickup mechanism up and down
-    public static void movePickUpMechanism(double speed) { 
+    public static void movePickupMechanism(double speed) { 
         armMotorSpeed = speed;
     }
     
@@ -111,19 +113,33 @@ public class RobotPickup {
                 moveGamePiece(1.0);
             } else if (buttonShoot && ballInPickUpLimit && (remainingDistance < 0)) {
                 moveGamePiece(0);
-                movePickUpMechanism(speed);
+                movePickupMechanism(speed);
             } else if (buttonShoot && ballInPickUpLimit && (remainingDistance >= 0)) {
                 moveGamePiece(0);
-                movePickUpMechanism(0);
+                movePickupMechanism(0);
             }
        }
         
        if (upperLimit & buttonShoot && (remainingDistance > 0)) {
-            movePickUpMechanism(-speed);
+            movePickupMechanism(-speed);
        } else if (buttonShoot && (remainingDistance <= 0)) {
-           movePickUpMechanism(0);
+           movePickupMechanism(0);
        }
     }
+     
+     public static void moveToShoot() {
+	 if (armEncoder > SHOOT_POSITION - TOLERANCE && armEncoder < SHOOT_POSITION + TOLERANCE) {
+	     movePickupMechanism(0.0);
+	 } else if (armEncoder < 0.8 * SHOOT_POSITION) {
+	     movePickupMechanism(1.0);
+	 } else if (armEncoder > 0.8 * SHOOT_POSITION) {
+	     movePickupMechanism(-1.0);
+	 } else if (armEncoder < SHOOT_POSITION) {
+	     movePickupMechanism(0.3);
+	 } else if (armEncoder > SHOOT_POSITION) {
+	     movePickupMechanism(-0.3);
+	 }
+     }
     //move to shoot position with potentiometer values
     public static void moveToShootPotentiometer(double targetCatchPosition, double speed, boolean buttonShootPot) {
         double remainingDistance = targetCatchPosition -  armPotentiometer; 
@@ -132,25 +148,25 @@ public class RobotPickup {
                 moveGamePiece(1.0);
             } else if (buttonShootPot && ballInPickUpLimit && (remainingDistance < 0)) {
                 moveGamePiece(0);
-                movePickUpMechanism(speed);
+                movePickupMechanism(speed);
             } else if (buttonShootPot && ballInPickUpLimit && (remainingDistance >= 0)) {
                 moveGamePiece(0);
-                movePickUpMechanism(0);
+                movePickupMechanism(0);
             }
         }
         if (upperLimit & buttonShootPot && (remainingDistance > 0)) {
-                movePickUpMechanism(-speed);
-            } else if (buttonShootPot && (remainingDistance <= 0)) {
-                movePickUpMechanism(0);
+                movePickupMechanism(-speed);
+        } else if (buttonShootPot && (remainingDistance <= 0)) {
+                movePickupMechanism(0);
         }
     }
      
     //automatically sucks in game piece and moves to shooting position
     public static void moveToCatchPosition() {  
         if (!upperLimit) {
-            movePickUpMechanism(1.0);
+            movePickupMechanism(1.0);
         } else { 
-            movePickUpMechanism(0.0); 
+            movePickupMechanism(0.0); 
             liftRollerArm();
         }   
     }
@@ -158,7 +174,7 @@ public class RobotPickup {
     /*public static void moveToShootFromCatch(double targetCatchPosition, double speed, boolean buttonShootFromCatch) {
         double remainingDistance = targetCatchPosition - armEncoder;
         if (buttonShootFromCatch && (remainingDistance < 0)) {
-            movePickUpMechanism(speed);
+            movePickupMechanism(speed);
         }
     }*/
 
@@ -170,9 +186,9 @@ public class RobotPickup {
     // moves from the bottom position to the shoot position
     public static void moveToBottomPosition() {
         if (!lowerLimit) {
-            movePickUpMechanism(-1.0);
+            movePickupMechanism(-1.0);
         } else {
-            movePickUpMechanism(0.0);
+            movePickupMechanism(0.0);
         }
     }
 
@@ -180,7 +196,7 @@ public class RobotPickup {
         double remainingDistance = targetShootPosition - armEncoder; //assuming armEncoderVal is negative
 
         if ((!upperLimit || buttonCatchToShoot) && (remainingDistance < 0)) {
-            movePickUpMechanism(speed);
+            movePickupMechanism(speed);
 
         }
     }*/
@@ -188,7 +204,7 @@ public class RobotPickup {
     // checks the fail mode
     public static void pickUpFailMode(boolean buttonFail) {
         if (buttonFail) {
-            movePickUpMechanism(0);
+            movePickupMechanism(0);
             moveGamePiece(0);
             RobotActuators.rollerArmUp.set(false);
             RobotActuators.rollerArmDown.set(false);
