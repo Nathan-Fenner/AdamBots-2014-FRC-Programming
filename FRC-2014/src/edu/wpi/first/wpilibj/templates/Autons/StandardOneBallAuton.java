@@ -10,9 +10,9 @@ package edu.wpi.first.wpilibj.templates.Autons;
  *
  * @author Tyler
  */
-public class StandardAuton {
+public class StandardOneBallAuton {
     
-    public StandardAuton() {
+    public StandardOneBallAuton() {
 	
     }
 }
