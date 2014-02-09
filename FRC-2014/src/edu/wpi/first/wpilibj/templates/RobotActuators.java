@@ -28,6 +28,12 @@ public class RobotActuators {
     public static Solenoid greenLEDStrip;
     public static Solenoid redLEDStrip;
     public static Solenoid yellowGroundFXStrip;
+    public static Relay groundLEDStrip1;
+    public static Relay groundLEDStrip2;
+    public static Relay groundLEDStrip3;
+    public static Relay groundLEDStrip4;
+    public static Relay LEDStripRightPanel;
+    public static Relay LEDStripLeftPanel;
 
     public static void initialize() {
         // Motors
