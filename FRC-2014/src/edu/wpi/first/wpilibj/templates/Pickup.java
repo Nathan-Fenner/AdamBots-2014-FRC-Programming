@@ -30,7 +30,10 @@ public class Pickup {
     
     // initializes everything
     public static void init() {
-	
+	rollerArmUp = false;
+	rollerArmDown = true;
+	pickupMechSpeed = 0.0;
+	gamePieceIntakeSpeed = 0.0;
     }
     
     // moves to the desired shoot location
@@ -63,9 +66,18 @@ public class Pickup {
 	}
     }
     
-    // moves the pickup mech
-    public static void movePickup(double speed) {
+    // moves the pickup mech while ignoring the Encoder
+    public static void movePickupIgnoreEncoder(double speed) {
 	pickupMechSpeed = speed;
+    }
+    
+    // moves the pickup mech and doesnt ignore the encoder
+    public static void movePickup(double speed) {
+	if (pickupEncoder != SHOOTER_POSITION) {
+	    pickupMechSpeed = speed;
+	} else {
+	    pickupMechSpeed = 0.0;
+	}
     }
     
     // checks if the gamePiece is in the position to be loaded
