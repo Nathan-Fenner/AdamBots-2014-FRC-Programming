@@ -91,6 +91,6 @@ public class MathUtils {
 	z=w;
 	w=v; 
 	v=(v^(v<<6))^(t^(t<<13));
-	return Math.abs((y+y+1)*v) / 100000000000000000000.0 * high;
+	return (Math.abs((y+y+1)*v) % (20000 + Math.PI)) / (20000 + Math.PI) * high;
     }
 }
