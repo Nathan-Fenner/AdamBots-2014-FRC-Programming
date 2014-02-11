@@ -35,40 +35,40 @@ public class RobotPickup {
     public static void initialize() {
         rollerMotorSpeed = 0.5;
         armMotorSpeed = 0.5;
-        
-        RobotSensors.pickupSystemEncoder.reset();
-        RobotSensors.pickupSystemEncoder.start();
+
+        //RobotSensors.pickupSystemEncoder.reset();
+        //RobotSensors.pickupSystemEncoder.start();
 	//RobotSensors.PICKUP_SYSTEM_ENCODER.start();  //assumed that it is initialized in RobotSensors class
     }
-    
+
     // checks if the shooter is loaded
     public static boolean ifLoaded() {
         return ballInPickUpLimit;
     }
-    
+
 
     //INSERT CODE HERE
 
     /*public static void suckGamePiece() {
      RobotActuators.PICKUP_ROLLER_ARM_MOTOR.set(1); //Don't know if 1 or -1 right now
      }
-    
+
      public static void spitGamePiece() {
      RobotActuators.PICKUP_ROLLER_ARM_MOTOR.set(-1);
      }
-    
+
      public static void stopSuckingGamePiece() {
      RobotActuators.PICKUP_ROLLER_ARM_MOTOR.set(0);
      }
-    
+
      public static void raisePickUpMechanism() {
      RobotActuators.PICKUP_SYSTEM_MOTOR.set(1);
      }
-    
+
      public static void lowerPickUpMechanism() {
      RobotActuators.PICKUP_SYSTEM_MOTOR.set(-1);
      }
-    
+
      public static void stopMovingPickUpMechanism() {
      RobotActuators.PICKUP_SYSTEM_MOTOR.set(0);
      } */
@@ -77,13 +77,13 @@ public class RobotPickup {
     }*/
 
     //raises upper roller arm for shooting
-    public static void liftRollerArm() { 
+    public static void liftRollerArm() {
         RobotActuators.rollerArmUp.set(true);
         RobotActuators.rollerArmDown.set(false);
     }
 
     //lowers upper roller arm
-    public static void lowerRollerArm() { 
+    public static void lowerRollerArm() {
         RobotActuators.rollerArmUp.set(false);
         RobotActuators.rollerArmDown.set(true);
     }
@@ -94,19 +94,19 @@ public class RobotPickup {
      RobotActuators.ROLLER_ARM_UP.set(false);
      }
      */
-    
+
     //turns on pickup rollers for ball intake
-    public static void moveGamePiece(double speed) { 
+    public static void moveGamePiece(double speed) {
         rollerMotorSpeed = speed;
     }
 
     //moves pickup mechanism up and down
-    public static void movePickupMechanism(double speed) { 
+    public static void movePickupMechanism(double speed) {
         armMotorSpeed = speed;
     }
-    
+
     //moves pickup mechanism into position for catching
-     public static void moveToShoot(double targetCatchPosition, double speed, boolean buttonShoot) { 
+     public static void moveToShoot(double targetCatchPosition, double speed, boolean buttonShoot) {
         double remainingDistance = targetCatchPosition - armEncoder;
         if (lowerLimit) {
             if(!ballInPickUpLimit) {
@@ -119,14 +119,14 @@ public class RobotPickup {
                 movePickupMechanism(0);
             }
        }
-        
+
        if (upperLimit & buttonShoot && (remainingDistance > 0)) {
             movePickupMechanism(-speed);
        } else if (buttonShoot && (remainingDistance <= 0)) {
            movePickupMechanism(0);
        }
     }
-     
+
      public static void moveToShoot() {
 	 if (armEncoder > SHOOT_POSITION - TOLERANCE && armEncoder < SHOOT_POSITION + TOLERANCE) {
 	     movePickupMechanism(0.0);
@@ -142,7 +142,7 @@ public class RobotPickup {
      }
     //move to shoot position with potentiometer values
     public static void moveToShootPotentiometer(double targetCatchPosition, double speed, boolean buttonShootPot) {
-        double remainingDistance = targetCatchPosition -  armPotentiometer; 
+        double remainingDistance = targetCatchPosition -  armPotentiometer;
         if(lowerLimit){
             if(!ballInPickUpLimit){
                 moveGamePiece(1.0);
@@ -160,17 +160,17 @@ public class RobotPickup {
                 movePickupMechanism(0);
         }
     }
-     
+
     //automatically sucks in game piece and moves to shooting position
-    public static void moveToCatchPosition() {  
+    public static void moveToCatchPosition() {
         if (!upperLimit) {
             movePickupMechanism(1.0);
-        } else { 
-            movePickupMechanism(0.0); 
+        } else {
+            movePickupMechanism(0.0);
             liftRollerArm();
-        }   
+        }
     }
-    
+
     /*public static void moveToShootFromCatch(double targetCatchPosition, double speed, boolean buttonShootFromCatch) {
         double remainingDistance = targetCatchPosition - armEncoder;
         if (buttonShootFromCatch && (remainingDistance < 0)) {
@@ -182,7 +182,7 @@ public class RobotPickup {
         liftRollerArm(); //same as liftRollerArm class
 
     }*/
-    
+
     // moves from the bottom position to the shoot position
     public static void moveToBottomPosition() {
         if (!lowerLimit) {
@@ -223,41 +223,41 @@ public class RobotPickup {
             moveToCatchPosition();
         }
     }
-    
+
     /*public static void testMethodMoveToShoot(boolean buttonTestA) {
-     if(buttonTestA) 
+     if(buttonTestA)
      moveToShootPosition();
      }
-        
+
      public static void testMethodCatchEncoder(boolean buttonTestB) {
      if(buttonTestB)
      moveToCatchWithEncoder(1000,1,true);
      }
-    
+
      public static void testMethodCatchToShootEncoder(boolean buttonTestC) {
      if(buttonTestC)
      moveFromCatchToShoot(500, 1, true);
-        
+
      }
      /*
      public static void automatedGamePieceIntake() {
-        
+
      }
      */
-    
+
         // normal update method
     public static void update() {
-        armEncoder = RobotSensors.pickupSystemEncoder.get();
+        armEncoder = RobotSensors.pickupPotentiometer.get();
         upperLimit = RobotSensors.pickupSystemUpLim.get();
         ballInPickUpLimit = RobotSensors.ballReadyToLiftLim.get();
         lowerLimit = RobotSensors.pickupSystemDownLim.get();
         armPotentiometer = RobotSensors.pickupPotentiometer.get();
-        
+
         RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
         RobotActuators.pickupSystemMotor.set(armMotorSpeed);
-        
+
         System.out.println(armPotentiometer);
-        
+
         /*SmartDashboard.putBoolean("upperLimit", upperLimit);
         SmartDashboard.putBoolean("lowerLimit", lowerLimit);
         SmartDashboard.putBoolean("ballInPickUpLimit", ballInPickUpLimit);

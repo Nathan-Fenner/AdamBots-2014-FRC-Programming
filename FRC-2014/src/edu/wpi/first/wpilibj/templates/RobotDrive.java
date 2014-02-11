@@ -37,8 +37,11 @@ public abstract class RobotDrive {
 		RobotSensors.leftDriveEncoder.setDistancePerPulse((Math.PI * 0.5) / 360);
 	}
 ////METHODS---------------------------------------------------------------------
-	private static double smooth_rate = 0.05;
-	private static double shift_rate = 1.00;
+	private static double smooth_rate = 4*124/10000.0;
+	private static double shift_rate = 4*67/10000;
+
+			//4.283 smooth
+		//6.540 shift
 
 	/**
 	 * In inches
@@ -67,6 +70,20 @@ public abstract class RobotDrive {
 
 	public static void update() {
 
+		SmartDashboard.putNumber("Current Left", currentSpeedLeft + RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Measured Left", pwmFromTPS(velocityLeft)+ RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Target Left", targetSpeedLeft + RobotTeleop.r / 800.0);
+
+		SmartDashboard.putNumber("Current Right", currentSpeedRight + RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Measured Right", pwmFromTPS(velocityRight)+ RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Target Right", targetSpeedRight + RobotTeleop.r / 800.0);
+
+		SmartDashboard.putNumber("Smooth Rate", smooth_rate * 10000);
+		SmartDashboard.putNumber("Shift Rate",shift_rate * 10000);
+
+		smooth_rate += Gamepad.primary.getRightX() / 10000.0;
+		shift_rate += Gamepad.primary.getRightY() / 10000.0;
+
 		currentSpeedLeft += smooth_rate * (targetSpeedLeft - currentSpeedLeft);
 		currentSpeedRight += smooth_rate * (targetSpeedRight - currentSpeedRight);
 		currentSpeedLeft += MathUtils.sign(targetSpeedLeft - currentSpeedLeft)
@@ -78,19 +95,20 @@ public abstract class RobotDrive {
 		clock.reset();
 
 		int leftEncoder = RobotSensors.leftDriveEncoder.get();
-		int rightEncoder = RobotSensors.rightDriveEncoder.get();
+		int rightEncoder = -RobotSensors.rightDriveEncoder.get();
 
 		velocityLeft = (leftEncoder - encoderLastLeft) / dt;
-		velocityRight = -(rightEncoder - encoderLastRight) / dt;
+		velocityRight = (rightEncoder - encoderLastRight) / dt;
 
 		encoderLastLeft = leftEncoder;
 		encoderLastRight = rightEncoder;
 
 		// Use currentSpeed and velocity to set raw
-		double fastLeft = currentSpeedLeft + 0.3 * (pwmFromTPS(velocityLeft)
+		double fastLeft = currentSpeedLeft - 0.5 * (pwmFromTPS(velocityLeft)
 				- currentSpeedLeft);
-		double fastRight = currentSpeedRight + 0.3 * (pwmFromTPS(velocityRight)
+		double fastRight = currentSpeedRight - 0.5 * (pwmFromTPS(velocityRight)
 				- currentSpeedRight);
+		SmartDashboard.putNumber("Fast Left", fastLeft);
 		RobotDrive.driveSetRaw(fastLeft, fastRight);
 	}
 
