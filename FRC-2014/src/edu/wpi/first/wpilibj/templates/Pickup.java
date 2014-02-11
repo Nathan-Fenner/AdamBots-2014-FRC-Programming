@@ -104,7 +104,6 @@ public class Pickup {
 	} else {
 	    gamePieceIntakeSpeed = 0.0;
 	}
-	
     }
     
     // passes the game piece
@@ -122,13 +121,37 @@ public class Pickup {
 	gamePieceIntakeSpeed = 0.0;
     }
     
-    // updates everything
+    // Estops the entire pickup
+    public static void estopPickup() {
+	pickupMechSpeed = 0.0;
+	gamePieceIntakeSpeed = 0.0;
+	rollerArmUp = false;
+	rollerArmDown = false;
+    }
+    
+    // Safety to make sure that it stops when it hits the limit switch
+    public static void safety() {
+	if (lowerLimit && pickupMechSpeed < 0) {
+	    pickupMechSpeed = 0;
+	}
+	if (upperLimit && pickupMechSpeed > 0) {
+	    pickupMechSpeed = 0;
+	}
+	if (loaded) {
+	    gamePieceIntakeSpeed = 0;
+	}
+    }
+    
+    // Updates everything
     public static void update() {
 	// gets all the sensors needed
 	pickupEncoder = RobotSensors.pickupPotentiometer.get();
 	lowerLimit = RobotSensors.pickupSystemDownLim.get();
 	upperLimit = RobotSensors.pickupSystemUpLim.get();
 	loaded = RobotSensors.shooterLoadedLim.get();
+	
+	// safety
+	safety();
 	
 	// sets all the actuators needed
 	RobotActuators.rollerArmUp.set(rollerArmUp);
