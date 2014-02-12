@@ -13,8 +13,12 @@ package edu.wpi.first.wpilibj.templates;
 public class Pickup {
     
     //// VARIABLES -------------------------------------------------------------
-    public static final double SHOOTER_POSITION = 50;
-    public static final double PICKUP_TOLERANCE = 2;
+    public static final double SHOOTER_POSITION = 50.0;
+    public static final double PICKUP_TOLERANCE = 2.0;
+    public static final double MAX_SPEED = 1.0;
+    public static final double MIN_SPEED = -1.0;
+    public static final double LOWER_LIMIT_POSITION = 100.0;
+    public static final double UPPER_LIMIT_POSITION = 0.0;
     
     //// SETTING VARIABLES -----------------------------------------------------
     public static boolean rollerArmUp;
@@ -27,6 +31,7 @@ public class Pickup {
     public static boolean lowerLimit;
     public static boolean upperLimit;
     public static boolean loaded;
+    public static double offset;
     
     // initializes everything
     public static void init() {
@@ -34,15 +39,16 @@ public class Pickup {
 	rollerArmDown = true;
 	pickupMechSpeed = 0.0;
 	gamePieceIntakeSpeed = 0.0;
+	offset = 0.0;
     }
     
     // moves to the desired shoot location
     // Might have to be done using PIDs later on
     public static void moveToShoot() {
-	if (pickupEncoder < SHOOTER_POSITION) {
-	    pickupMechSpeed = 1.0;
-	} else if (pickupEncoder > SHOOTER_POSITION) {
-	    pickupMechSpeed = -1.0;
+	if (pickupEncoder - offset <= SHOOTER_POSITION - PICKUP_TOLERANCE) {
+	    pickupMechSpeed = MAX_SPEED;
+	} else if (pickupEncoder - offset >= SHOOTER_POSITION + PICKUP_TOLERANCE) {
+	    pickupMechSpeed = MIN_SPEED;
 	} else {
 	    pickupMechSpeed = 0.0;
 	}
@@ -51,8 +57,9 @@ public class Pickup {
     // moves the pickup mech to the floor
     public static void moveToFloor() {
 	if (!lowerLimit) {
-	    pickupMechSpeed = -1.0;
+	    pickupMechSpeed = MIN_SPEED;
 	} else {
+	    resetEncoder();
 	    pickupMechSpeed = 0.0;
 	}
     }
@@ -60,8 +67,9 @@ public class Pickup {
     // moves the pickup mech to catch
     public static void moveToCatch() {
 	if (!upperLimit) {
-	    pickupMechSpeed = 1.0;
+	    pickupMechSpeed = MAX_SPEED;
 	} else {
+	    resetEncoder();
 	    pickupMechSpeed = 0.0;
 	}
     }
@@ -72,8 +80,10 @@ public class Pickup {
     }
     
     // moves the pickup mech and doesnt ignore the encoder
+    //// TODO: ADD IN THE TOLERANCE ------------------------------------------------------------------------
+    ////       TAKE THE || TRUE OUT WHEN EVERYTHING IS WORKING
     public static void movePickup(double speed) {
-	if (pickupEncoder != SHOOTER_POSITION) {
+	if (pickupEncoder - offset != SHOOTER_POSITION && (true || RobotShoot.unwind())) {
 	    pickupMechSpeed = speed;
 	} else {
 	    pickupMechSpeed = 0.0;
@@ -87,8 +97,11 @@ public class Pickup {
     
     // raises the top arm
     public static void raiseTopArm() {
-	rollerArmUp = true;
-        rollerArmDown = false;
+	if (pickupMechSpeed == 0 && lowerLimit) {
+	    resetEncoder();
+	    rollerArmUp = true;
+	    rollerArmDown = false;
+	}
     }
     
     // lowers the top arm
@@ -100,7 +113,7 @@ public class Pickup {
     // intakes the game piece
     public static void intakeGamePiece() {
 	if (!loaded) {
-	    gamePieceIntakeSpeed = 1.0;
+	    gamePieceIntakeSpeed = MAX_SPEED;
 	} else {
 	    gamePieceIntakeSpeed = 0.0;
 	}
@@ -108,7 +121,7 @@ public class Pickup {
     
     // passes the game piece
     public static void passGamePiece() {
-	gamePieceIntakeSpeed = -1.0;
+	gamePieceIntakeSpeed = MIN_SPEED;
     }
     
     // stops the pickup mech
@@ -129,13 +142,23 @@ public class Pickup {
 	rollerArmDown = false;
     }
     
+    // Resets the Encoder
+    public static void resetEncoder() {
+	if (upperLimit) {
+	    offset = RobotSensors.pickupSystemEncoder.get() + UPPER_LIMIT_POSITION;
+	} else if (lowerLimit) {
+	    offset = -RobotSensors.pickupSystemEncoder.get() + LOWER_LIMIT_POSITION;
+	}
+    }
+    
     // Safety to make sure that it stops when it hits the limit switch
     public static void safety() {
 	if (lowerLimit && pickupMechSpeed < 0) {
 	    pickupMechSpeed = 0;
-	}
-	if (upperLimit && pickupMechSpeed > 0) {
+	    resetEncoder();
+	} else if (upperLimit && pickupMechSpeed > 0) {
 	    pickupMechSpeed = 0;
+	    resetEncoder();
 	}
 	if (loaded) {
 	    gamePieceIntakeSpeed = 0;
@@ -150,13 +173,10 @@ public class Pickup {
 	upperLimit = RobotSensors.pickupSystemUpLim.get();
 	loaded = RobotSensors.shooterLoadedLim.get();
 	
-	// safety
-	safety();
-	
 	// sets all the actuators needed
 	RobotActuators.rollerArmUp.set(rollerArmUp);
 	RobotActuators.rollerArmDown.set(rollerArmDown);
-	RobotActuators.pickupSystemMotor.set(pickupMechSpeed);
-	RobotActuators.pickupSystemMotor.set(gamePieceIntakeSpeed);
+	RobotActuators.pickupMechMotor.set(pickupMechSpeed);
+	RobotActuators.pickupRollerArmMotor.set(gamePieceIntakeSpeed);
     }
 }

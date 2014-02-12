@@ -135,7 +135,7 @@ public class RobotPickupShooterSequence {
         armPotentiometer = RobotSensors.pickupPotentiometer.get();
         
         RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
-        RobotActuators.pickupSystemMotor.set(armMotorSpeed);
+        RobotActuators.pickupMechMotor.set(armMotorSpeed);
         
         readyToShootButton = FancyJoystick.secondary.getRawButton(FancyJoystick.BUTTON_A);
         

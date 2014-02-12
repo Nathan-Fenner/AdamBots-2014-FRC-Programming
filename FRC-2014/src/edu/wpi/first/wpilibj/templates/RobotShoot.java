@@ -74,7 +74,7 @@ public class RobotShoot {
     //and returns the limit value
     public static boolean unwind() {
 	currentStage = "4";
-	if (!RobotSensors.shooterAtBack.get()&& RobotSensors.shooterWinchEncoder.get()<= MAX_REVS) {
+	if (!RobotSensors.shooterAtBack.get() && RobotSensors.shooterWinchEncoder.get() <= MAX_REVS) {
 	    manualUnwind();
 	}
 	return (RobotSensors.shooterAtBack.get());
@@ -143,11 +143,13 @@ public class RobotShoot {
     
     //// PRIVATE METHODS -------------------------------------------------------
     // sets speed to the unwind speed
+    //// TODO: CHANGE NAME
     private static void manualUnwind() {
 	updatedSpeed = UNWIND_SPEED;
     }
     
     // sets the speed to the wind speed
+    //// TODO: CHANGE NAME
     private static void manualWind() {
 	updatedSpeed = WIND_SPEED;
     }

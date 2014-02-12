@@ -17,7 +17,7 @@ public class RobotActuators {
     public static Victor leftDrive;
     public static Victor rightDrive;
     public static Talon pickupRollerArmMotor;
-    public static Talon pickupSystemMotor;
+    public static Talon pickupMechMotor;
     public static Talon shooterWinch;
     public static Relay compressor;
     public static Relay cameraLEDs;
@@ -39,7 +39,7 @@ public class RobotActuators {
         // Motors
         rightDrive = new Victor(1);
         leftDrive = new Victor(2);
-        pickupSystemMotor = new Talon(3);
+        pickupMechMotor = new Talon(3);
         pickupRollerArmMotor = new Talon(4);
         shooterWinch = new Talon(5);
 

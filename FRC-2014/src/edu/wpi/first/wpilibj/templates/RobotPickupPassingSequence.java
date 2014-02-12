@@ -81,7 +81,7 @@ public class RobotPickupPassingSequence {
         armPotentiometer = RobotSensors.pickupPotentiometer.get();
         
         RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
-        RobotActuators.pickupSystemMotor.set(armMotorSpeed);
+        RobotActuators.pickupMechMotor.set(armMotorSpeed);
         
         //rollGamePieceOutButton = FancyJoystick.secondary.getRawButton(FancyJoystick.BUTTON_B);
         

@@ -6,5 +6,12 @@
             <file>file:/C:/Users/Robin%20Onsay/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/RobotDrive.java</file>
             <file>file:/C:/Users/Robin%20Onsay/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/RobotSensors.java</file>
         </group>
+        <group name="robotics">
+            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/RobotShoot.java</file>
+            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/Pickup.java</file>
+            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/RobotSensors.java</file>
+            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/MainRobot.java</file>
+            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/RobotActuators.java</file>
+        </group>
     </open-files>
 </project-private>
