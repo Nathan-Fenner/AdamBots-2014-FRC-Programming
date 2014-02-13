@@ -24,6 +24,7 @@ public abstract class RobotDrive {
 	private static double targetSpeedRight = 0.0;
 	private static double currentSpeedLeft = 0.0;
 	private static double currentSpeedRight = 0.0;
+
 	private static Timer clock;
 
 ////INIT------------------------------------------------------------------------
@@ -37,8 +38,8 @@ public abstract class RobotDrive {
 		RobotSensors.leftDriveEncoder.setDistancePerPulse((Math.PI * 0.5) / 360);
 	}
 ////METHODS---------------------------------------------------------------------
-	private static double smooth_rate = 4*124/10000.0;
-	private static double shift_rate = 4*67/10000;
+	private static double shift_up = 300.0 / 10000.0;
+	private static double shift_down = 200.0 / 10000.0;
 
 			//4.283 smooth
 		//6.540 shift
@@ -78,18 +79,28 @@ public abstract class RobotDrive {
 		SmartDashboard.putNumber("Measured Right", pwmFromTPS(velocityRight)+ RobotTeleop.r / 800.0);
 		SmartDashboard.putNumber("Target Right", targetSpeedRight + RobotTeleop.r / 800.0);
 
-		SmartDashboard.putNumber("Smooth Rate", smooth_rate * 10000);
-		SmartDashboard.putNumber("Shift Rate",shift_rate * 10000);
+		SmartDashboard.putNumber("Shift Up", shift_up * 10000);
+		SmartDashboard.putNumber("Shift Down",shift_down * 10000);
 
-		smooth_rate += Gamepad.primary.getRightX() / 10000.0;
-		shift_rate += Gamepad.primary.getRightY() / 10000.0;
+		shift_up += Gamepad.secondary.getRightX() / 10000.0;
+		shift_down += Gamepad.secondary.getRightY() / 10000.0;
 
-		currentSpeedLeft += smooth_rate * (targetSpeedLeft - currentSpeedLeft);
-		currentSpeedRight += smooth_rate * (targetSpeedRight - currentSpeedRight);
+
+		double shift_left = (MathUtils.sign(targetSpeedLeft) == MathUtils.sign(targetSpeedLeft - currentSpeedLeft)) ? shift_up : shift_down;
+		double shift_right = (MathUtils.sign(targetSpeedRight) == MathUtils.sign(targetSpeedRight - currentSpeedRight)) ? shift_up : shift_down;
+
 		currentSpeedLeft += MathUtils.sign(targetSpeedLeft - currentSpeedLeft)
-				* Math.min(Math.abs(targetSpeedLeft - currentSpeedLeft), shift_rate);
+				* Math.min(Math.abs(targetSpeedLeft - currentSpeedLeft), shift_left);
 		currentSpeedRight += MathUtils.sign(targetSpeedRight - currentSpeedRight)
-				* Math.min(Math.abs(targetSpeedRight - currentSpeedRight), shift_rate);
+				* Math.min(Math.abs(targetSpeedRight - currentSpeedRight), shift_right);
+
+		if (Gamepad.secondary.getX()) {
+			SmartDashboard.putString("smooth", "no smooth");
+			currentSpeedLeft = targetSpeedLeft;
+			currentSpeedRight = targetSpeedRight;
+		} else {
+			SmartDashboard.putString("smooth","smoothing");
+		}
 
 		double dt = clock.get();
 		clock.reset();
@@ -108,7 +119,16 @@ public abstract class RobotDrive {
 				- currentSpeedLeft);
 		double fastRight = currentSpeedRight - 0.5 * (pwmFromTPS(velocityRight)
 				- currentSpeedRight);
-		SmartDashboard.putNumber("Fast Left", fastLeft);
+
+		if (Gamepad.secondary.getY()) {
+			SmartDashboard.putString("fast","no fast");
+			fastLeft = currentSpeedLeft;
+			fastRight = currentSpeedRight;
+		} else {
+			SmartDashboard.putString("fast","fasting");
+		}
+
+		SmartDashboard.putNumber("Fast Left", fastLeft + RobotTeleop.r / 800.0);
 		RobotDrive.driveSetRaw(fastLeft, fastRight);
 	}
 
