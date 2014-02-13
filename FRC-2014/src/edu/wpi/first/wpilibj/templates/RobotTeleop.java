@@ -21,15 +21,14 @@ public class RobotTeleop {
 	public static void update() {
 
 		if (Gamepad.primary.getX()) {
-			// shift
+			RobotDrive.shiftHigh();
 		}
 		if (Gamepad.primary.getY()) {
-			// shift
+			RobotDrive.shiftLow();
 		}
 
 		// Begin drive control
 
-		SmartDashboard.putNumber("Cap Mode (0:Limit, 1:Round)", cap_mode);
 		double forwardRate = Gamepad.primary.getTriggers();
 		double turnRate = Gamepad.primary.getLeftX();
 		double leftDrive = forwardRate - turnRate;
@@ -57,6 +56,7 @@ public class RobotTeleop {
 		r = (r + 0.001) % 1.0;
 		// End Drive Control
 
+
 		//TODO: check if sign is correct
 		//RobotPickup.moveGamePiece(Gamepad.primary.getRightY() + Gamepad.secondary.getRightY());
 		// both can control it, if needed
@@ -68,7 +68,7 @@ public class RobotTeleop {
 		if (Gamepad.secondary.getY()) {
 			RobotPickup.liftRollerArm();
 		} else if (Gamepad.secondary.getX()) {
-			RobotPickup.lowerRollerArm();
+			RobotPickup.openRollerArm();
 		} else {
 			//RobotPickup.neutralRollerArm();
 		}

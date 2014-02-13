@@ -32,33 +32,33 @@ public class RobotShoot {
      //These next few lines are for getting the current and voltage through an analog channel
     public static double voltage;
     public static double current;
-    
+
     //// INIT ------------------------------------------------------------------
     public static void initialize() {
 	automatedShootOnce = false;
 	timer = new Timer();
 	updatedSpeed = 0.0;
-	currentStage = new String();
+	currentStage = "";
 	RobotSensors.shooterWinchEncoder.start();
     }
-    
+
     //// STAGES ----------------------------------------------------------------
     // releases the latch
     public static void releaseBall() {
 	currentStage = "1";
-	if(RobotPickup.ifLoaded()){
+	if(RobotPickup.isBallInPickup()){
             RobotActuators.latchRelease.set(false);
             timer.start();
             stageOneDone = true;
         }
     }
-    
+
     // Is Shown in our diagram as the shooter head moving forward
     // Nothing that is controlled is happening now
     public static void ballInMotion() {
 	currentStage = "2";
     }
-    
+
     // waiting the 0.5 seconds before unwinding the shooter motor
     public static void waitToUnwind() {
 	currentStage = "3";
@@ -69,7 +69,7 @@ public class RobotShoot {
 	    stageThreeDone = true;
 	}
     }
-    
+
     // unwindes the shooter until it hits the back limit switch or reaches max revolutions
     //and returns the limit value
     public static boolean unwind() {
@@ -79,13 +79,13 @@ public class RobotShoot {
 	}
 	return (RobotSensors.shooterAtBack.get());
     }
-    
+
     // relatches the shooter
     public static void latchShooter() {
 	currentStage = "5";
 	RobotActuators.latchRelease.set(true);
     }
-    
+
     // rewinds the shooter
     public static boolean rewindShooter() {
 	currentStage = "6";
@@ -95,7 +95,7 @@ public class RobotShoot {
 	}
 	automatedShootOnce = true;
 	return true;
-               
+
     }
     /**
      * This is a method for a quick shot, it will be pretensioned by another method
@@ -127,52 +127,52 @@ public class RobotShoot {
 	    stopMotors();
 	}
     }
-    
+
     // RobotShootShoot
     public static void manualShoot() {
-	/*if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A)) 
+	/*if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A))
 	    updatedSpeed = 0.5;
-	else if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B)) 
+	else if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B))
 	    updatedSpeed = -0.5;
         else
             updatedSpeed = 0.0;*/
-        
+
         updatedSpeed = Gamepad.primary.getTriggers();
     }
-    
+
     // resets to be able to shoot again
     public static void shootAgain() {
 	automatedShootOnce = false;
     }
-    
+
     //// PRIVATE METHODS -------------------------------------------------------
     // sets speed to the unwind speed
     //// TODO: CHANGE NAME
     private static void manualUnwind() {
 	updatedSpeed = UNWIND_SPEED;
     }
-    
+
     // sets the speed to the wind speed
     //// TODO: CHANGE NAME
     private static void manualWind() {
 	updatedSpeed = WIND_SPEED;
     }
-    
+
     // sets the speed to 0.0
     private static void stopMotors() {
 	updatedSpeed = 0.0;
     }
-    
+
     //// UPDATE METHODS --------------------------------------------------------
     public static void update() {
 	// checks the safety
 	if(RobotSensors.shooterLoadedLim.get()){
 	    stopMotors();
 	}
-	
+
 	// sets motor
 	RobotActuators.shooterWinch.set(updatedSpeed);
-	
+
 	// prints to smart dashboard
 	SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());
 	SmartDashboard.putString("Stage: ", currentStage);
@@ -180,13 +180,13 @@ public class RobotShoot {
 	SmartDashboard.putBoolean("Shooter at back", RobotSensors.shooterAtBack.get());
     }
 //STOP METHOD
-    
+
 ////CURRENT CHECK CODE (ask Debjit)
     public static void getCurrent() {
         voltage = RobotSensors.currentSensor.getVoltage();
         current = (voltage - 500) * 0.05 - 100;
         System.out.println("Current = " + current + " Voltage = " + voltage); //Not too sure about the units, though. (most likely milli-)
-        
+
         //Where I got the equation from:
         //http://www.allegromicro.com/en/Products/Current-Sensor-ICs/Fifty-To-Two-Hundred-Amp-Integrated-Conductor-Sensor-ICs/ACS758/ACS758-Frequently-Asked-Questions.aspx#Q4
     }
