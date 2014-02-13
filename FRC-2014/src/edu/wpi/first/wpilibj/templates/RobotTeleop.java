@@ -20,16 +20,14 @@ public class RobotTeleop {
 
 	public static void update() {
 
-		if (Gamepad.primary.getX()) {
-			// shift
-		}
-		if (Gamepad.primary.getY()) {
-			// shift
+		if (Gamepad.primary.getB()) {
+			RobotDrive.shiftHigh();
+		} else if (Gamepad.primary.getA()) {
+			RobotDrive.shiftLow();
 		}
 
 		// Begin drive control
 
-		SmartDashboard.putNumber("Cap Mode (0:Limit, 1:Round)", cap_mode);
 		double forwardRate = Gamepad.primary.getTriggers();
 		double turnRate = Gamepad.primary.getLeftX();
 		double leftDrive = forwardRate - turnRate;
@@ -53,25 +51,34 @@ public class RobotTeleop {
 			rightPWM /= cap_scale;
 		}
 		RobotDrive.drive(leftPWM, rightPWM);
-		//SmartDashboard.putNumber("left drive", leftDrive + (r = (r + 0.001) % 1.0) / 800.0);
-		r = (r + 0.001) % 1.0;
+
+		r = (r + 0.001) % 1.0; // used for SmartDashboard control
+
 		// End Drive Control
 
+		// Robot Pickup Control:
+
+		// both can control it, potentially fighting with each other
+		// care must be taken here
 		//TODO: check if sign is correct
-		//RobotPickup.moveGamePiece(Gamepad.primary.getRightY() + Gamepad.secondary.getRightY());
-		// both can control it, if needed
-		// perhaps come up with a better way
+		RobotPickup.setRollerSpeed(Gamepad.primary.getRightY() + Gamepad.secondary.getLeftY());
+
+		RobotPickup.adjustArmAngle(Gamepad.secondary.getTriggers());
 
 
-		//TODO: add override functionality to RobotPickup
+		RobotPickup.overrideEncoder(Gamepad.secondary.getBack());
+		RobotPickup.setOverrideSpeed(Gamepad.secondary.getTriggers() / 3.0);
+
 
 		if (Gamepad.secondary.getY()) {
-			RobotPickup.liftRollerArm();
+			RobotPickup.openRollerArm();
 		} else if (Gamepad.secondary.getX()) {
-			RobotPickup.lowerRollerArm();
+			RobotPickup.closeRollerArm();
 		} else {
-			//RobotPickup.neutralRollerArm();
+			RobotPickup.neutralRollerArm();
 		}
+
+
 
 		//TODO: make robotshoot possible to use
 
