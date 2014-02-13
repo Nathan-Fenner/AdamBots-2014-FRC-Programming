@@ -26,12 +26,9 @@ public class MainRobot extends IterativeRobot {
     public void robotInit() {
         RobotActuators.initialize();
         RobotSensors.initialize();
-        //RobotPickup.initialize();
         RobotDrive.initialize();
         RobotPickup.initialize();
-        //RobotDrive.initialize();
-	//RobotShoot.initialize();
-        //RobotShoot.initialize();
+        RobotShoot.initialize();
     }
 
     /**
@@ -56,16 +53,17 @@ public class MainRobot extends IterativeRobot {
         //runCompressor();
 //        RobotDrive.update();
 //        RobotDrive.driveStraight(0.5);
-	//RobotShoot.update();
+	RobotShoot.update();
 	//RobotShoot.automatedShoot();
-
+        RobotShoot.manualShoot();
+        System.out.println("Shooter Encoder: " + RobotSensors.shooterWinchEncoder.get());
         //RobotPickUp.update();
         //RobotPickUp.test(true, false, false);
-
+        
         //RobotPickUp.update();
         //RobotPickUp.test(false, false, true);
-        RobotTeleop.update();
-		RobotDrive.update();
+        //RobotTeleop.update();
+	//RobotDrive.update();
         //RobotShoot.manualWind(FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A), FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B));
     }
 

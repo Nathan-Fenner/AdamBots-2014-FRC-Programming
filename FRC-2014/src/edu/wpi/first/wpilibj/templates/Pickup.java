@@ -80,14 +80,14 @@ public class Pickup {
     }
     
     // moves the pickup mech and doesnt ignore the encoder
-    //// TODO: ADD IN THE TOLERANCE ------------------------------------------------------------------------
-    ////       TAKE THE || TRUE OUT WHEN EVERYTHING IS WORKING
+    //// TODO: TAKE THE || TRUE OUT WHEN EVERYTHING IS WORKING
     public static void movePickup(double speed) {
-	if (pickupEncoder - offset != SHOOTER_POSITION && (true || RobotShoot.unwind())) {
-	    pickupMechSpeed = speed;
-	} else {
+	if ((pickupEncoder - offset < SHOOTER_POSITION - PICKUP_TOLERANCE || pickupEncoder - offset > SHOOTER_POSITION + PICKUP_TOLERANCE) && (true || RobotShoot.unwind())) {
+            pickupMechSpeed = speed;
+        } else {
 	    pickupMechSpeed = 0.0;
 	}
+        safety();
     }
     
     // checks if the gamePiece is in the position to be loaded
@@ -145,9 +145,9 @@ public class Pickup {
     // Resets the Encoder
     public static void resetEncoder() {
 	if (upperLimit) {
-	    offset = RobotSensors.pickupSystemEncoder.get() + UPPER_LIMIT_POSITION;
+	    offset = RobotSensors.pickupPotentiometer.get() + UPPER_LIMIT_POSITION;
 	} else if (lowerLimit) {
-	    offset = -RobotSensors.pickupSystemEncoder.get() + LOWER_LIMIT_POSITION;
+	    offset = -RobotSensors.pickupPotentiometer.get() + LOWER_LIMIT_POSITION;
 	}
     }
     

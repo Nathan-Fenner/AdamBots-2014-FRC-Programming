@@ -254,7 +254,7 @@ public class RobotPickup {
         armPotentiometer = RobotSensors.pickupPotentiometer.get();
 
         RobotActuators.pickupRollerArmMotor.set(rollerMotorSpeed);
-        RobotActuators.pickupSystemMotor.set(armMotorSpeed);
+        RobotActuators.pickupMechMotor.set(armMotorSpeed);
 
         System.out.println(armPotentiometer);
 

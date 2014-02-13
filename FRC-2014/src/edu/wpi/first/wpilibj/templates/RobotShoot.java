@@ -130,10 +130,14 @@ public class RobotShoot {
     
     // RobotShootShoot
     public static void manualShoot() {
-	if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A)) 
+	/*if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A)) 
 	    updatedSpeed = 0.5;
 	else if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B)) 
 	    updatedSpeed = -0.5;
+        else
+            updatedSpeed = 0.0;*/
+        
+        updatedSpeed = Gamepad.primary.getTriggers();
     }
     
     // resets to be able to shoot again
