@@ -129,6 +129,7 @@ public class RobotShoot {
     }
     
     // RobotShootShoot
+    // If issue with triggers, uncomment the code below
     public static void manualShoot() {
 	/*if (FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A)) 
 	    updatedSpeed = 0.5;
