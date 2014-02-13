@@ -1,7 +1,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 /**
- * 
+ *
  * @author Nathan
  */
 
@@ -11,9 +11,10 @@ public class RobotPickup {
 	private static final double PICKUP_POSITION = 30;
 	private static final double SHOOT_POSITION = 60;
 	private static final double CATCH_POSITION = 90;
-	private static double armTargetLocation = 0.0;
+	private static double armTargetAngle = 0.0;
 	private static boolean overrideEncoder = false;
 	private static double overrideSetValue = 0.0;
+	private static boolean ignoreLimitSwitches = false;
 
 	public static void setOverrideSpeed(double speed) {
 		overrideSetValue = speed;
@@ -29,8 +30,17 @@ public class RobotPickup {
 		RobotActuators.rollerArmDown.set(true);
 	}
 
+	public static void neutralRollerArm() {
+		RobotActuators.rollerArmUp.set(false);
+		RobotActuators.rollerArmDown.set(false);
+	}
+
 	public static void setRollerSpeed(double speed) {
 		RobotActuators.pickupRollerArmMotor.set(speed);
+	}
+
+	public static void adjustArmAngle(double adjustAngle) {
+		armTargetAngle += adjustAngle;
 	}
 
 	public static boolean isUpperLimitReached() {
@@ -46,7 +56,7 @@ public class RobotPickup {
 	}
 
 	public static void movePickupToAngle(double givenAngle) {
-		armTargetLocation = givenAngle;
+		armTargetAngle = givenAngle;
 	}
 
 	public static void moveToPickupPosition() {
@@ -62,7 +72,7 @@ public class RobotPickup {
 	}
 
 	public static boolean isPickupInPosition() {
-		return Math.abs(armEncoderPosition() - armTargetLocation) < ANGLE_TOLERANCE;
+		return Math.abs(armEncoderPosition() - armTargetAngle) < ANGLE_TOLERANCE;
 	}
 
 	public static double armEncoderPosition() {
@@ -78,28 +88,32 @@ public class RobotPickup {
 		overrideEncoder = doOverride;
 	}
 
-	public static void enterOverrideMode() {
+	public static void setIgnoreLimits(boolean ignore) {
+		ignoreLimitSwitches = ignore;
+	}
+
+	public static void enterOverrideEncoderMode() {
 		overrideEncoder(true);
 	}
 
-	public static void exitOverrideMode() {
+	public static void exitOverrideEncoderMode() {
 		overrideEncoder(false);
 	}
 
 	public static void update() {
 		double mechSpeed = 0.0;
 		if (overrideEncoder) {
-			if (!isUpperLimitReached() && overrideSetValue > 0) {
+			if ((!isUpperLimitReached() || ignoreLimitSwitches) && overrideSetValue > 0) {
 				mechSpeed = overrideSetValue;
 			}
-			if (!isLowerLimitReached() && overrideSetValue < 0) {
+			if ((!isLowerLimitReached() || ignoreLimitSwitches) && overrideSetValue < 0) {
 				mechSpeed = overrideSetValue;
 			}
 		} else {
-			if (!isUpperLimitReached() && armEncoderPosition() < armTargetLocation - ANGLE_TOLERANCE) {
+			if ((!isUpperLimitReached() || ignoreLimitSwitches) && armEncoderPosition() < armTargetAngle - ANGLE_TOLERANCE) {
 				mechSpeed = 0.1;
 			}
-			if (!isLowerLimitReached() && armEncoderPosition() > armTargetLocation + ANGLE_TOLERANCE) {
+			if ((!isLowerLimitReached() || ignoreLimitSwitches) && armEncoderPosition() > armTargetAngle + ANGLE_TOLERANCE) {
 				mechSpeed = -0.1;
 			}
 		}
