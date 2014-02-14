@@ -5,8 +5,6 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 /**
  *
  * @author Nathan
@@ -64,7 +62,6 @@ public class RobotTeleop {
 		RobotPickup.setRollerSpeed(Gamepad.primary.getRightY() + Gamepad.secondary.getLeftY());
 
 		RobotPickup.adjustArmAngle(Gamepad.secondary.getTriggers());
-
 
 		RobotPickup.overrideEncoder(Gamepad.secondary.getBack());
 		RobotPickup.setOverrideSpeed(Gamepad.secondary.getTriggers() / 3.0);
