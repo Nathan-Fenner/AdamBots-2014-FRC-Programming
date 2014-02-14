@@ -94,14 +94,6 @@ public abstract class RobotDrive {
 		currentSpeedRight += MathUtils.sign(targetSpeedRight - currentSpeedRight)
 				* Math.min(Math.abs(targetSpeedRight - currentSpeedRight), shift_right);
 
-		if (Gamepad.secondary.getX()) {
-			SmartDashboard.putString("smooth", "no smooth");
-			currentSpeedLeft = targetSpeedLeft;
-			currentSpeedRight = targetSpeedRight;
-		} else {
-			SmartDashboard.putString("smooth","smoothing");
-		}
-
 		double dt = clock.get();
 		clock.reset();
 
