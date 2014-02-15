@@ -21,6 +21,7 @@ public class RobotTeleop {
 	private static boolean pickupPositionDebounce = false;
 	private static boolean catchClosing = false;
 	private static boolean catchClosingDebounce = false;
+	private static boolean shootDebounce = false;
 
 	public static void update() {
 
@@ -130,8 +131,14 @@ public class RobotTeleop {
 			catchClosingDebounce = false;
 		}
 
-		//TODO: make robotshoot possible to use
-
+		if (Math.abs(Gamepad.secondary.getTriggers()) > 0.9) {
+			if (!shootDebounce) {
+				RobotShoot.shoot();
+			}
+			shootDebounce = true;
+		} else {
+			shootDebounce = false;
+		}
 
 	}
 	public static double r = 0.0;
