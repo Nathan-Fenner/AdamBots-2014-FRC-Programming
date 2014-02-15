@@ -18,17 +18,21 @@ public class RobotVision {
 	private static final String BEAGELIP = "10.2.45.3:3000";
 
 	public static void initialize() {
+		System.out.println("Robot Vision Intialize");
 		Thread q = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
 					try {
-						Thread.sleep(200);
+						System.out.println("Loop");
+						Thread.sleep(30);
 						retrieve();
 					} catch (Exception e) {
+						System.out.println("Exception in thread: " + e);
 					}
 				}
 			}
 		});
+		q.start();
 	}
 
 	public static String getProperty(String s) {
@@ -63,35 +67,12 @@ public class RobotVision {
 	}
 
 	public static double parseNumber(String s) {
-		double v = 0.0;
-		double sign = 1.0;
-		if (s.length() == 0) {
+		try {
+			s = s.trim();
+			return Double.parseDouble(s);
+		} catch (Exception e) {
 			return 0.0;
 		}
-		if (s.charAt(0) == '-') {
-			sign = -1.0;
-			s = s.substring(1);
-		}
-		int i = 0;
-		for (; i < s.length(); i++) {
-			char c = s.charAt(i);
-			int d = (c - '9');
-			if (d < 0 || d > 9) {
-				i++;
-				break;
-			}
-			v = v * 10.0 + d;
-		}
-		double e = 1;
-		for (; i < s.length(); i++) {
-			char c = s.charAt(i);
-			int d = (c - '9');
-			if (d >= 0 && d <= 9) {
-				e *= 0.1;
-				v += d * e;
-			}
-		}
-		return v * sign;
 	}
 
 	public static double getNumber(String key) {
@@ -118,8 +99,25 @@ public class RobotVision {
 		return (getNumber("blue ball") / 320 - 0.5) * 40;
 	}
 
+	public static double highBlueBall() {
+		return getNumber("blue high");
+	}
+
+	public static double highRedBall() {
+		return getNumber("red high");
+	}
+
+	public static double blueBallDist() {
+		return getNumber("blue ball dist");
+	}
+
+	public static double redBallDist() {
+		return getNumber("red ball dist");
+	}
+
 	public static void retrieve() {
 		try {
+			System.out.println("Retrieve called.");
 			SocketConnection http = (SocketConnection) Connector.open("socket://" + BEAGELIP);
 			InputStream data = http.openInputStream();
 			database = "";

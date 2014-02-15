@@ -49,7 +49,7 @@ public class RobotSensors {
 		pickupSystemUpLim = new DigitalInput(7);
 		shooterLoadedLim = new DigitalInput(8);
 		shooterAtBack = new DigitalInput(9);
-		pressureSwitch = new DigitalInput(14);
+		pressureSwitch = new DigitalInput(10);
 
 		//// Digital 1 Serial
 		accelerometer = new ADXL345_I2C(1, ADXL345_I2C.DataFormat_Range.k2G);

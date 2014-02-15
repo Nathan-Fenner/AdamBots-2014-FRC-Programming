@@ -1,17 +1,18 @@
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  *
  * @author Nathan
  */
 
 public class RobotPickup {
-
-	private static final double ANGLE_TOLERANCE = 0.02;
-	private static final double PICKUP_POSITION = 30;
-	private static final double SHOOT_POSITION = 60;
+	private static final double ANGLE_TOLERANCE = 2;
+	private static final double PICKUP_POSITION = -15;
+	private static final double SHOOT_POSITION = 45;
 	private static final double CATCH_POSITION = 90;
-	private static double armTargetAngle = 0.0;
+	private static double armTargetAngle = 0;
 	private static boolean overrideEncoder = false;
 	private static double overrideSetValue = 0.0;
 	private static boolean ignoreLimitSwitches = false;
@@ -21,13 +22,16 @@ public class RobotPickup {
 	}
 
 	public static void openRollerArm() {
-		RobotActuators.rollerArmUp.set(true);
-		RobotActuators.rollerArmDown.set(false);
+		if (getArmAngleAboveHorizontal() > 80 || isUpperLimitReached()) {
+			return;
+		}
+		RobotActuators.rollerArmUp.set(false);
+		RobotActuators.rollerArmDown.set(true);
 	}
 
 	public static void closeRollerArm() {
-		RobotActuators.rollerArmUp.set(false);
-		RobotActuators.rollerArmDown.set(true);
+		RobotActuators.rollerArmUp.set(true);
+		RobotActuators.rollerArmDown.set(false);
 	}
 
 	public static void neutralRollerArm() {
@@ -72,12 +76,12 @@ public class RobotPickup {
 	}
 
 	public static boolean isPickupInPosition() {
-		return Math.abs(armEncoderPosition() - armTargetAngle) < ANGLE_TOLERANCE;
+		return Math.abs(getArmAngleAboveHorizontal() - armTargetAngle) < ANGLE_TOLERANCE;
 	}
 
-	public static double armEncoderPosition() {
+	public static double getArmAngleAboveHorizontal() {
 		// apply some function to this to convert to angle
-		return RobotSensors.pickupPotentiometer.get();
+		return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68;
 	}
 
 	public static void initialize() {
@@ -110,13 +114,14 @@ public class RobotPickup {
 				mechSpeed = overrideSetValue;
 			}
 		} else {
-			if ((!isUpperLimitReached() || ignoreLimitSwitches) && armEncoderPosition() < armTargetAngle - ANGLE_TOLERANCE) {
-				mechSpeed = 0.1;
+			if (getArmAngleAboveHorizontal() < armTargetAngle && (!isUpperLimitReached() || ignoreLimitSwitches)) {
+				mechSpeed = -0.25 * Math.min(1, Math.abs(getArmAngleAboveHorizontal() - armTargetAngle) / 25.0);
 			}
-			if ((!isLowerLimitReached() || ignoreLimitSwitches) && armEncoderPosition() > armTargetAngle + ANGLE_TOLERANCE) {
-				mechSpeed = -0.1;
+			if (getArmAngleAboveHorizontal() > armTargetAngle && (!isLowerLimitReached() || ignoreLimitSwitches)) {
+				mechSpeed = 0.2 * Math.min(1, Math.abs(getArmAngleAboveHorizontal() - armTargetAngle) / 25.0);
 			}
 		}
+		SmartDashboard.putNumber("Angle",RobotTeleop.r  / 800.0 + getArmAngleAboveHorizontal());
 		RobotActuators.pickupMechMotor.set(mechSpeed);
 	}
 }

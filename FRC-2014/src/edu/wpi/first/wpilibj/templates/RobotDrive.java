@@ -24,7 +24,6 @@ public abstract class RobotDrive {
 	private static double targetSpeedRight = 0.0;
 	private static double currentSpeedLeft = 0.0;
 	private static double currentSpeedRight = 0.0;
-
 	private static Timer clock;
 
 ////INIT------------------------------------------------------------------------
@@ -38,12 +37,11 @@ public abstract class RobotDrive {
 		RobotSensors.leftDriveEncoder.setDistancePerPulse((Math.PI * 0.5) / 360);
 	}
 ////METHODS---------------------------------------------------------------------
-	private static double shift_up = 300.0 / 10000.0;
-	private static double shift_down = 200.0 / 10000.0;
+	private static double shift_up = 3.0 / 10.0;
+	private static double shift_down = 20.0 / 100.0;
 
-			//4.283 smooth
-		//6.540 shift
-
+	//4.283 smooth
+	//6.540 shift
 	/**
 	 * In inches
 	 *
@@ -52,6 +50,7 @@ public abstract class RobotDrive {
 	public static double getEncoderLeftInches() {
 		return RobotSensors.leftDriveEncoder.get() * distancePerTick;
 	}
+
 	public static int getEncoderLeftTicks() {
 		return RobotSensors.leftDriveEncoder.get();
 	}
@@ -65,26 +64,12 @@ public abstract class RobotDrive {
 		return -RobotSensors.rightDriveEncoder.get() * distancePerTick;
 		// it's negative
 	}
-		public static int getEncoderRightTicks() {
+
+	public static int getEncoderRightTicks() {
 		return RobotSensors.rightDriveEncoder.get();
 	}
 
 	public static void update() {
-
-		SmartDashboard.putNumber("Current Left", currentSpeedLeft + RobotTeleop.r / 800.0);
-		SmartDashboard.putNumber("Measured Left", pwmFromTPS(velocityLeft)+ RobotTeleop.r / 800.0);
-		SmartDashboard.putNumber("Target Left", targetSpeedLeft + RobotTeleop.r / 800.0);
-
-		SmartDashboard.putNumber("Current Right", currentSpeedRight + RobotTeleop.r / 800.0);
-		SmartDashboard.putNumber("Measured Right", pwmFromTPS(velocityRight)+ RobotTeleop.r / 800.0);
-		SmartDashboard.putNumber("Target Right", targetSpeedRight + RobotTeleop.r / 800.0);
-
-		SmartDashboard.putNumber("Shift Up", shift_up * 10000);
-		SmartDashboard.putNumber("Shift Down",shift_down * 10000);
-
-		shift_up += Gamepad.secondary.getRightX() / 10000.0;
-		shift_down += Gamepad.secondary.getRightY() / 10000.0;
-
 
 		double shift_left = (MathUtils.sign(targetSpeedLeft) == MathUtils.sign(targetSpeedLeft - currentSpeedLeft)) ? shift_up : shift_down;
 		double shift_right = (MathUtils.sign(targetSpeedRight) == MathUtils.sign(targetSpeedRight - currentSpeedRight)) ? shift_up : shift_down;
@@ -106,22 +91,22 @@ public abstract class RobotDrive {
 		encoderLastLeft = leftEncoder;
 		encoderLastRight = rightEncoder;
 
+		SmartDashboard.putNumber("Current Left", currentSpeedLeft + RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Measured Left", pwmFromTPS(velocityLeft) + RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Target Left", targetSpeedLeft + RobotTeleop.r / 800.0);
+
+		SmartDashboard.putNumber("Current Right", currentSpeedRight + RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Measured Right", pwmFromTPS(velocityRight) + RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Target Right", targetSpeedRight + RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Drive Encoder Left", getEncoderLeftTicks());
+		SmartDashboard.putNumber("Drive Encoder Right", getEncoderRightTicks());
+
+		SmartDashboard.putNumber("Shift Up", shift_up * 10000);
+		SmartDashboard.putNumber("Shift Down", shift_down * 10000);
+
+
 		// Use currentSpeed and velocity to set raw
-		double fastLeft = currentSpeedLeft - 0.5 * (pwmFromTPS(velocityLeft)
-				- currentSpeedLeft);
-		double fastRight = currentSpeedRight - 0.5 * (pwmFromTPS(velocityRight)
-				- currentSpeedRight);
-
-		if (Gamepad.secondary.getY()) {
-			SmartDashboard.putString("fast","no fast");
-			fastLeft = currentSpeedLeft;
-			fastRight = currentSpeedRight;
-		} else {
-			SmartDashboard.putString("fast","fasting");
-		}
-
-		SmartDashboard.putNumber("Fast Left", fastLeft + RobotTeleop.r / 800.0);
-		RobotDrive.driveSetRaw(fastLeft, fastRight);
+		RobotDrive.driveSetRaw(currentSpeedLeft, currentSpeedRight);
 	}
 
 	public static double pwmFromRPM(double rpm) {
@@ -179,11 +164,11 @@ public abstract class RobotDrive {
 	}
 
 	public static void shiftHigh() {
-		RobotActuators.shifter.set(false);
+		RobotActuators.shifter.set(true);
 	}
 
 	public static void shiftLow() {
-		RobotActuators.shifter.set(true);
+		RobotActuators.shifter.set(false);
 	}
 
 	// autoshifts gears

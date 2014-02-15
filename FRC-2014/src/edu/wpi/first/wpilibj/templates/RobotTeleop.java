@@ -5,6 +5,8 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  *
  * @author Nathan
@@ -15,6 +17,10 @@ public class RobotTeleop {
 	private static final int cap_limit = 0;
 	private static final int cap_round = 1;
 	static double fine_speed = 0.0;
+	private static int pickupPosition = 0;
+	private static boolean pickupPositionDebounce = false;
+	private static boolean catchClosing = false;
+	private static boolean catchClosingDebounce = false;
 
 	public static void update() {
 
@@ -31,8 +37,15 @@ public class RobotTeleop {
 		double leftDrive = forwardRate - turnRate;
 		double rightDrive = forwardRate + turnRate;
 
+		SmartDashboard.putNumber("Left Drive Sum", leftDrive);
+		SmartDashboard.putNumber("Right Drive Sum", rightDrive);
+
 		double leftPWM = RobotDrive.pwmFromTPS(leftDrive * 900);
 		double rightPWM = RobotDrive.pwmFromTPS(rightDrive * 900);
+
+		SmartDashboard.putNumber("Left Curve Value", leftPWM);
+		SmartDashboard.putNumber("Right Curve Value", rightPWM);
+
 		// it is a problem if leftDrive or rightDrive has a magnitude exceeding 1.
 		// two strategies: both will be tested to see how they work
 		// ONE: cap them independently
@@ -58,10 +71,9 @@ public class RobotTeleop {
 
 		// both can control it, potentially fighting with each other
 		// care must be taken here
-		//TODO: check if sign is correct
 		RobotPickup.setRollerSpeed(Gamepad.primary.getRightY() + Gamepad.secondary.getLeftY());
 
-		RobotPickup.adjustArmAngle(Gamepad.secondary.getTriggers());
+		//RobotPickup.adjustArmAngle(Gamepad.secondary.getTriggers());
 
 		RobotPickup.overrideEncoder(Gamepad.secondary.getBack());
 		RobotPickup.setOverrideSpeed(Gamepad.secondary.getTriggers() / 3.0);
@@ -75,7 +87,48 @@ public class RobotTeleop {
 			RobotPickup.neutralRollerArm();
 		}
 
+		if (Gamepad.secondary.getLB() || Gamepad.secondary.getRB()) {
+			if (!pickupPositionDebounce) {
+				if (Gamepad.secondary.getLB()) {
+					pickupPosition--;
+				}
+				if (Gamepad.secondary.getRB()) {
+					pickupPosition++;
+				}
+				pickupPosition = Math.max(0, Math.min(2, pickupPosition));
+			}
+			pickupPositionDebounce = true;
+		} else {
+			pickupPositionDebounce = false;
+		}
 
+		switch (pickupPosition) {
+			case 0:
+				RobotPickup.moveToPickupPosition();
+				break;
+			case 1:
+				RobotPickup.moveToShootPosition();
+				break;
+			case 2:
+				RobotPickup.moveToCatchPosition();
+				break;
+		}
+
+		if (Gamepad.secondary.getA()) {
+			if (!catchClosingDebounce) {
+				catchClosing = false;
+			}
+			catchClosingDebounce = true;
+			double col = RobotVision.highBlueBall();
+			if (col > 5) {
+				catchClosing = true;
+			}
+			if (catchClosing) {
+				RobotPickup.closeRollerArm();
+			}
+		} else {
+			catchClosingDebounce = false;
+		}
 
 		//TODO: make robotshoot possible to use
 
