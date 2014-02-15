@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  * @author Nathan
  */
-
 public class RobotPickup {
+
 	private static final double ANGLE_TOLERANCE = 2;
 	private static final double PICKUP_POSITION = -15;
 	private static final double SHOOT_POSITION = 45;
@@ -79,6 +79,22 @@ public class RobotPickup {
 		return Math.abs(getArmAngleAboveHorizontal() - armTargetAngle) < ANGLE_TOLERANCE;
 	}
 
+	public static boolean isPickupInPosition(double angle) {
+		return Math.abs(getArmAngleAboveHorizontal() - angle) < ANGLE_TOLERANCE;
+	}
+
+	public static boolean isPickupInPickupPosition() {
+		return isPickupInPosition(PICKUP_POSITION);
+	}
+
+	public static boolean isPickupInShootPosition() {
+		return isPickupInPosition(SHOOT_POSITION);
+	}
+
+	public static boolean isPickupInCatchPosition() {
+		return isPickupInPosition(CATCH_POSITION);
+	}
+
 	public static double getArmAngleAboveHorizontal() {
 		// apply some function to this to convert to angle
 		return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68;
@@ -121,7 +137,7 @@ public class RobotPickup {
 				mechSpeed = 0.2 * Math.min(1, Math.abs(getArmAngleAboveHorizontal() - armTargetAngle) / 25.0);
 			}
 		}
-		SmartDashboard.putNumber("Angle",RobotTeleop.r  / 800.0 + getArmAngleAboveHorizontal());
+		SmartDashboard.putNumber("Angle", RobotTeleop.r / 800.0 + getArmAngleAboveHorizontal());
 		RobotActuators.pickupMechMotor.set(mechSpeed);
 	}
 }
