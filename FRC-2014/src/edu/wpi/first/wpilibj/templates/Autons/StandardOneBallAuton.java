@@ -13,27 +13,22 @@ import edu.wpi.first.wpilibj.templates.*;
  * @author Tyler
  */
 public class StandardOneBallAuton {
-    
     //// VARIABLES -------------------------------------------------------------
     public static double speed;
     public static int step;
-    public static boolean isAtSpot;
-    public static boolean shooterInPosition;
     public static Timer timer;
     public static double startMovingBack;
     public static final double STRAIGHT_DISTANCE = 50; // needs to be found in testing
     public static final double BACKWARDS_DISTANCE = -50; // needs to be found in testing
-    
     public static double averageDriveEncoder;
     public static double pickupAngle;
     
     // init
     public static void initialize() {
-	timer = new Timer();
-	timer.start();
 	startMovingBack = 0.0;
 	speed = 0.0;
 	step = 0;
+	timer = new Timer();
     }
     
     // constructor
@@ -43,6 +38,9 @@ public class StandardOneBallAuton {
     
     // Moves forward while putting the arm down
     public static void stepOne() {
+	if (timer.get() == 0.0) {
+	    timer.start();
+	}
 	if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
 	    RobotDrive.driveSetRaw(speed * ((averageDriveEncoder + 0.15) / STRAIGHT_DISTANCE),
 		    speed * ((averageDriveEncoder + 0.15) / STRAIGHT_DISTANCE));	    
