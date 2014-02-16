@@ -61,12 +61,12 @@ public abstract class RobotDrive {
 	 * @return
 	 */
 	public static double getEncoderRightInches() {
-		return -RobotSensors.rightDriveEncoder.get() * distancePerTick;
-		// it's negative
+		return RobotSensors.rightDriveEncoder.get() * distancePerTick;
 	}
 
 	public static int getEncoderRightTicks() {
-		return RobotSensors.rightDriveEncoder.get();
+		return -RobotSensors.rightDriveEncoder.get();
+		// it's negative
 	}
 
 	public static void update() {
@@ -116,7 +116,7 @@ public abstract class RobotDrive {
 	/**
 	 * Transforms a rotation rate to a PWM value
 	 * @param tps Ticks per second
-	 * @return 
+	 * @return
 	 */
 	public static double pwmFromTPS(double tps) {
 		return (0.1139 * MathUtils.exp(0.0024 * Math.abs(tps)) - .1139) * MathUtils.sign(tps) / (0.987642579 - .1139);
