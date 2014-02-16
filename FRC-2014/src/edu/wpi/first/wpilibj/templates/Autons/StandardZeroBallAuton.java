@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.templates.*;
 public class StandardZeroBallAuton {
 
 	//// VARIABLES -------------------------------------------------------------
-	public static double speed;
+	public static final double speed = 0.5;
 	public static int step;
 	public static double averageDriveEncoder;
 	public static final double STRAIGHT_DISTANCE = 50;
@@ -22,6 +22,7 @@ public class StandardZeroBallAuton {
 	
 	public static void intialize() {
 		step = 1;
+		averageDriveEncoder = 0.0;
 	}
 
 	// Auton step one
