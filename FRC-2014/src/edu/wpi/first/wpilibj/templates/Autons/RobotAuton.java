@@ -22,7 +22,6 @@ public class RobotAuton {
 	public static double averageDriveEncoder;
 	public static double distanceMultiplier;
 	public static final double DRIVE_TOLERANCE = 2;
-	public static final double STRAIGHT_DISTANCE = 50; // needs to be found in testing
 	public static final double DISTANCE_TO_TRUSS = 50;
 	public static final int SHOOTER_TOLERANCE = 2;
 	public static boolean movingBack;
