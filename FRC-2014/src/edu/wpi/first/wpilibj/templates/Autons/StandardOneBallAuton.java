@@ -21,12 +21,19 @@ public class StandardOneBallAuton {
     public static boolean shooterInPosition;
     public static Timer timer;
     public static double startMovingBack;
+    public static final double STRAIGHT_DISTANCE = 50; // needs to be found in testing
+    public static final double BACKWARDS_DISTANCE = -50; // needs to be found in testing
+    
+    public static double averageDriveEncoder;
+    public static double pickupAngle;
     
     // init
     public static void initialize() {
 	timer = new Timer();
 	timer.start();
 	startMovingBack = 0.0;
+	speed = 0.0;
+	step = 0;
     }
     
     // constructor
@@ -36,10 +43,19 @@ public class StandardOneBallAuton {
     
     // Moves forward while putting the arm down
     public static void stepOne() {
+	if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
+	    RobotDrive.driveSetRaw(speed * ((averageDriveEncoder + 0.15) / STRAIGHT_DISTANCE),
+		    speed * ((averageDriveEncoder + 0.15) / STRAIGHT_DISTANCE));	    
+	} else {
+	    speed = 0.0;
+	}
+	
+	if (RobotPickup.isPickupInShootPosition()) {
+	    RobotPickup.moveToShootPosition();
+	}
+	
 	step = 1;
-	isAtSpot = RobotAuton.driveDistance(RobotAuton.STRAIGHT_DISTANCE);
-	shooterInPosition = RobotAuton.pickupToPosition(RobotPickup.SHOOT_POSITION, RobotPickup.TOLERANCE);
-	if (isAtSpot && shooterInPosition) {
+	if (averageDriveEncoder <= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
 	    stepTwo();
 	}
     }
@@ -47,23 +63,33 @@ public class StandardOneBallAuton {
     // doesnt do anything because it's covered in a method called from step 1
     public static void stepTwo() {
 	step = 2;
+	stepThree();
     }
     
     // shoots if the goal is hot or waits if the goal isnt
     public static void stepThree() {
-	step = 3;
 	if (RobotVision.isHot() || timer.get() >= 5) {
-	    RobotAuton.shoot();
+	    RobotShoot.shoot();
 	    startMovingBack = timer.get() + 0.5;
 	}
 	if (startMovingBack <= timer.get()) {
+	    step = 3;
 	    stepFour();
 	}
+	
     }
     
     // moves back to the white line
     public static void stepFour() {
-	step = 3;
-	RobotAuton.driveDistance(-(RobotAuton.STRAIGHT_DISTANCE + RobotAuton.DISTANCE_TO_TRUSS));
+	if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
+	    RobotDrive.driveSetRaw(-speed * ((averageDriveEncoder + 0.15) / BACKWARDS_DISTANCE), -speed * ((averageDriveEncoder + 0.15) / BACKWARDS_DISTANCE));
+	}
+	step = 4;
+    }
+    
+    // update method
+    public static void update() {
+	averageDriveEncoder = (RobotDrive.getEncoderLeftTicks() + RobotDrive.getEncoderRightTicks())/2.0;
+	pickupAngle = RobotPickup.getArmAngleAboveHorizontal();
     }
 }
