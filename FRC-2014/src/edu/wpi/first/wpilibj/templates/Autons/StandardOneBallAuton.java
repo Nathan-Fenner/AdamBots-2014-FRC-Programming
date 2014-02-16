@@ -3,91 +3,97 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package edu.wpi.first.wpilibj.templates.Autons;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.templates.*;
+
 /**
  *
  * @author Tyler
  */
 public class StandardOneBallAuton {
     //// VARIABLES -------------------------------------------------------------
-    public static double speed;
+
+    public static final double speed = 0.5;
     public static int step;
     public static Timer timer;
     public static double startMovingBack;
     public static final double STRAIGHT_DISTANCE = 50; // needs to be found in testing
     public static final double BACKWARDS_DISTANCE = -50; // needs to be found in testing
     public static double averageDriveEncoder;
-    public static double pickupAngle;
-    
+
     // init
     public static void initialize() {
-	startMovingBack = 0.0;
-	speed = 0.0;
-	step = 0;
-	timer = new Timer();
+        startMovingBack = 0.0;
+        step = 1;
+        timer = new Timer();
     }
-    
-    // constructor
-    public StandardOneBallAuton() {
-	
-    }
-    
+
     // Moves forward while putting the arm down
     public static void stepOne() {
-	if (timer.get() == 0.0) {
-	    timer.start();
-	}
-	if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
-	    RobotDrive.driveSetRaw(speed * ((averageDriveEncoder + 0.15) / STRAIGHT_DISTANCE),
-		    speed * ((averageDriveEncoder + 0.15) / STRAIGHT_DISTANCE));	    
-	} else {
-	    speed = 0.0;
-	}
-	
-	if (RobotPickup.isPickupInShootPosition()) {
-	    RobotPickup.moveToShootPosition();
-	}
-	
-	step = 1;
-	if (averageDriveEncoder <= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
-	    stepTwo();
-	}
+        if (timer.get() == 0.0) {
+            timer.start();
+        }
+        if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
+            double forward = speed * Math.max(-1,Math.min(1,(STRAIGHT_DISTANCE - averageDriveEncoder)/1000.0 )) + .2;
+            RobotDrive.driveSetRaw(forward, forward);
+        } else {
+            RobotDrive.driveSetRaw(0, 0);
+        }
+
+        RobotPickup.moveToShootPosition();
+
+        if (averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
+            step = 2;
+        }
     }
-    
+
     // doesnt do anything because it's covered in a method called from step 1
     public static void stepTwo() {
-	step = 2;
-	stepThree();
+        if (RobotVision.isHot() || timer.get() >= 5) {
+            RobotShoot.shoot();
+            startMovingBack = timer.get() + 0.5;
+            step = 3;
+        }
     }
-    
+
     // shoots if the goal is hot or waits if the goal isnt
     public static void stepThree() {
-	if (RobotVision.isHot() || timer.get() >= 5) {
-	    RobotShoot.shoot();
-	    startMovingBack = timer.get() + 0.5;
-	}
-	if (startMovingBack <= timer.get()) {
-	    step = 3;
-	    stepFour();
-	}
-	
+        if (startMovingBack <= timer.get()) {
+            step = 4;
+        }
     }
-    
+
     // moves back to the white line
     public static void stepFour() {
-	if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
-	    RobotDrive.driveSetRaw(-speed * ((averageDriveEncoder + 0.15) / BACKWARDS_DISTANCE), -speed * ((averageDriveEncoder + 0.15) / BACKWARDS_DISTANCE));
-	}
-	step = 4;
+        if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
+            double forward = speed * Math.max(-1,Math.min(1,(BACKWARDS_DISTANCE - averageDriveEncoder)/1000.0 )) - .2;
+            //Forward is negative, so actually, backwards, but counting in the direction of forwards.
+            RobotDrive.driveSetRaw(forward,forward);
+        } else {
+            step = 5;
+        }
     }
-    
+
     // update method
     public static void update() {
-	averageDriveEncoder = (RobotDrive.getEncoderLeftTicks() + RobotDrive.getEncoderRightTicks())/2.0;
-	pickupAngle = RobotPickup.getArmAngleAboveHorizontal();
+        averageDriveEncoder = (RobotDrive.getEncoderLeftTicks() + RobotDrive.getEncoderRightTicks()) / 2.0;
+        switch (step) {
+            case 1:
+                stepOne();
+                break;
+            case 2:
+                stepTwo();
+                break;
+            case 3:
+                stepThree();
+                break;
+            case 4:
+                stepFour();
+                break;
+            default:
+                break;
+        }
     }
 }
