@@ -22,6 +22,8 @@ public class RobotTeleop {
 	private static boolean catchClosing = false;
 	private static boolean catchClosingDebounce = false;
 	private static boolean shootDebounce = false;
+	
+	public static double DEBUG_OSCILLATE = 0.0;
 
 	public static void update() {
 
@@ -64,7 +66,7 @@ public class RobotTeleop {
 		}
 		RobotDrive.drive(leftPWM, rightPWM);
 
-		r = (r + 0.001) % 1.0; // used for SmartDashboard control
+		DEBUG_OSCILLATE = (DEBUG_OSCILLATE + 0.001) % 1.0; // used for SmartDashboard control
 
 		// End Drive Control
 
@@ -141,5 +143,4 @@ public class RobotTeleop {
 		}
 
 	}
-	public static double r = 0.0;
 }

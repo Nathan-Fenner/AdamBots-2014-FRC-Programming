@@ -137,7 +137,7 @@ public class RobotPickup {
 				mechSpeed = 0.2 * Math.min(1, Math.abs(getArmAngleAboveHorizontal() - armTargetAngle) / 25.0);
 			}
 		}
-		SmartDashboard.putNumber("Angle", RobotTeleop.r / 800.0 + getArmAngleAboveHorizontal());
+		SmartDashboard.putNumber("Angle", RobotTeleop.DEBUG_OSCILLATE / 800.0 + getArmAngleAboveHorizontal());
 		RobotActuators.pickupMechMotor.set(mechSpeed);
 	}
 }

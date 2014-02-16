@@ -91,13 +91,13 @@ public abstract class RobotDrive {
 		encoderLastLeft = leftEncoder;
 		encoderLastRight = rightEncoder;
 
-		SmartDashboard.putNumber("Current Left", currentSpeedLeft + RobotTeleop.r / 800.0);
-		SmartDashboard.putNumber("Measured Left", pwmFromTPS(velocityLeft) + RobotTeleop.r / 800.0);
-		SmartDashboard.putNumber("Target Left", targetSpeedLeft + RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Current Left", currentSpeedLeft + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		SmartDashboard.putNumber("Measured Left", pwmFromTPS(velocityLeft) + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		SmartDashboard.putNumber("Target Left", targetSpeedLeft + RobotTeleop.DEBUG_OSCILLATE / 800.0);
 
-		SmartDashboard.putNumber("Current Right", currentSpeedRight + RobotTeleop.r / 800.0);
-		SmartDashboard.putNumber("Measured Right", pwmFromTPS(velocityRight) + RobotTeleop.r / 800.0);
-		SmartDashboard.putNumber("Target Right", targetSpeedRight + RobotTeleop.r / 800.0);
+		SmartDashboard.putNumber("Current Right", currentSpeedRight + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		SmartDashboard.putNumber("Measured Right", pwmFromTPS(velocityRight) + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		SmartDashboard.putNumber("Target Right", targetSpeedRight + RobotTeleop.DEBUG_OSCILLATE / 800.0);
 		SmartDashboard.putNumber("Drive Encoder Left", getEncoderLeftTicks());
 		SmartDashboard.putNumber("Drive Encoder Right", getEncoderRightTicks());
 
@@ -113,8 +113,13 @@ public abstract class RobotDrive {
 		return pwmFromTPS(rpm / 60 * 360);
 	}
 
+	/**
+	 * Transforms a rotation rate to a PWM value
+	 * @param tps Ticks per second
+	 * @return 
+	 */
 	public static double pwmFromTPS(double tps) {
-		return 0.1139 * MathUtils.exp(0.0024 * Math.abs(tps)) * MathUtils.sign(tps);
+		return (0.1139 * MathUtils.exp(0.0024 * Math.abs(tps)) - .1139) * MathUtils.sign(tps) / (0.987642579 - .1139);
 	}
 
 	/**
@@ -127,7 +132,8 @@ public abstract class RobotDrive {
 	}
 
 	/**
-	 * Sets the left and right drive safely, which it fits into the [-1,1] range.
+	 * Sets the left and right drive safely, which it fits into the [-1,1]
+	 * range.
 	 *
 	 * @param leftSpeed
 	 * @param rightSpeed
