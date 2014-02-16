@@ -27,7 +27,7 @@ public class StandardZeroBallAuton {
     public static void stepOne() {
 	step = 1;
 	isAtSpot = RobotAuton.driveDistance(RobotAuton.STRAIGHT_DISTANCE);
-	shooterInPosition = RobotAuton.pickupToPosition(RobotPickup.SHOOT_POSITION, RobotPickup.TOLERANCE);
+	shooterInPosition = RobotPickup.isPickupInShootPosition();
 	if (isAtSpot && shooterInPosition) {
 	    stepTwo();
 	}
