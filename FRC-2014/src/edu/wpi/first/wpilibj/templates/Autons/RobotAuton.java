@@ -39,10 +39,11 @@ public class RobotAuton {
 	public static void update() {
 		// get values
 		averageDriveEncoder = (RobotSensors.rightDriveEncoder.get() + RobotSensors.leftDriveEncoder.get()) / 2.0;
+		StandardOneBallAuton.update();
 	}
 
 	// moves the pickup mech to the position and returns whether it got there or not
-	public static boolean pickupToPosition(double spot, double tolerance) {
+	/*public static boolean pickupToPosition(double spot, double tolerance) {
 		RobotPickup.moveToShootPosition();
 		return Math.abs(RobotPickup.getArmAngleAboveHorizontal() - spot) < tolerance;
 	}
@@ -91,5 +92,5 @@ public class RobotAuton {
 			return true;
 		}
 		return false;
-	}
+	}*/
 }

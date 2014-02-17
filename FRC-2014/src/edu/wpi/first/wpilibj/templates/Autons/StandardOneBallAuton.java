@@ -12,11 +12,10 @@ import edu.wpi.first.wpilibj.templates.*;
  *
  * @author Tyler
  */
-public class StandardOneBallAuton {
+public class StandardOneBallAuton extends AutonZero{
 	//// VARIABLES -------------------------------------------------------------
 
 	public static final double speed = 0.5;
-	public static int step;
 	public static Timer timer;
 	public static double startMovingBack;
 	public static final double STRAIGHT_DISTANCE = 50; // needs to be found in testing
@@ -26,12 +25,11 @@ public class StandardOneBallAuton {
 	// init
 	public static void initialize() {
 		startMovingBack = 0.0;
-		step = 1;
 		timer = new Timer();
 	}
 
 	// Moves forward while putting the arm down
-	public static void stepOne() {
+	public static void stepTwo() {
 		RobotPickup.moveToShootPosition();
 		if (timer.get() == 0.0) {
 			timer.start();
@@ -44,34 +42,34 @@ public class StandardOneBallAuton {
 		}
 
 		if (averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
-			step = 2;
-		}
-	}
-
-	// doesnt do anything because it's covered in a method called from step 1
-	public static void stepTwo() {
-		if (RobotVision.isHot() || timer.get() >= 5) {
-			RobotShoot.shoot();
-			startMovingBack = timer.get() + 0.5;
 			step = 3;
 		}
 	}
 
-	// shoots if the goal is hot or waits if the goal isnt
+	// doesnt do anything because it's covered in a method called from step 1
 	public static void stepThree() {
-		if (startMovingBack <= timer.get()) {
+		if (RobotVision.isHot() || timer.get() >= 5) {
+			RobotShoot.shoot();
+			startMovingBack = timer.get() + 0.5;
 			step = 4;
 		}
 	}
 
-	// moves back to the white line
+	// shoots if the goal is hot or waits if the goal isnt
 	public static void stepFour() {
+		if (startMovingBack <= timer.get()) {
+			step = 5;
+		}
+	}
+
+	// moves back to the white line
+	public static void stepFive() {
 		if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
 			double forward = speed * Math.max(-1, Math.min(1, (BACKWARDS_DISTANCE - averageDriveEncoder) / 1000.0)) - .2;
 			//Forward is negative, so actually, backwards, but counting in the direction of forwards.
 			RobotDrive.driveSetRaw(forward, forward);
 		} else {
-			step = 5;
+			step = 6;
 		}
 	}
 
@@ -90,6 +88,9 @@ public class StandardOneBallAuton {
 				break;
 			case 4:
 				stepFour();
+				break;
+			case 5:
+				stepFive();
 				break;
 			default:
 				break;

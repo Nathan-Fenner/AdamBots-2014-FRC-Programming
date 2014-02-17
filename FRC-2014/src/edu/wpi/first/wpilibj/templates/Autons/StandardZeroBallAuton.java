@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.templates.*;
  *
  * @author Tyler
  */
-public class StandardZeroBallAuton {
+public class StandardZeroBallAuton extends AutonZero{
 
 	//// VARIABLES -------------------------------------------------------------
 	public static final double speed = 0.5;
@@ -21,36 +21,35 @@ public class StandardZeroBallAuton {
 	public static final double BACKWARDS_DISTANCE = -50;
 	
 	public static void intialize() {
-		step = 1;
 		averageDriveEncoder = 0.0;
 	}
 
 	// Auton step one
-	public static void stepOne() {
+	public static void stepTwo() {
 		RobotPickup.moveToPickupPosition();
 		if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
 			double forward = speed * Math.max(-1, Math.min(1, (STRAIGHT_DISTANCE - averageDriveEncoder) / 1000.0)) + .2;
 			RobotDrive.driveSetRaw(forward, forward);
 		} else {
 			RobotDrive.driveSetRaw(0, 0);
-			step = 2;
+			step = 3;
 		}
 	}
 
 	// auton step two
-	public static void stepTwo() {
-		step = 3;
+	public static void stepThree() {
+		step = 4;
 	}
 
 	// auton step three
-	public static void stepThree() {
+	public static void stepFour() {
 		if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
 			//Forward is negative, so actually, backwards, but counting in the direction of forwards.
 			double forward = speed * Math.max(-1, Math.min(1, (BACKWARDS_DISTANCE - averageDriveEncoder) / 1000.0)) - .2;
 			RobotDrive.driveSetRaw(forward, forward);
 		} else {
 			RobotDrive.driveSetRaw(0, 0);
-			step = 4;
+			step = 5;
 		}
 	}
 
@@ -67,6 +66,9 @@ public class StandardZeroBallAuton {
 				break;
 			case 3:
 				stepThree();
+				break;
+			case 4:
+				stepFour();
 				break;
 			default:
 				break;
