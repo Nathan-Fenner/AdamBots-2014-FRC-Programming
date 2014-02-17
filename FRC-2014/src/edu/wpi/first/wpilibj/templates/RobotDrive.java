@@ -190,4 +190,11 @@ public abstract class RobotDrive {
 			RobotActuators.shifter.set(false);
 		}
 	}
+
+	public static void stopSmoothDrive() {
+		targetSpeedLeft = 0.0;
+		currentSpeedLeft = 0.0;
+		targetSpeedRight = 0.0;
+		currentSpeedRight = 0.0;
+	}
 }

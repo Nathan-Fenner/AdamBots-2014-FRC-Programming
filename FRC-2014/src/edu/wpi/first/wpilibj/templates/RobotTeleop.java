@@ -13,16 +13,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotTeleop {
 
-	private static int cap_mode = 0;
-	private static final int cap_limit = 0;
-	private static final int cap_round = 1;
 	static double fine_speed = 0.0;
 	private static int pickupPosition = 0;
 	private static boolean pickupPositionDebounce = false;
 	private static boolean catchClosing = false;
 	private static boolean catchClosingDebounce = false;
 	private static boolean shootDebounce = false;
-	
 	public static double DEBUG_OSCILLATE = 0.0;
 
 	public static void update() {
@@ -36,34 +32,21 @@ public class RobotTeleop {
 		// Begin drive control
 
 		double forwardRate = Gamepad.primary.getTriggers();
-		double turnRate = Gamepad.primary.getLeftX();
+		double turnRate = Gamepad.primary.getLeftX() * 1.25;
 		double leftDrive = forwardRate - turnRate;
 		double rightDrive = forwardRate + turnRate;
 
-		SmartDashboard.putNumber("Left Drive Sum", leftDrive);
-		SmartDashboard.putNumber("Right Drive Sum", rightDrive);
+		SmartDashboard.putNumber("Left Drive Sum", leftDrive + DEBUG_OSCILLATE / 800.0);
+		SmartDashboard.putNumber("Right Drive Sum", rightDrive + DEBUG_OSCILLATE / 800.0);
 
 		double leftPWM = RobotDrive.pwmFromTPS(leftDrive * 900);
 		double rightPWM = RobotDrive.pwmFromTPS(rightDrive * 900);
 
-		SmartDashboard.putNumber("Left Curve Value", leftPWM);
-		SmartDashboard.putNumber("Right Curve Value", rightPWM);
+		SmartDashboard.putNumber("Left Curve Value", leftPWM + DEBUG_OSCILLATE / 800.0);
+		SmartDashboard.putNumber("Right Curve Value", rightPWM + DEBUG_OSCILLATE / 800.0);
 
-		// it is a problem if leftDrive or rightDrive has a magnitude exceeding 1.
-		// two strategies: both will be tested to see how they work
-		// ONE: cap them independently
-		// TWO: cap magnitude to scale both down together
-		if (cap_mode == cap_limit) {
-			// cap both left and right drive
-			leftPWM = Math.max(-1.0, Math.min(1.0, leftPWM));
-			rightPWM = Math.max(-1.0, Math.min(1.0, rightPWM));
-		}
-		if (cap_mode == cap_round) {
-			// find amount required to cap, then reduce by this amount
-			double cap_scale = Math.max(1.0, Math.max(Math.abs(leftPWM), Math.abs(rightPWM)));
-			leftPWM /= cap_scale;
-			rightPWM /= cap_scale;
-		}
+		leftPWM = Math.max(-1.0, Math.min(1.0, leftPWM));
+		rightPWM = Math.max(-1.0, Math.min(1.0, rightPWM));
 		RobotDrive.drive(leftPWM, rightPWM);
 
 		DEBUG_OSCILLATE = (DEBUG_OSCILLATE + 0.001) % 1.0; // used for SmartDashboard control
@@ -123,7 +106,7 @@ public class RobotTeleop {
 			}
 			catchClosingDebounce = true;
 			double col = RobotVision.highBlueBall();
-			if (col > 5) {
+			if (col > 2) {
 				catchClosing = true;
 			}
 			if (catchClosing) {

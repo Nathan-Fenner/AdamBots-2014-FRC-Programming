@@ -41,33 +41,25 @@ public class MainRobot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		//RobotPickup.update();
-		//runCompressor();
-//      RobotDrive.update();
-//      RobotDrive.driveStraight(0.5);
-		//RobotDrive.update();
-//      RobotDrive.test();
-		//RobotDrive.joystickDrive(); //HOLD X -> HIGH GEAR, HOLD Y -> STOP
-		//runCompressor();
-        RobotDrive.update();
-//        RobotDrive.driveStraight(0.5);
-		//RobotShoot.update();
-		//RobotShoot.automatedShoot();
-		//RobotShoot.manualShoot();
-		//System.out.println("Shooter Encoder: " + RobotSensors.shooterWinchEncoder.get());
-		//RobotPickUp.update();
-		//RobotPickUp.test(true, false, false);
 
-		//RobotPickUp.update();
-		//RobotPickUp.test(false, false, true);
-		//RobotTeleop.update();
-		//RobotDrive.update();
+		RobotDrive.update();
 		RobotTeleop.update();
 		RobotPickup.update();
+		/*RobotShoot.update();
+		 if (Gamepad.primary.getStart()) {
+		 RobotShoot.manualShoot();
+		 } else if (Gamepad.primary.getBack()) {
+		 RobotShoot.shoot();
+		 }*/
+		//RobotShoot.manualShoot();
+		SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());
+		SmartDashboard.putBoolean("Too far", RobotSensors.shooterLoadedLim.get());
+		SmartDashboard.putBoolean("At Pick", RobotSensors.shooterAtBack.get());
 		//RobotShoot.manualWind(FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A), FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B));
 
 		runCompressor();
 
+		SmartDashboard.putNumber("Red Distance", RobotVision.redDistance());
 
 	}
 
@@ -81,10 +73,14 @@ public class MainRobot extends IterativeRobot {
 		SmartDashboard.putBoolean("Pressure Switch", RobotSensors.pressureSwitch.get());
 		if (!RobotSensors.pressureSwitch.get()) {
 			RobotActuators.compressor.set(Relay.Value.kOn);
-			System.out.println("Setting the compressor to ON");
+			//System.out.println("Setting the compressor to ON");
 		} else {
 			RobotActuators.compressor.set(Relay.Value.kOff);
 		}
-		System.out.println("runCompressor finished");
+		//System.out.println("runCompressor finished");
+	}
+
+	public void disabledPeriodic() {
+		RobotDrive.stopSmoothDrive();
 	}
 }

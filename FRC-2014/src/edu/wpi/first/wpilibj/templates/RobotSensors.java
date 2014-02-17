@@ -47,7 +47,7 @@ public class RobotSensors {
 		shooterWinchEncoder = new Encoder(4, 5);
 		pickupSystemDownLim = new DigitalInput(6);
 		pickupSystemUpLim = new DigitalInput(7);
-		shooterLoadedLim = new DigitalInput(8);
+		shooterLoadedLim = new DigitalInput(13);
 		shooterAtBack = new DigitalInput(9);
 		pressureSwitch = new DigitalInput(10);
 

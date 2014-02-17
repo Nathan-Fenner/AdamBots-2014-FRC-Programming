@@ -16,13 +16,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotShoot {
 	////VARIABLES---------------------------------------------------------------
 
-	public static final double UNWIND_SPEED = 0.75;
+	//// ADDED: SWITCHED THE SIGNS ON THE WIND AND UNWIND SPEED
+	public static final double UNWIND_SPEED = -1.0;
 	public static final double WAIT_TIME = 2.0;
-	public static final double WIND_SPEED = -0.75;
-	public static final double MAX_REVS = 750;
+	public static final double WIND_SPEED = 1.0;
+	public static final double MAX_REVS = 1300;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
-	public static final double BACKWARDS_REV = -300.0;
+	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
 	private static Timer timer;
+	private static double currentTime;
 	private static double updatedSpeed;
 	private static boolean stageOneDone;
 	private static boolean beenZeroed;
@@ -36,11 +38,12 @@ public class RobotShoot {
 
 	//// INIT ------------------------------------------------------------------
 	public static void initialize() {
-		latch = true;
+		latch();
 		beenZeroed = false;
 		automatedShootOnce = true; //True means that the robot will NOT shoot when it turns on.
 		timer = new Timer();
 		updatedSpeed = 0.0;
+		currentTime = 0.0;
 		currentStage = "";
 		RobotSensors.shooterWinchEncoder.start();
 		stageThreeDone = false;
@@ -89,14 +92,11 @@ public class RobotShoot {
 			if (!stageThreeDone) {
 				System.out.println("In stage Four");
 			}
-			if (!RobotSensors.shooterAtBack.get() && RobotSensors.shooterWinchEncoder.get() >= BACKWARDS_REV) {
+			if (!RobotSensors.shooterAtBack.get()/* && RobotSensors.shooterWinchEncoder.get() >= BACKWARDS_REV*/) {
 				automatedUnwind();
-			}
-			if (RobotSensors.shooterAtBack.get()) {
-				updatedSpeed = 0.0;
+			} else {
 				return true;
 			}
-			return false;
 		}
 		return false;
 	}
@@ -110,17 +110,23 @@ public class RobotShoot {
 				timer.start();
 			}
 			// TODO: CHANGE THE TIME FROM 0.5 SECONDS TO WHATEVER WE THINK IT SHOULD BE LATER
-			if (timer.get() <= 0.5 && RobotSensors.shooterWinchEncoder.get() >= BACKWARDS_REV) {
+			if (timer.get() <= 0.2 && RobotSensors.shooterWinchEncoder.get() >= BACKWARDS_REV/* && RobotSensors.shooterAtBack.get()*/) {
 				automatedUnwind();
 			} else {
-				updatedSpeed = 0.0;
 				latch();
+				updatedSpeed = 0.0;
+				if (timer.get() - currentTime >= 1.5) {
+					timer.stop();
+					timer.reset();
+					stageFiveDone = true;
+				}
+
 			}
 			// TODO: CHANGE THE CONSTANT TIME LATER
-			if (timer.get() > 2.0) {
-				stageFiveDone = true;
+			if (timer.get() > 5.0) {
 				timer.stop();
 				timer.reset();
+				automatedShootOnce = true;
 			}
 		}
 	}
@@ -200,6 +206,14 @@ public class RobotShoot {
 		if (Gamepad.primary.getA()) {
 			releaseLatch();
 		}
+		if (Gamepad.primary.getB()) {
+			RobotSensors.shooterWinchEncoder.reset();
+		}
+		if (Gamepad.primary.getX()) {
+			RobotPickup.openRollerArm();
+		} else if (Gamepad.primary.getY()) {
+			RobotPickup.closeRollerArm();
+		}
 	}
 
 	// sets speed to the unwind speed
@@ -248,9 +262,13 @@ public class RobotShoot {
 			SmartDashboard.putString("Zeroed", "True");
 		}
 
-		if ((RobotSensors.shooterWinchEncoder.get() <= BACKWARDS_REV && updatedSpeed >= 0.0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed <= 0.0)) {
+		if ((RobotSensors.shooterWinchEncoder.get() <= BACKWARDS_REV && updatedSpeed <= 0.0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
 			updatedSpeed = 0.0;
 		}
+
+		/*if ((RobotSensors.shooterAtBack.get() && updatedSpeed <= 0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
+		 updatedSpeed = 0.0;
+		 }*/
 
 		// sets pnuematics
 		RobotActuators.latchRelease.set(latch);
@@ -264,6 +282,7 @@ public class RobotShoot {
 		SmartDashboard.putString("Stage: ", currentStage);
 		SmartDashboard.putNumber("Time: ", timer.get());
 		SmartDashboard.putBoolean("Shooter at back", RobotSensors.shooterAtBack.get());
+		//SmartDashboard.putString("Shooter at str back", MathUtils.rand(15) + "" + RobotSensors.shooterAtBack.get());
 		SmartDashboard.putBoolean("Latched", RobotShoot.latch);
 		SmartDashboard.putBoolean("beenZeroed", beenZeroed);
 		SmartDashboard.putBoolean("Stage One", stageOneDone);

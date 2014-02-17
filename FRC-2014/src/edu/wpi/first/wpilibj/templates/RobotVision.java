@@ -4,6 +4,7 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.Timer;
 import java.io.InputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.SocketConnection;
@@ -14,20 +15,21 @@ import javax.microedition.io.SocketConnection;
  */
 public class RobotVision {
 
-	private static String database = null;
+	private static Timer timer = new Timer();
+	private static String database = "";
 	private static final String BEAGELIP = "10.2.45.3:3000";
 
 	public static void initialize() {
+		timer.start();
 		System.out.println("Robot Vision Intialize");
 		Thread q = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
 					try {
-						System.out.println("Loop");
 						Thread.sleep(30);
 						retrieve();
 					} catch (Exception e) {
-						System.out.println("Exception in thread: " + e);
+						//System.out.println("Exception in thread: " + e);
 					}
 				}
 			}
@@ -114,24 +116,51 @@ public class RobotVision {
 	public static double redBallDist() {
 		return getNumber("red ball dist");
 	}
+	static SocketConnection http = null;
+	static InputStream data = null;
 
 	public static void retrieve() {
+		boolean connectionFailure = true;
 		try {
-			System.out.println("Retrieve called.");
-			SocketConnection http = (SocketConnection) Connector.open("socket://" + BEAGELIP);
-			InputStream data = http.openInputStream();
-			database = "";
+			http = (SocketConnection) Connector.open("socket://" + BEAGELIP);
+			connectionFailure = false;
+			data = http.openInputStream();
+			String mdatabase = "";
 			int p = data.read();
 			while (p >= 0) {
-				database += (char) p;
+				mdatabase += (char) p;
 				p = data.read();
 			}
 			data.close();
 			http.close();
+
+			database = mdatabase;
+
 		} catch (Exception e) {
-			System.out.println("Exception in RobotVision.retrieve() (networking):");
-			System.out.println("\t" + e);
-			System.out.println("\t" + e.getMessage());
+			//System.out.println("Exception in RobotVision.retrieve() (networking):");
+			//System.out.println("\t" + e);
+			//System.out.println("\t" + e.getMessage());
+		}
+		if (connectionFailure) {
+			//System.out.println("Connect Failure, gcing");
+			double t = timer.get();
+			System.gc();
+			//System.out.println("GC took " + (timer.get() - t) + " seconds");
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {
+			}
+		}
+		try {
+			data.close();
+		} catch (Exception e) {
+			//System.out.println("Error Closing Data: " + e);
+		}
+		try {
+
+			http.close();
+		} catch (Exception e) {
+			//System.out.println("Error Closing HTTP: " + e);
 		}
 	}
 }

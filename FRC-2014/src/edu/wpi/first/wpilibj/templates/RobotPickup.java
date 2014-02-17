@@ -10,9 +10,9 @@ public class RobotPickup {
 
 	private static final double ANGLE_TOLERANCE = 2;
 	private static final double PICKUP_POSITION = -15;
-	private static final double SHOOT_POSITION = 45;
+	private static final double SHOOT_POSITION = 51.0;
 	private static final double CATCH_POSITION = 90;
-	private static double armTargetAngle = 0;
+	private static double armTargetAngle = 51.0;
 	private static boolean overrideEncoder = false;
 	private static double overrideSetValue = 0.0;
 	private static boolean ignoreLimitSwitches = false;
@@ -130,13 +130,21 @@ public class RobotPickup {
 				mechSpeed = overrideSetValue;
 			}
 		} else {
+			double amt = Math.min(1,Math.abs( (getArmAngleAboveHorizontal() - armTargetAngle) / 10.0));
+			amt *= amt;
+			amt *= 0.2;
+			amt += 0.03;
 			if (getArmAngleAboveHorizontal() < armTargetAngle && (!isUpperLimitReached() || ignoreLimitSwitches)) {
-				mechSpeed = -0.25 * Math.min(1, Math.abs(getArmAngleAboveHorizontal() - armTargetAngle) / 25.0);
+				mechSpeed = -1 * amt;
 			}
 			if (getArmAngleAboveHorizontal() > armTargetAngle && (!isLowerLimitReached() || ignoreLimitSwitches)) {
-				mechSpeed = 0.2 * Math.min(1, Math.abs(getArmAngleAboveHorizontal() - armTargetAngle) / 25.0);
+				mechSpeed = 1 * amt;
 			}
 		}
+		SmartDashboard.putNumber("Arm Target Angle", armTargetAngle);
+		SmartDashboard.putNumber("Mech Speed",mechSpeed);
+		SmartDashboard.putBoolean("upper limit arm",isUpperLimitReached());
+		SmartDashboard.putBoolean("lower limit arm",isLowerLimitReached());
 		SmartDashboard.putNumber("Angle", RobotTeleop.DEBUG_OSCILLATE / 800.0 + getArmAngleAboveHorizontal());
 		RobotActuators.pickupMechMotor.set(mechSpeed);
 	}
