@@ -21,6 +21,8 @@ public class StandardZeroBallAuton extends AutonZero{
 	public static final double BACKWARDS_DISTANCE = -50;
 	
 	public static void intialize() {
+		AutonZero.initialize();
+		AutonZero.reset();
 		averageDriveEncoder = 0.0;
 	}
 
@@ -56,7 +58,6 @@ public class StandardZeroBallAuton extends AutonZero{
 	// update method
 	public static void update() {
 		averageDriveEncoder = (RobotDrive.getEncoderLeftTicks() + RobotDrive.getEncoderRightTicks()) / 2.0;
-		
 		switch (step) {
 			case 1:
 				stepOne();

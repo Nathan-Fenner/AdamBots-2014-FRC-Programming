@@ -19,10 +19,7 @@ public class AutonZero {
 	public static double fallTimer = 0.25;
 	public static double closeTimer = 0.5;
 	public static int step;
-	public static boolean switch1;
-	public static boolean switch2;
-	public static boolean switch3;
-	public static boolean beenThru;
+	private static boolean beenThru = false;
 	
 	public static void initialize() {
 		timer = new Timer();
@@ -30,13 +27,10 @@ public class AutonZero {
 	}
 	
 	// reset all Encoders
-	public void reset() {
+	public static void reset() {
 		RobotSensors.leftDriveEncoder.reset();
 		RobotSensors.rightDriveEncoder.reset();
 		RobotSensors.shooterWinchEncoder.reset();
-		switch1 = RobotSensors.configSwitchA.getVoltage() >= 2.5;
-		switch2 = RobotSensors.configSwitchB.getVoltage() >= 2.5;
-		switch3 = RobotSensors.configSwitchC.getVoltage() >= 2.5;
 	}
 	
 	public static void stepOne() {
@@ -46,12 +40,15 @@ public class AutonZero {
 		} else {
 			RobotPickup.closeRollerArm();
 		}
-		if (!beenThru) {
-			RobotShoot.unwind();
+		if (!beenThru && RobotShoot.unwind()) {
 			beenThru = true;
 		}
 		if (timer.get() > closeTimer && timer.get() >= fallTimer + closeTimer) {
 			step = 2;
 		}
+	}
+	
+	public static void update() {
+		StandardOneBallAuton.update();
 	}
 }

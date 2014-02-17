@@ -27,12 +27,20 @@ public class RobotAuton {
 	public static boolean movingBack;
 	public static boolean atPosition;
 	public static boolean shot;
+	public static boolean switch1;
+	public static boolean switch2;
+	public static boolean switch3;
+	public static int num;
 	public static Timer time;
 
 	// initiates everything
 	public static void initiate() {
 		averageDriveEncoder = 0.0;
+		switch1 = RobotSensors.configSwitchA.getVoltage() >= 2.5;
+		switch2 = RobotSensors.configSwitchB.getVoltage() >= 2.5;
+		switch3 = RobotSensors.configSwitchC.getVoltage() >= 2.5;
 		time = null;
+		StandardOneBallAuton.initialize();
 	}
 
 	// update method

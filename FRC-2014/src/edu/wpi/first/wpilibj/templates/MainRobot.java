@@ -8,6 +8,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.templates.Autons.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,13 +29,15 @@ public class MainRobot extends IterativeRobot {
 		RobotPickup.initialize();
 		RobotShoot.initialize();
 		RobotVision.initialize();
+		RobotAuton.initiate();
 	}
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
-		//runCompressor();
+		runCompressor();
+		RobotAuton.update();
 	}
 
 	public void teleopInit() {

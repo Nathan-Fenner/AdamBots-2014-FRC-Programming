@@ -18,8 +18,8 @@ public class StandardOneBallAuton extends AutonZero{
 	public static final double speed = 0.5;
 	public static Timer timer;
 	public static double startMovingBack;
-	public static final double STRAIGHT_DISTANCE = 50; // needs to be found in testing
-	public static final double BACKWARDS_DISTANCE = -50; // needs to be found in testing
+	public static final double STRAIGHT_DISTANCE = 350; // needs to be found in testing
+	public static final double BACKWARDS_DISTANCE = -700; // needs to be found in testing
 	public static double averageDriveEncoder;
 
 	// init
@@ -75,7 +75,8 @@ public class StandardOneBallAuton extends AutonZero{
 
 	// update method
 	public static void update() {
-		averageDriveEncoder = (RobotDrive.getEncoderLeftTicks() + RobotDrive.getEncoderRightTicks()) / 2.0;
+		//averageDriveEncoder = (RobotDrive.getEncoderLeftTicks() + RobotDrive.getEncoderRightTicks()) / 2.0;
+		averageDriveEncoder = RobotDrive.getEncoderRightTicks();
 		switch (step) {
 			case 1:
 				stepOne();
