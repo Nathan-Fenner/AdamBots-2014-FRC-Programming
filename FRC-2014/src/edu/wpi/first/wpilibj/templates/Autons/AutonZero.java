@@ -46,12 +46,9 @@ public class AutonZero {
 		} else {
 			RobotPickup.closeRollerArm();
 		}
-		if (!RobotSensors.shooterAtBack.get()) {
+		if (!beenThru) {
 			RobotShoot.unwind();
 			beenThru = true;
-		} else if (!beenThru && RobotSensors.shooterWinchEncoder.get() >= RobotShoot.MAX_REVS) {
-			beenThru = true;
-			RobotShoot.waitToUnwind();
 		}
 		if (timer.get() > closeTimer && timer.get() >= fallTimer + closeTimer) {
 			step = 2;
