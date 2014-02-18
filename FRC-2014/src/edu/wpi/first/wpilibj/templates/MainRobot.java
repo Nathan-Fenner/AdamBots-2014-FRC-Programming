@@ -31,6 +31,7 @@ public class MainRobot extends IterativeRobot {
 		RobotShoot.initialize();
 		RobotVision.initialize();
 		RobotAuton.initialize();
+		ControlBox.initialize();
 	}
 
 	/**
@@ -42,6 +43,7 @@ public class MainRobot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
+		SmartDashboard.putNumber("Target Ticks", 1000);
 		RobotDrive.enableSmoothing();
 	}
 
@@ -55,14 +57,16 @@ public class MainRobot extends IterativeRobot {
 	 */
 	public void teleopPeriodic() {
 
+		RobotShoot.setTargetTicks(SmartDashboard.getNumber("Target Ticks"));
+
+		ControlBox.update();
+
 		RobotDrive.update();
-		//RobotTeleop.update();
+		RobotTeleop.update();
 		RobotPickup.update();
 		RobotShoot.update();
-		if (Gamepad.primary.getStart()) {
+		if (Gamepad.secondary.getB()) {
 			RobotShoot.manualShoot();
-		} else if (Gamepad.primary.getBack()) {
-			RobotShoot.shoot();
 		}
 		//RobotShoot.manualShoot();
 		SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());

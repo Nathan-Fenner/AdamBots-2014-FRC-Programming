@@ -20,9 +20,11 @@ public class RobotShoot {
 	public static final double UNWIND_SPEED = -1.0;
 	public static final double WAIT_TIME = 2.0;
 	public static final double WIND_SPEED = 1.0;
-	public static final double MAX_REVS = 1300;
+	public static final double MAX_REVS = 1400;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
+	public static final double TENSION_TOLERANCE = 75;
+	private static double tensionTargetTicks = 1000;
 	private static Timer timer;
 	private static double currentTime;
 	private static double updatedSpeed;
@@ -35,6 +37,11 @@ public class RobotShoot {
 	private static boolean stageFiveDone;
 	public static double voltage;
 	public static double current;
+
+	public static void setTargetTicks(double ticks) {
+		ticks = Math.max(500, Math.min(1400, ticks));
+		tensionTargetTicks = ticks;
+	}
 
 	//// INIT ------------------------------------------------------------------
 	public static void initialize() {
@@ -136,20 +143,18 @@ public class RobotShoot {
 	public static boolean rewindShooter() {
 		currentStage = "6";
 		System.out.println("Stage 6 of shooter");
-		if (RobotSensors.shooterWinchEncoder.get() <= MAX_REVS && !RobotSensors.shooterLoadedLim.get()) {
+		if (RobotSensors.shooterWinchEncoder.get() <= tensionTargetTicks - TENSION_TOLERANCE && !RobotSensors.shooterLoadedLim.get()) {
 			automatedWind();
 			return false;
-		} else {
-			updatedSpeed = 0.0;
 		}
 
-		if (RobotSensors.shooterLoadedLim.get()) {
-			updatedSpeed = 0.0;
+		if (RobotSensors.shooterWinchEncoder.get() >= tensionTargetTicks + TENSION_TOLERANCE && !RobotSensors.shooterAtBack.get()) {
+			automatedUnwind();
+			return false;
 		}
 
-		stageOneDone = false;
-		stageThreeDone = false;
-		stageFiveDone = false;
+		updatedSpeed = 0.0;
+
 		return true;
 
 	}
@@ -187,11 +192,12 @@ public class RobotShoot {
 				// waitToUnwind();
 				if (stageThreeDone && unwind()) {
 					latchShooter();
-					if (stageFiveDone) {
-						rewindShooter();
-					}
+					//if (stageFiveDone) etc was here.
 				} else {
 					waitToUnwind();
+				}
+				if (stageFiveDone) {
+					rewindShooter();
 				}
 			}
 		} else {
@@ -201,30 +207,17 @@ public class RobotShoot {
 
 	// used for calibration
 	public static void manualShoot() {
-		updatedSpeed = Gamepad.primary.getTriggers();
-		if (RobotSensors.shooterLoadedLim.get() && RobotSensors.shooterWinchEncoder.get() <= -100 && Gamepad.primary.getTriggers() >= 0.0) {
+		updatedSpeed = Gamepad.secondary.getRightY();
+		if (RobotSensors.shooterLoadedLim.get() && RobotSensors.shooterWinchEncoder.get() <= -100 && Gamepad.secondary.getRightY() >= 0.0) {
 			updatedSpeed = 0.0;
 			System.out.println("Can't move back");
 		}
 
-		if (Gamepad.primary.getA()) {
+		if (Gamepad.secondary.getStart()) {
 			releaseLatch();
 		}
-		if (Gamepad.primary.getB()) {
+		if (Gamepad.primary.getBack()) {
 			RobotSensors.shooterWinchEncoder.reset();
-		}
-		if (Gamepad.primary.getX()) {
-			RobotPickup.openRollerArm();
-		} else if (Gamepad.primary.getY()) {
-			RobotPickup.closeRollerArm();
-		}
-		
-		if (Gamepad.primary.getLB()) {
-			RobotPickup.moveToShootPosition();
-		}
-		
-		if (Gamepad.primary.getRB()) {
-			RobotPickup.moveToPickupPosition();
 		}
 	}
 

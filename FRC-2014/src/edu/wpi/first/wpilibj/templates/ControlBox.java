@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class ControlBox {
 	/*
-	 #1       #2     #3
+	 /           #1       #2     #3
 
 	 #4            B1            B2
 

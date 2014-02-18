@@ -18,7 +18,7 @@ public class StandardOneBallAuton extends AutonZero{
 
 	public static final double speed = 0.5;
 	public static double startMovingBack;
-	public static final double STRAIGHT_DISTANCE = 150; // needs to be found in testing
+	public static final double STRAIGHT_DISTANCE = 450; // needs to be found in testing
 	public static final double BACKWARDS_DISTANCE = -700; // needs to be found in testing
 	public static double openingTime = 0.5;
 	public static double currentTime = 0.0;
@@ -52,7 +52,7 @@ public class StandardOneBallAuton extends AutonZero{
 		} else {
 			RobotDrive.drive(0, 0);
 			System.out.println("Setting to 0");
-			
+
 		}
 		if (RobotShoot.rewindShooter() && averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
 			step = 3;
