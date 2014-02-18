@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public abstract class RobotDrive {
 
-	public static final double distancePerTick = 0.066;
+	public static final double distancePerTick = 83.0 / 1109.0;
 	private static int encoderLastLeft = 0;
 	private static int encoderLastRight = 0;
 	private static double velocityLeft = 0;
@@ -52,7 +52,7 @@ public abstract class RobotDrive {
 	}
 
 	public static int getEncoderLeftTicks() {
-		return RobotSensors.leftDriveEncoder.get();
+		return -RobotSensors.leftDriveEncoder.get();
 	}
 
 	/**
@@ -65,8 +65,7 @@ public abstract class RobotDrive {
 	}
 
 	public static int getEncoderRightTicks() {
-		return -RobotSensors.rightDriveEncoder.get();
-		// it's negative
+		return RobotSensors.rightDriveEncoder.get();
 	}
 
 	public static void update() {
@@ -156,7 +155,7 @@ public abstract class RobotDrive {
 	 * @param left
 	 * @param right
 	 */
-	public static void driveSetRaw(double leftSpeed, double rightSpeed) {
+	private static void driveSetRaw(double leftSpeed, double rightSpeed) {
 		leftSpeed = Math.max(-1, Math.min(1, leftSpeed));
 		rightSpeed = Math.max(-1, Math.min(1, rightSpeed));
 		RobotActuators.leftDrive.set(leftSpeed);
