@@ -37,6 +37,10 @@ public class MainRobot extends IterativeRobot {
 		//runCompressor();
 	}
 
+	public void teleopInit() {
+		RobotDrive.enableSmoothing();
+	}
+
 	/**
 	 * This function is called periodically during operator control
 	 */
