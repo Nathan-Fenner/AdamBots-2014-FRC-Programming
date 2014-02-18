@@ -21,6 +21,8 @@ public class RobotShoot {
 	public static final double WAIT_TIME = 2.0;
 	public static final double WIND_SPEED = 1.0;
 	public static final double MAX_REVS = 1300;
+	public static final double TENSION_TOLERANCE = 50;
+	private static double tensionTargetTick = 1000;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
 	private static Timer timer;
@@ -136,20 +138,21 @@ public class RobotShoot {
 	public static boolean rewindShooter() {
 		currentStage = "6";
 		System.out.println("Stage 6 of shooter");
-		if (RobotSensors.shooterWinchEncoder.get() <= MAX_REVS && !RobotSensors.shooterLoadedLim.get()) {
+		if (RobotSensors.shooterWinchEncoder.get() <= tensionTargetTick - TENSION_TOLERANCE && !RobotSensors.shooterLoadedLim.get()) {
 			automatedWind();
 			return false;
-		} else {
-			stopMotors();
 		}
+		if (RobotSensors.shooterWinchEncoder.get() >= tensionTargetTick + TENSION_TOLERANCE && !RobotSensors.shooterAtBack.get()) {
+			automatedUnwind();
+			return false;
+		}
+
+		stopMotors();
 
 		if (RobotSensors.shooterLoadedLim.get()) {
 			stopMotors();
+			return false;
 		}
-
-		stageOneDone = false;
-		stageThreeDone = false;
-		stageFiveDone = false;
 		return true;
 
 	}
