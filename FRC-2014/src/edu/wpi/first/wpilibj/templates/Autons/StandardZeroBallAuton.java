@@ -31,9 +31,9 @@ public class StandardZeroBallAuton extends AutonZero{
 		RobotPickup.moveToPickupPosition();
 		if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
 			double forward = speed * Math.max(-1, Math.min(1, (STRAIGHT_DISTANCE - averageDriveEncoder) / 1000.0)) + .2;
-			RobotDrive.driveSetRaw(forward, forward);
+			RobotDrive.drive(forward, forward);
 		} else {
-			RobotDrive.driveSetRaw(0, 0);
+			RobotDrive.drive(0, 0);
 			step = 3;
 		}
 	}
@@ -48,9 +48,9 @@ public class StandardZeroBallAuton extends AutonZero{
 		if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
 			//Forward is negative, so actually, backwards, but counting in the direction of forwards.
 			double forward = speed * Math.max(-1, Math.min(1, (BACKWARDS_DISTANCE - averageDriveEncoder) / 1000.0)) - .2;
-			RobotDrive.driveSetRaw(forward, forward);
+			RobotDrive.drive(forward, forward);
 		} else {
-			RobotDrive.driveSetRaw(0, 0);
+			RobotDrive.drive(0, 0);
 			step = 5;
 		}
 	}

@@ -37,9 +37,9 @@ public class StandardTwoBallAuton {
 		}
 		if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
 			double forward = speed * Math.max(-1, Math.min(1, (STRAIGHT_DISTANCE - averageDriveEncoder) / 1000.0)) + .2;
-			RobotDrive.driveSetRaw(forward, forward);
+			RobotDrive.drive(forward, forward);
 		} else {
-			RobotDrive.driveSetRaw(0, 0);
+			RobotDrive.drive(0, 0);
 		}
 
 		if (averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
