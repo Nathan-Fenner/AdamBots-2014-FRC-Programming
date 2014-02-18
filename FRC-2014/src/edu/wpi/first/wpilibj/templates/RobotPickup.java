@@ -1,7 +1,5 @@
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -23,6 +21,15 @@ public class RobotPickup {
 	private static boolean overrideEncoder = false;
 	private static double overrideSetValue = 0.0;
 	private static boolean ignoreLimitSwitches = false;
+	private static boolean armEnabled = true;
+
+	public static void disableArm() {
+		armEnabled = false;
+	}
+
+	public static void enableArm() {
+		armEnabled = true;
+	}
 
 	public static void setOverrideSpeed(double speed) {
 		overrideSetValue = speed;
@@ -132,63 +139,64 @@ public class RobotPickup {
 	public static void exitOverrideEncoderMode() {
 		overrideEncoder(false);
 	}
-
 	private static double lastError = 0.0;
 
 	public static void update() {
 		double mechSpeed = 0.0;
-		if (overrideEncoder) {
-			if ((!isUpperLimitReached() || ignoreLimitSwitches) && overrideSetValue > 0) {
-				mechSpeed = overrideSetValue;
+		if (armEnabled) {
+			if (overrideEncoder) {
+				if ((!isUpperLimitReached() || ignoreLimitSwitches) && overrideSetValue > 0) {
+					mechSpeed = overrideSetValue;
+				}
+				if ((!isLowerLimitReached() || ignoreLimitSwitches) && overrideSetValue < 0) {
+					mechSpeed = overrideSetValue;
+				}
+			} else {
+				double error = armTargetAngle - getArmAngleAboveHorizontal();
+
+				double errorDifference = error - lastError;
+
+				lastError = error;
+
+				SmartDashboard.putNumber("Angle Error", error);
+
+				SmartDashboard.putNumber("Error Integral", angle_I);
+
+				angle_K_P = -0.02;
+				angle_K_I = -0.1;
+				angle_K_D = 0;
+
+				angle_I_DECAY = SmartDashboard.getNumber("Angle I Decay");
+
+				double amt = error * angle_K_P + angle_I * angle_K_I / 1000.0 + angle_K_D * errorDifference;
+
+				angle_I += error;
+				angle_I *= angle_I_DECAY;
+
+				amt = Math.max(-1, Math.min(1, amt));
+
+				amt *= 0.5;
+
+				if (amt < 0 && (!isUpperLimitReached() || ignoreLimitSwitches)) {
+					mechSpeed = amt;
+				}
+				if (amt > 0 && (!isLowerLimitReached() || ignoreLimitSwitches)) {
+					mechSpeed = amt;
+				}
+
+				/*
+				 double amt = Math.min(1,Math.abs( (getArmAngleAboveHorizontal() - armTargetAngle) / 10.0));
+				 amt *= amt;
+				 amt *= 0.2;
+				 amt += 0.03;
+				 if (getArmAngleAboveHorizontal() < armTargetAngle && (!isUpperLimitReached() || ignoreLimitSwitches)) {
+				 mechSpeed = -1 * amt;
+				 }
+				 if (getArmAngleAboveHorizontal() > armTargetAngle && (!isLowerLimitReached() || ignoreLimitSwitches)) {
+				 mechSpeed = 1 * amt;
+				 }
+				 */
 			}
-			if ((!isLowerLimitReached() || ignoreLimitSwitches) && overrideSetValue < 0) {
-				mechSpeed = overrideSetValue;
-			}
-		} else {
-			double error = armTargetAngle - getArmAngleAboveHorizontal();
-
-			double errorDifference = error - lastError;
-
-			lastError = error;
-
-			SmartDashboard.putNumber("Angle Error",error);
-
-			SmartDashboard.putNumber("Error Integral",angle_I);
-
-			angle_K_P = -0.02;
-			angle_K_I = -0.1;
-			angle_K_D = 0;
-
-			angle_I_DECAY = SmartDashboard.getNumber("Angle I Decay");
-
-			double amt = error * angle_K_P + angle_I * angle_K_I / 1000.0 + angle_K_D * errorDifference;
-
-			angle_I += error;
-			angle_I *= angle_I_DECAY;
-
-			amt = Math.max(-1, Math.min(1, amt));
-
-			amt *= 0.5;
-
-			if (amt < 0 && (!isUpperLimitReached() || ignoreLimitSwitches)) {
-				mechSpeed = amt;
-			}
-			if (amt > 0 && (!isLowerLimitReached() || ignoreLimitSwitches)) {
-				mechSpeed = amt;
-			}
-
-			/*
-			 double amt = Math.min(1,Math.abs( (getArmAngleAboveHorizontal() - armTargetAngle) / 10.0));
-			 amt *= amt;
-			 amt *= 0.2;
-			 amt += 0.03;
-			 if (getArmAngleAboveHorizontal() < armTargetAngle && (!isUpperLimitReached() || ignoreLimitSwitches)) {
-			 mechSpeed = -1 * amt;
-			 }
-			 if (getArmAngleAboveHorizontal() > armTargetAngle && (!isLowerLimitReached() || ignoreLimitSwitches)) {
-			 mechSpeed = 1 * amt;
-			 }
-			 */
 		}
 		SmartDashboard.putNumber("Arm Target Angle", armTargetAngle);
 		SmartDashboard.putNumber("Mech Speed", mechSpeed);
