@@ -35,8 +35,6 @@ public class RobotShoot {
 	private static boolean automatedShootOnce;
 	private static boolean stageThreeDone;
 	private static boolean stageFiveDone;
-	public static double voltage;
-	public static double current;
 
 	//// INIT ------------------------------------------------------------------
 	public static void initialize() {
@@ -123,7 +121,6 @@ public class RobotShoot {
 					timer.reset();
 					stageFiveDone = true;
 				}
-
 			}
 			// TODO: CHANGE THE CONSTANT TIME LATER
 			if (timer.get() > 5.0) {
@@ -134,7 +131,20 @@ public class RobotShoot {
 		}
 	}
 
-	// rewinds the shooter
+	/**
+	 * This method sets the target value for tension, in encoder ticks.
+	 *
+	 * @param ticks The tick target to aim for.
+	 */
+	public static void setWindTarget(double ticks) {
+		tensionTargetTick = ticks;
+	}
+
+	/**
+	 * The stage which winds the shooter to the tensionTargetTick (in ticks).
+	 *
+	 * @return Whether or not the shooter is wound to the correct position.
+	 */
 	public static boolean rewindShooter() {
 		currentStage = "6";
 		System.out.println("Stage 6 of shooter");
@@ -154,7 +164,6 @@ public class RobotShoot {
 			return false;
 		}
 		return true;
-
 	}
 
 	// reshoot method
@@ -177,7 +186,12 @@ public class RobotShoot {
 	}
 
 	// TODO: RUN AUTOMATED SHOOT BY ENUMERATION
-	// Automated shoot
+	/* 
+	 * Manages the different stages of the procedure of firing, latching,
+	 * and tensioning the shooter automatically.
+	 * This should be called continuously when the shooter is being
+	 * run automatically.
+	 */
 	public static void automatedShoot() {
 		// shoots
 		if (!automatedShootOnce) {
@@ -221,7 +235,9 @@ public class RobotShoot {
 		}
 	}
 
-	// sets speed to the unwind speed
+	/**
+	 * This sets updatedSpeed to reflect the speed to unwind (less tension?)
+	 */
 	private static void automatedUnwind() {
 		updatedSpeed = UNWIND_SPEED;
 		if (RobotSensors.shooterLoadedLim.get()) {
@@ -229,7 +245,9 @@ public class RobotShoot {
 		}
 	}
 
-	// sets the speed to the wind speed
+	/**
+	 * This sets updatedSpeed to reflect the speed to wind (more tension?)
+	 */
 	private static void automatedWind() {
 		updatedSpeed = WIND_SPEED;
 	}
@@ -272,10 +290,6 @@ public class RobotShoot {
 			updatedSpeed = 0.0;
 		}
 
-		/*if ((RobotSensors.shooterAtBack.get() && updatedSpeed <= 0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
-		 updatedSpeed = 0.0;
-		 }*/
-
 		// sets pnuematics
 		RobotActuators.latchRelease.set(latch);
 
@@ -300,19 +314,19 @@ public class RobotShoot {
 			latch();
 		}
 
-		if (!shootDone()) {
+		if (!isShootDone()) {
 			automatedShoot();
 		}
 	}
 
-	public static boolean shootDone() {
+	public static boolean isShootDone() {
 		return automatedShootOnce;
 	}
 
 	////CURRENT CHECK CODE (ask Debjit)
 	public static void getCurrent() {
-		voltage = RobotSensors.currentSensor.getVoltage();
-		current = (voltage - 500) * 0.05 - 100;
+		double voltage = RobotSensors.currentSensor.getVoltage();
+		double current = (voltage - 500) * 0.05 - 100;
 		System.out.println("Current = " + current + " Voltage = " + voltage); //Not too sure about the units, though. (most likely milli-)
 	}
 }
