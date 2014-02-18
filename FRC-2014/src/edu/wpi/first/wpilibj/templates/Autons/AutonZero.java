@@ -20,7 +20,7 @@ public class AutonZero {
 	public static double closeTime = 2.0;
 	public static int step;
 	private static boolean beenThru = false;
-	private static boolean stepOneDone = false;
+	private static boolean pickupBeenDown = false;
 	
 	public static void initialize() {
 		timer = new Timer();
@@ -35,15 +35,24 @@ public class AutonZero {
 	}
 	
 	public static void stepOne() {
-		RobotPickup.moveToShootPosition();
+		if (!RobotPickup.isPickupInPickupPosition() && !pickupBeenDown) {
+			RobotPickup.moveToPickupPosition();
+		} else {
+			pickupBeenDown = true;
+		}
+		
+		if (pickupBeenDown) {
+			RobotPickup.moveToShootPosition();
+		}
+		
 		if (timer.get() == 0) {
 			timer.start();
 		}
 		if (!beenThru /*&& RobotShoot.unwind()*/) {
-			System.out.println("Unwinding: " + timer.get());
+			//System.out.println("Unwinding: " + timer.get());
 			beenThru = true;
 		}
-		if (timer.get() >= 1) {
+		if (RobotShoot.unwind() && pickupBeenDown) {
 			step = 2;
 		}
 	}

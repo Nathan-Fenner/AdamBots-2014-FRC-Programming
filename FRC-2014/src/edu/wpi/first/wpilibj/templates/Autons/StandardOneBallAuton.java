@@ -6,6 +6,7 @@
 package edu.wpi.first.wpilibj.templates.Autons;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.templates.*;
 
 /**
@@ -21,6 +22,7 @@ public class StandardOneBallAuton extends AutonZero{
 	public static final double BACKWARDS_DISTANCE = -700; // needs to be found in testing
 	public static double openingTime = 0.5;
 	public static double currentTime = 0.0;
+	public static Timer secondTimer;
 	public static double averageDriveEncoder;
 
 	// init
@@ -28,6 +30,7 @@ public class StandardOneBallAuton extends AutonZero{
 		AutonZero.initialize();
 		AutonZero.reset();
 		startMovingBack = 0.0;
+		secondTimer = new Timer();
 	}
 
 	// Moves forward while putting the arm down
@@ -35,27 +38,38 @@ public class StandardOneBallAuton extends AutonZero{
 		RobotDrive.disableSmoothing();
 		if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
 			//double forward = speed * Math.max(-1, Math.min(1, (STRAIGHT_DISTANCE - averageDriveEncoder) / 1000.0)) + .2;
+			if (secondTimer.get() == 0) {
+				secondTimer.start();
+			}
+			if (secondTimer.get() <= 0.25) {
+				RobotPickup.setRollerSpeed(1.0);
+			} else {
+				RobotPickup.setRollerSpeed(0.0);
+			}
 			double forward = 0.5;
-			RobotDrive.driveSetRaw(-forward, -forward);
+			RobotDrive.drive(-forward, -forward);
 			System.out.println("-->stage 2: drive speed = " + forward);
 		} else {
-			RobotDrive.driveSetRaw(0, 0);
+			RobotDrive.drive(0, 0);
+			System.out.println("Setting to 0");
+			
 		}
-
-		if (/*RobotShoot.rewindShooter() && */averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
+		if (RobotShoot.rewindShooter() && averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
 			step = 3;
 		}
 	}
 
 	// shoots if the goal is hot or timer says so
 	public static void stepThree() {
-		if (currentTime == 0.0) {
+		if (currentTime == 0) {
 			RobotPickup.openRollerArm();
 			currentTime = timer.get();
 		}
 		System.out.println(timer.get() - (currentTime + openingTime));
+		SmartDashboard.putNumber("timer", timer.get());
+		SmartDashboard.putNumber("current time", currentTime);
 		if ((RobotVision.isHot() || timer.get() >= 5.0) && timer.get() - (currentTime + openingTime) >= 0.5) {
-			//RobotShoot.shoot();
+			RobotShoot.shoot();
 			System.out.println("Shoot");
 			startMovingBack = timer.get() + 0.5;
 			step = 4;
@@ -74,8 +88,9 @@ public class StandardOneBallAuton extends AutonZero{
 		if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
 			double forward = speed * Math.max(-1, Math.min(1, (BACKWARDS_DISTANCE - averageDriveEncoder) / 1000.0)) - .2;
 			//Forward is negative, so actually, backwards, but counting in the direction of forwards.
-			RobotDrive.drive(forward, forward);
+			RobotDrive.drive(-forward, -forward);
 		} else {
+			RobotDrive.stopDrive();
 			step = 6;
 		}
 	}
