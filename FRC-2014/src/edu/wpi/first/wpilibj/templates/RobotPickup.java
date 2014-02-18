@@ -1,5 +1,6 @@
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -22,6 +23,9 @@ public class RobotPickup {
 	private static double overrideSetValue = 0.0;
 	private static boolean ignoreLimitSwitches = false;
 	private static boolean armEnabled = true;
+	private static Timer timer;
+
+	private static double targetTweak = 0;
 
 	public static void disableArm() {
 		armEnabled = false;
@@ -118,10 +122,10 @@ public class RobotPickup {
 	}
 
 	public static void initialize() {
-		SmartDashboard.putNumber("Angle K P", -0.01);
-		SmartDashboard.putNumber("Angle K I", -0.5);
-		SmartDashboard.putNumber("Angle K D", 0.0);
-		SmartDashboard.putNumber("Angle I Decay", 0.9);
+		timer = new Timer();
+		timer.start();
+		SmartDashboard.putNumber("Adjust K", 1.0);
+		SmartDashboard.putNumber("Adjust U", 1.0);
 	}
 
 	public static void overrideEncoder(boolean doOverride) {
@@ -140,6 +144,11 @@ public class RobotPickup {
 		overrideEncoder(false);
 	}
 	private static double lastError = 0.0;
+	private static double lastAngle = 0.0;
+	private static double lastTime = 0.0;
+	private static double adjustRate = 0.0;
+	static double ADJUST_K = 1.0;
+	static double ADJUST_U = 1.0;
 
 	public static void update() {
 		double mechSpeed = 0.0;
@@ -152,30 +161,35 @@ public class RobotPickup {
 					mechSpeed = overrideSetValue;
 				}
 			} else {
-				double error = armTargetAngle - getArmAngleAboveHorizontal();
 
-				double errorDifference = error - lastError;
+				ADJUST_K = 0; // SmartDashboard.getNumber("Adjust K");
+				ADJUST_U = 2.5 ; // SmartDashboard.getNumber("Adjust U");
+				double angleDifference = getArmAngleAboveHorizontal() - lastAngle;
+				double timeDifference = timer.get() - lastTime;
+				double degreesPerSecond = angleDifference / timeDifference;
+				double lastTime = timer.get();
 
-				lastError = error;
+				lastAngle = getArmAngleAboveHorizontal();
 
-				SmartDashboard.putNumber("Angle Error", error);
+				targetTweak = 0.5 * (armTargetAngle - getArmAngleAboveHorizontal());
 
-				SmartDashboard.putNumber("Error Integral", angle_I);
+				double targetDistance = armTargetAngle - getArmAngleAboveHorizontal();
+				double targetSpeed = -Math.max(-30, Math.min(30, targetDistance * ADJUST_U));
+				//negative because down is positive and up is negative
 
-				angle_K_P = -0.02;
-				angle_K_I = -0.1;
-				angle_K_D = 0;
 
-				angle_I_DECAY = SmartDashboard.getNumber("Angle I Decay");
 
-				double amt = error * angle_K_P + angle_I * angle_K_I / 1000.0 + angle_K_D * errorDifference;
+				adjustRate = -(targetSpeed - degreesPerSecond) * ADJUST_K / 1000.0;
 
-				angle_I += error;
-				angle_I *= angle_I_DECAY;
 
-				amt = Math.max(-1, Math.min(1, amt));
 
-				amt *= 0.5;
+				targetTweak = Math.max(-5,Math.min(5,targetTweak));
+
+				SmartDashboard.putNumber("Target Tweak",targetTweak);
+
+				adjustRate = Math.max(-1, Math.min(1, adjustRate));
+
+				double amt = Math.max(-0.3,Math.min(0.3,adjustRate + targetSpeed / 100.0));
 
 				if (amt < 0 && (!isUpperLimitReached() || ignoreLimitSwitches)) {
 					mechSpeed = amt;
@@ -183,6 +197,41 @@ public class RobotPickup {
 				if (amt > 0 && (!isLowerLimitReached() || ignoreLimitSwitches)) {
 					mechSpeed = amt;
 				}
+
+				SmartDashboard.putNumber("Target Speed", targetSpeed);
+				SmartDashboard.putNumber("Adjust Rate", adjustRate);
+
+
+
+				/*
+				 double error = armTargetAngle - getArmAngleAboveHorizontal();
+
+				 double errorDifference = error - lastError;
+
+				 lastError = error;
+
+				 SmartDashboard.putNumber("Angle Error", error);
+
+				 SmartDashboard.putNumber("Error Integral", angle_I);
+
+				 angle_K_P = -0.02;
+				 angle_K_I = -0.1;
+				 angle_K_D = 0;
+
+				 angle_I_DECAY = SmartDashboard.getNumber("Angle I Decay");
+
+				 double amt = error * angle_K_P + angle_I * angle_K_I / 1000.0 + angle_K_D * errorDifference;
+
+				 angle_I += error;
+				 angle_I *= angle_I_DECAY;
+
+				 amt = Math.max(-1, Math.min(1, amt));
+
+				 amt *= 0.5;
+
+
+				 *
+				 * */
 
 				/*
 				 double amt = Math.min(1,Math.abs( (getArmAngleAboveHorizontal() - armTargetAngle) / 10.0));

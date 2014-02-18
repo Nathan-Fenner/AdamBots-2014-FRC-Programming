@@ -90,18 +90,18 @@ public abstract class RobotDrive {
 		encoderLastLeft = leftEncoder;
 		encoderLastRight = rightEncoder;
 
-		SmartDashboard.putNumber("Current Left", currentSpeedLeft + RobotTeleop.DEBUG_OSCILLATE / 800.0);
-		SmartDashboard.putNumber("Measured Left", pwmFromTPS(velocityLeft) + RobotTeleop.DEBUG_OSCILLATE / 800.0);
-		SmartDashboard.putNumber("Target Left", targetSpeedLeft + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		//SmartDashboard.putNumber("Current Left", currentSpeedLeft + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		//SmartDashboard.putNumber("Measured Left", pwmFromTPS(velocityLeft) + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		//SmartDashboard.putNumber("Target Left", targetSpeedLeft + RobotTeleop.DEBUG_OSCILLATE / 800.0);
 
-		SmartDashboard.putNumber("Current Right", currentSpeedRight + RobotTeleop.DEBUG_OSCILLATE / 800.0);
-		SmartDashboard.putNumber("Measured Right", pwmFromTPS(velocityRight) + RobotTeleop.DEBUG_OSCILLATE / 800.0);
-		SmartDashboard.putNumber("Target Right", targetSpeedRight + RobotTeleop.DEBUG_OSCILLATE / 800.0);
-		SmartDashboard.putNumber("Drive Encoder Left", getEncoderLeftTicks());
-		SmartDashboard.putNumber("Drive Encoder Right", getEncoderRightTicks());
+		//SmartDashboard.putNumber("Current Right", currentSpeedRight + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		//SmartDashboard.putNumber("Measured Right", pwmFromTPS(velocityRight) + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		//SmartDashboard.putNumber("Target Right", targetSpeedRight + RobotTeleop.DEBUG_OSCILLATE / 800.0);
+		//SmartDashboard.putNumber("Drive Encoder Left", getEncoderLeftTicks());
+		//SmartDashboard.putNumber("Drive Encoder Right", getEncoderRightTicks());
 
-		SmartDashboard.putNumber("Shift Up", shift_up * 10000);
-		SmartDashboard.putNumber("Shift Down", shift_down * 10000);
+		//SmartDashboard.putNumber("Shift Up", shift_up * 10000);
+		//SmartDashboard.putNumber("Shift Down", shift_down * 10000);
 
 
 		// Use currentSpeed and velocity to set raw

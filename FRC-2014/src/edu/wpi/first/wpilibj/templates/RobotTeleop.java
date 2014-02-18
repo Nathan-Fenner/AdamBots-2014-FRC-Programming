@@ -5,7 +5,6 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -36,14 +35,8 @@ public class RobotTeleop {
 		double leftDrive = forwardRate - turnRate;
 		double rightDrive = forwardRate + turnRate;
 
-		SmartDashboard.putNumber("Left Drive Sum", leftDrive + DEBUG_OSCILLATE / 800.0);
-		SmartDashboard.putNumber("Right Drive Sum", rightDrive + DEBUG_OSCILLATE / 800.0);
-
 		double leftPWM = RobotDrive.pwmFromTPS(leftDrive * 900);
 		double rightPWM = RobotDrive.pwmFromTPS(rightDrive * 900);
-
-		SmartDashboard.putNumber("Left Curve Value", leftPWM + DEBUG_OSCILLATE / 800.0);
-		SmartDashboard.putNumber("Right Curve Value", rightPWM + DEBUG_OSCILLATE / 800.0);
 
 		leftPWM = Math.max(-1.0, Math.min(1.0, leftPWM));
 		rightPWM = Math.max(-1.0, Math.min(1.0, rightPWM));
