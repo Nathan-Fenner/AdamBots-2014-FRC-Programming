@@ -95,7 +95,7 @@ public class RobotShoot {
 			if (!RobotSensors.shooterAtBack.get()/* && RobotSensors.shooterWinchEncoder.get() >= BACKWARDS_REV*/) {
 				automatedUnwind();
 			} else {
-				stopMotors();
+				updatedSpeed = 0.0;
 				return true;
 			}
 		}
@@ -140,11 +140,11 @@ public class RobotShoot {
 			automatedWind();
 			return false;
 		} else {
-			stopMotors();
+			updatedSpeed = 0.0;
 		}
 
 		if (RobotSensors.shooterLoadedLim.get()) {
-			stopMotors();
+			updatedSpeed = 0.0;
 		}
 
 		stageOneDone = false;
@@ -176,6 +176,8 @@ public class RobotShoot {
 	// TODO: RUN AUTOMATED SHOOT BY ENUMERATION
 	// Automated shoot
 	public static void automatedShoot() {
+		SmartDashboard.putString("Current Shooter Stage", currentStage);
+		SmartDashboard.putNumber("Shooter Timer", timer.get());
 		// shoots
 		if (!automatedShootOnce) {
 			if (!stageOneDone) {
@@ -193,7 +195,7 @@ public class RobotShoot {
 				}
 			}
 		} else {
-			stopMotors();
+			updatedSpeed = 0.0;
 		}
 	}
 
@@ -216,13 +218,21 @@ public class RobotShoot {
 		} else if (Gamepad.primary.getY()) {
 			RobotPickup.closeRollerArm();
 		}
+		
+		if (Gamepad.primary.getLB()) {
+			RobotPickup.moveToShootPosition();
+		}
+		
+		if (Gamepad.primary.getRB()) {
+			RobotPickup.moveToPickupPosition();
+		}
 	}
 
 	// sets speed to the unwind speed
 	private static void automatedUnwind() {
 		updatedSpeed = UNWIND_SPEED;
 		if (RobotSensors.shooterLoadedLim.get()) {
-			stopMotors();
+			updatedSpeed = 0.0;
 		}
 	}
 

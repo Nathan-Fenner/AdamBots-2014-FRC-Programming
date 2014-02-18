@@ -11,16 +11,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.templates.Autons.*;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the IterativeRobot documentation. If you change the name of this class
- * or the package after creating this project, you must also update the manifest file in the
- * resource directory.
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the IterativeRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the manifest file in the resource
+ * directory.
  */
 public class MainRobot extends IterativeRobot {
 
 	/**
-	 * This function is run when the robot is first started up and should be used for any
-	 * initialization code.
+	 * This function is run when the robot is first started up and should be
+	 * used for any initialization code.
 	 */
 	public void robotInit() {
 		RobotActuators.initialize();
@@ -43,25 +44,26 @@ public class MainRobot extends IterativeRobot {
 	public void teleopInit() {
 		RobotDrive.enableSmoothing();
 	}
-	
+
 	public void disabledInit() {
 		StandardOneBallAuton.timer.stop();
 		StandardOneBallAuton.timer.reset();
 	}
+
 	/**
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
 
 		RobotDrive.update();
-		RobotTeleop.update();
+		//RobotTeleop.update();
 		RobotPickup.update();
-		/*RobotShoot.update();
-		 if (Gamepad.primary.getStart()) {
-		 RobotShoot.manualShoot();
-		 } else if (Gamepad.primary.getBack()) {
-		 RobotShoot.shoot();
-		 }*/
+		RobotShoot.update();
+		if (Gamepad.primary.getStart()) {
+			RobotShoot.manualShoot();
+		} else if (Gamepad.primary.getBack()) {
+			RobotShoot.shoot();
+		}
 		//RobotShoot.manualShoot();
 		SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());
 		SmartDashboard.putBoolean("Too far", RobotSensors.shooterLoadedLim.get());
@@ -94,6 +96,11 @@ public class MainRobot extends IterativeRobot {
 	public void disabledPeriodic() {
 		RobotDrive.stopDrive();
 		RobotShoot.stopMotors();
+		AutonZero.reset();
 		RobotPickup.angle_I = 0;
+	}
+
+	public void autonomousInit() {
+		RobotAuton.initialize();
 	}
 }
