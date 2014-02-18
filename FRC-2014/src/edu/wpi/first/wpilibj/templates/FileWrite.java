@@ -25,6 +25,7 @@ public class FileWrite {
 			stream.close();
 			file.close();
 		} catch (IOException e) {
+			System.out.println(e.getMessage());
 		}
 	}
 }

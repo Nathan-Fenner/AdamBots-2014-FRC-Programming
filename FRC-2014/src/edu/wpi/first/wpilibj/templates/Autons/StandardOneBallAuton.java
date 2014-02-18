@@ -32,28 +32,29 @@ public class StandardOneBallAuton extends AutonZero{
 
 	// Moves forward while putting the arm down
 	public static void stepTwo() {
+		RobotDrive.disableSmoothing();
 		if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
 			//double forward = speed * Math.max(-1, Math.min(1, (STRAIGHT_DISTANCE - averageDriveEncoder) / 1000.0)) + .2;
 			double forward = 0.5;
-			RobotDrive.drive(-forward, -forward);
+			RobotDrive.driveSetRaw(-forward, -forward);
 			System.out.println("-->stage 2: drive speed = " + forward);
 		} else {
-			RobotDrive.drive(0, 0);
+			RobotDrive.driveSetRaw(0, 0);
 		}
 
-		if (/*RobotShoot.rewindShooter() && */averageDriveEncoder >= STRAIGHT_DISTANCE && timer.get() >= 5.0 ) {
+		if (/*RobotShoot.rewindShooter() && */averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
 			step = 3;
 		}
 	}
 
-	// doesnt do anything because it's covered in a method called from step 1
+	// shoots if the goal is hot or timer says so
 	public static void stepThree() {
 		if (currentTime == 0.0) {
 			RobotPickup.openRollerArm();
 			currentTime = timer.get();
 		}
-		System.out.println(currentTime + openingTime - timer.get());
-		if ((RobotVision.isHot() || timer.get() >= 5) && currentTime + openingTime - timer.get() >= 0.5) {
+		System.out.println(timer.get() - (currentTime + openingTime));
+		if ((RobotVision.isHot() || timer.get() >= 5.0) && timer.get() - (currentTime + openingTime) >= 0.5) {
 			//RobotShoot.shoot();
 			System.out.println("Shoot");
 			startMovingBack = timer.get() + 0.5;
@@ -61,7 +62,7 @@ public class StandardOneBallAuton extends AutonZero{
 		}
 	}
 
-	// shoots if the goal is hot or waits if the goal isnt
+	// waits 0.5 seconds
 	public static void stepFour() {
 		if (startMovingBack <= timer.get()) {
 			step = 5;

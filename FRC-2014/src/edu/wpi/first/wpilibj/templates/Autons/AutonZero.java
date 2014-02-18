@@ -43,7 +43,7 @@ public class AutonZero {
 			System.out.println("Unwinding: " + timer.get());
 			beenThru = true;
 		}
-		if (timer.get() >= 3) {
+		if (timer.get() >= 1) {
 			step = 2;
 		}
 	}
