@@ -29,7 +29,7 @@ public class MainRobot extends IterativeRobot {
 		RobotPickup.initialize();
 		RobotShoot.initialize();
 		RobotVision.initialize();
-		RobotAuton.initiate();
+		RobotAuton.initialize();
 	}
 
 	/**
@@ -43,7 +43,11 @@ public class MainRobot extends IterativeRobot {
 	public void teleopInit() {
 		RobotDrive.enableSmoothing();
 	}
-
+	
+	public void disabledInit() {
+		StandardOneBallAuton.timer.stop();
+		StandardOneBallAuton.timer.reset();
+	}
 	/**
 	 * This function is called periodically during operator control
 	 */
