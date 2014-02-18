@@ -234,6 +234,7 @@ public class RobotShoot {
 	// sets the speed to 0.0
 	public static void stopMotors() {
 		updatedSpeed = 0.0;
+		automatedShootOnce = true;
 	}
 
 	// Releases the pnuematic
