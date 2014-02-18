@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public abstract class RobotDrive {
 
 	public static final double distancePerTick = 0.066;
-	public static final double WHEEL_DIAMETER = 0.5;//Feet
 	private static int encoderLastLeft = 0;
 	private static int encoderLastRight = 0;
 	private static double velocityLeft = 0;
@@ -24,6 +23,7 @@ public abstract class RobotDrive {
 	private static double targetSpeedRight = 0.0;
 	private static double currentSpeedLeft = 0.0;
 	private static double currentSpeedRight = 0.0;
+	private static boolean smoothingEnabled = true;
 	private static Timer clock;
 
 ////INIT------------------------------------------------------------------------
@@ -106,7 +106,9 @@ public abstract class RobotDrive {
 
 
 		// Use currentSpeed and velocity to set raw
-		RobotDrive.driveSetRaw(currentSpeedLeft, currentSpeedRight);
+		if (smoothingEnabled) {
+			RobotDrive.driveSetRaw(currentSpeedLeft, currentSpeedRight);
+		}
 	}
 
 	public static double pwmFromRPM(double rpm) {
@@ -191,10 +193,18 @@ public abstract class RobotDrive {
 		}
 	}
 
-	public static void stopSmoothDrive() {
+	public static void stopDrive() {
 		targetSpeedLeft = 0.0;
 		currentSpeedLeft = 0.0;
 		targetSpeedRight = 0.0;
 		currentSpeedRight = 0.0;
+	}
+
+	public static void disableSmoothing() {
+
+	}
+
+	public static void enableSmoothing() {
+
 	}
 }
