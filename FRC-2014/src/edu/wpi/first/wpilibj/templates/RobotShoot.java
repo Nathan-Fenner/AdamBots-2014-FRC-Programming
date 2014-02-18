@@ -95,6 +95,7 @@ public class RobotShoot {
 			if (!RobotSensors.shooterAtBack.get()/* && RobotSensors.shooterWinchEncoder.get() >= BACKWARDS_REV*/) {
 				automatedUnwind();
 			} else {
+				stopMotors();
 				return true;
 			}
 		}
@@ -134,6 +135,7 @@ public class RobotShoot {
 	// rewinds the shooter
 	public static boolean rewindShooter() {
 		currentStage = "6";
+		System.out.println("Stage 6 of shooter");
 		if (RobotSensors.shooterWinchEncoder.get() <= MAX_REVS && !RobotSensors.shooterLoadedLim.get()) {
 			automatedWind();
 			return false;

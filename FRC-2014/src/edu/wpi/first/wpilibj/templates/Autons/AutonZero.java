@@ -16,10 +16,11 @@ import edu.wpi.first.wpilibj.templates.*;
 public class AutonZero {
 	
 	public static Timer timer;
-	public static double fallTimer = 0.25;
-	public static double closeTimer = 0.5;
+	public static double fallTimer = 2.0;
+	public static double closeTime = 2.0;
 	public static int step;
 	private static boolean beenThru = false;
+	private static boolean stepOneDone = false;
 	
 	public static void initialize() {
 		timer = new Timer();
@@ -34,16 +35,15 @@ public class AutonZero {
 	}
 	
 	public static void stepOne() {
-		timer.start();
-		if (timer.get() <= closeTimer) {
-			RobotPickup.openRollerArm();
-		} else {
-			RobotPickup.closeRollerArm();
+		RobotPickup.moveToShootPosition();
+		if (timer.get() == 0) {
+			timer.start();
 		}
-		if (!beenThru && RobotShoot.unwind()) {
+		if (!beenThru /*&& RobotShoot.unwind()*/) {
+			System.out.println("Unwinding: " + timer.get());
 			beenThru = true;
 		}
-		if (timer.get() > closeTimer && timer.get() >= fallTimer + closeTimer) {
+		if (timer.get() >= 3) {
 			step = 2;
 		}
 	}
