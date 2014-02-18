@@ -108,6 +108,8 @@ public abstract class RobotDrive {
 		// Use currentSpeed and velocity to set raw
 		if (smoothingEnabled) {
 			RobotDrive.driveSetRaw(currentSpeedLeft, currentSpeedRight);
+		} else {
+			RobotDrive.driveSetRaw(targetSpeedLeft, targetSpeedRight);
 		}
 	}
 
@@ -117,6 +119,7 @@ public abstract class RobotDrive {
 
 	/**
 	 * Transforms a rotation rate to a PWM value
+	 *
 	 * @param tps Ticks per second
 	 * @return
 	 */
@@ -134,8 +137,7 @@ public abstract class RobotDrive {
 	}
 
 	/**
-	 * Sets the left and right drive safely, which it fits into the [-1,1]
-	 * range.
+	 * Sets the left and right drive safely, which it fits into the [-1,1] range.
 	 *
 	 * @param leftSpeed
 	 * @param rightSpeed
@@ -201,10 +203,10 @@ public abstract class RobotDrive {
 	}
 
 	public static void disableSmoothing() {
-
+		smoothingEnabled = false;
 	}
 
 	public static void enableSmoothing() {
-
+		smoothingEnabled = true;
 	}
 }
