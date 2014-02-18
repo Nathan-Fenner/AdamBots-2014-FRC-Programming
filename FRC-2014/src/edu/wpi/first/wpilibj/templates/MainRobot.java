@@ -82,5 +82,6 @@ public class MainRobot extends IterativeRobot {
 
 	public void disabledPeriodic() {
 		RobotDrive.stopSmoothDrive();
+		RobotPickup.angle_I = 0;
 	}
 }

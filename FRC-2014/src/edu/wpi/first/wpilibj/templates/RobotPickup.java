@@ -1,5 +1,7 @@
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -8,8 +10,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotPickup {
 
+	static double angle_K_P = -0.1;
+	static double angle_K_I = 0.0;
+	static double angle_K_D = 0.0;
+	static double angle_I = 0.0;
+	static double angle_I_DECAY = 0.9;
 	private static final double ANGLE_TOLERANCE = 2;
-	private static final double PICKUP_POSITION = -15;
+	private static final double PICKUP_POSITION = -10;
 	private static final double SHOOT_POSITION = 51.0;
 	private static final double CATCH_POSITION = 90;
 	private static double armTargetAngle = CATCH_POSITION;
@@ -60,6 +67,9 @@ public class RobotPickup {
 	}
 
 	public static void movePickupToAngle(double givenAngle) {
+		if (Math.abs(givenAngle - armTargetAngle) > 1) {
+			angle_I = 0;
+		}
 		armTargetAngle = givenAngle;
 	}
 
@@ -101,7 +111,10 @@ public class RobotPickup {
 	}
 
 	public static void initialize() {
-		// currently, nothing to intialize
+		SmartDashboard.putNumber("Angle K P", -0.01);
+		SmartDashboard.putNumber("Angle K I", -0.5);
+		SmartDashboard.putNumber("Angle K D", 0.0);
+		SmartDashboard.putNumber("Angle I Decay", 0.9);
 	}
 
 	public static void overrideEncoder(boolean doOverride) {
@@ -120,6 +133,8 @@ public class RobotPickup {
 		overrideEncoder(false);
 	}
 
+	private static double lastError = 0.0;
+
 	public static void update() {
 		double mechSpeed = 0.0;
 		if (overrideEncoder) {
@@ -130,21 +145,55 @@ public class RobotPickup {
 				mechSpeed = overrideSetValue;
 			}
 		} else {
-			double amt = Math.min(1,Math.abs( (getArmAngleAboveHorizontal() - armTargetAngle) / 10.0));
-			amt *= amt;
-			amt *= 0.2;
-			amt += 0.03;
-			if (getArmAngleAboveHorizontal() < armTargetAngle && (!isUpperLimitReached() || ignoreLimitSwitches)) {
-				mechSpeed = -1 * amt;
+			double error = armTargetAngle - getArmAngleAboveHorizontal();
+
+			double errorDifference = error - lastError;
+
+			lastError = error;
+
+			SmartDashboard.putNumber("Angle Error",error);
+
+			SmartDashboard.putNumber("Error Integral",angle_I);
+
+			angle_K_P = -0.02;
+			angle_K_I = -0.1;
+			angle_K_D = 0;
+
+			angle_I_DECAY = SmartDashboard.getNumber("Angle I Decay");
+
+			double amt = error * angle_K_P + angle_I * angle_K_I / 1000.0 + angle_K_D * errorDifference;
+
+			angle_I += error;
+			angle_I *= angle_I_DECAY;
+
+			amt = Math.max(-1, Math.min(1, amt));
+
+			amt *= 0.5;
+
+			if (amt < 0 && (!isUpperLimitReached() || ignoreLimitSwitches)) {
+				mechSpeed = amt;
 			}
-			if (getArmAngleAboveHorizontal() > armTargetAngle && (!isLowerLimitReached() || ignoreLimitSwitches)) {
-				mechSpeed = 1 * amt;
+			if (amt > 0 && (!isLowerLimitReached() || ignoreLimitSwitches)) {
+				mechSpeed = amt;
 			}
+
+			/*
+			 double amt = Math.min(1,Math.abs( (getArmAngleAboveHorizontal() - armTargetAngle) / 10.0));
+			 amt *= amt;
+			 amt *= 0.2;
+			 amt += 0.03;
+			 if (getArmAngleAboveHorizontal() < armTargetAngle && (!isUpperLimitReached() || ignoreLimitSwitches)) {
+			 mechSpeed = -1 * amt;
+			 }
+			 if (getArmAngleAboveHorizontal() > armTargetAngle && (!isLowerLimitReached() || ignoreLimitSwitches)) {
+			 mechSpeed = 1 * amt;
+			 }
+			 */
 		}
 		SmartDashboard.putNumber("Arm Target Angle", armTargetAngle);
-		SmartDashboard.putNumber("Mech Speed",mechSpeed);
-		SmartDashboard.putBoolean("upper limit arm",isUpperLimitReached());
-		SmartDashboard.putBoolean("lower limit arm",isLowerLimitReached());
+		SmartDashboard.putNumber("Mech Speed", mechSpeed);
+		SmartDashboard.putBoolean("upper limit arm", isUpperLimitReached());
+		SmartDashboard.putBoolean("lower limit arm", isLowerLimitReached());
 		SmartDashboard.putNumber("Angle", RobotTeleop.DEBUG_OSCILLATE / 800.0 + getArmAngleAboveHorizontal());
 		RobotActuators.pickupMechMotor.set(mechSpeed);
 	}

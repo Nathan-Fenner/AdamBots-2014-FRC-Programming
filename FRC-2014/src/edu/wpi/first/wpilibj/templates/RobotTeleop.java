@@ -106,7 +106,7 @@ public class RobotTeleop {
 			}
 			catchClosingDebounce = true;
 			double col = RobotVision.highBlueBall();
-			if (col > 2) {
+			if (col > 200) {
 				catchClosing = true;
 			}
 			if (catchClosing) {
