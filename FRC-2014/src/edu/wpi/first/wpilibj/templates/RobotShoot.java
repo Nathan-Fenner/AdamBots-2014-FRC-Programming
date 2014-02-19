@@ -208,7 +208,8 @@ public class RobotShoot {
 	// used for calibration
 	public static void manualShoot() {
 		updatedSpeed = Gamepad.secondary.getRightY();
-		if (RobotSensors.shooterLoadedLim.get() && RobotSensors.shooterWinchEncoder.get() <= -100 && Gamepad.secondary.getRightY() >= 0.0) {
+		SmartDashboard.putBoolean("is the shooterLoadedLim",RobotSensors.shooterLoadedLim.get());
+		if ((RobotSensors.shooterLoadedLim.get() || true) && RobotSensors.shooterWinchEncoder.get() <= -100 && Gamepad.secondary.getRightY() >= 0.0) {
 			updatedSpeed = 0.0;
 			System.out.println("Can't move back");
 		}

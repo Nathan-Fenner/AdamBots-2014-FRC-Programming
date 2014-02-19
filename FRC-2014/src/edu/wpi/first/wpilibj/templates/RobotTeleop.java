@@ -111,7 +111,7 @@ public class RobotTeleop {
 
 		if (Math.abs(Gamepad.secondary.getTriggers()) > 0.9) {
 			if (!shootDebounce) {
-				RobotShoot.shoot();
+				//RobotShoot.shoot();
 			}
 			shootDebounce = true;
 		} else {

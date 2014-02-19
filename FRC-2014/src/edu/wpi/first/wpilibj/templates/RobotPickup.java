@@ -24,7 +24,6 @@ public class RobotPickup {
 	private static boolean ignoreLimitSwitches = false;
 	private static boolean armEnabled = true;
 	private static Timer timer;
-
 	private static double targetTweak = 0;
 
 	public static void disableArm() {
@@ -118,7 +117,8 @@ public class RobotPickup {
 
 	public static double getArmAngleAboveHorizontal() {
 		// apply some function to this to convert to angle
-		return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68;
+		return RobotSensors.pickupPotentiometer.get() * 73.015 - 39.0664;
+		//return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
 	}
 
 	public static void initialize() {
@@ -163,7 +163,7 @@ public class RobotPickup {
 			} else {
 
 				ADJUST_K = 0; // SmartDashboard.getNumber("Adjust K");
-				ADJUST_U = 2.5 ; // SmartDashboard.getNumber("Adjust U");
+				ADJUST_U = 2.5; // SmartDashboard.getNumber("Adjust U");
 				double angleDifference = getArmAngleAboveHorizontal() - lastAngle;
 				double timeDifference = timer.get() - lastTime;
 				double degreesPerSecond = angleDifference / timeDifference;
@@ -183,13 +183,13 @@ public class RobotPickup {
 
 
 
-				targetTweak = Math.max(-5,Math.min(5,targetTweak));
+				targetTweak = Math.max(-5, Math.min(5, targetTweak));
 
-				SmartDashboard.putNumber("Target Tweak",targetTweak);
+				SmartDashboard.putNumber("Target Tweak", targetTweak);
 
 				adjustRate = Math.max(-1, Math.min(1, adjustRate));
 
-				double amt = Math.max(-0.3,Math.min(0.3,adjustRate + targetSpeed / 100.0));
+				double amt = Math.max(-0.3, Math.min(0.3, adjustRate + targetSpeed / 100.0));
 
 				if (amt < 0 && (!isUpperLimitReached() || ignoreLimitSwitches)) {
 					mechSpeed = amt;
