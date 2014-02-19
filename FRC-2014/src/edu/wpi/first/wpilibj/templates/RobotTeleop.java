@@ -31,7 +31,7 @@ public class RobotTeleop {
 		// Begin drive control
 
 		double forwardRate = Gamepad.primary.getTriggers();
-		double turnRate = Gamepad.primary.getLeftX() * 1.25;
+		double turnRate = Gamepad.primary.getLeftX() * 1;
 		double leftDrive = forwardRate - turnRate;
 		double rightDrive = forwardRate + turnRate;
 

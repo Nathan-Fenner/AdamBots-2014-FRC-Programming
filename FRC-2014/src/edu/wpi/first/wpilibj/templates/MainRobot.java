@@ -70,6 +70,9 @@ public class MainRobot extends IterativeRobot {
 		}
 		SmartDashboard.putNumber("ANGLE POT",RobotSensors.pickupPotentiometer.get());
 		
+		SmartDashboard.putNumber("LEFT ENC",RobotSensors.leftDriveEncoder.get());
+		SmartDashboard.putNumber("RIGHT ENC",RobotSensors.rightDriveEncoder.get());
+		
 		SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());
 		SmartDashboard.putBoolean("Too far", RobotSensors.shooterLoadedLim.get());
 		SmartDashboard.putBoolean("At Pick", RobotSensors.shooterAtBack.get());

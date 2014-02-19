@@ -143,7 +143,7 @@ public class RobotShoot {
 	public static boolean rewindShooter() {
 		currentStage = "6";
 		System.out.println("Stage 6 of shooter");
-		if (RobotSensors.shooterWinchEncoder.get() <= tensionTargetTicks - TENSION_TOLERANCE && !RobotSensors.shooterLoadedLim.get()) {
+		if (RobotSensors.shooterWinchEncoder.get() <= tensionTargetTicks - TENSION_TOLERANCE && (true || !RobotSensors.shooterLoadedLim.get())) {
 			automatedWind();
 			return false;
 		}
@@ -225,7 +225,7 @@ public class RobotShoot {
 	// sets speed to the unwind speed
 	private static void automatedUnwind() {
 		updatedSpeed = UNWIND_SPEED;
-		if (RobotSensors.shooterLoadedLim.get()) {
+		if (RobotSensors.shooterLoadedLim.get() && false) {
 			updatedSpeed = 0.0;
 		}
 	}
