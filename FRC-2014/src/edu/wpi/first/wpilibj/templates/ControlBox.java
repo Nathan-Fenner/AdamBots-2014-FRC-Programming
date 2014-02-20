@@ -5,6 +5,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -27,13 +28,28 @@ public class ControlBox {
 	 */
 
 	public static DriverStation driverStation;
+	public static DriverStationEnhancedIO enhancedStation;
 
 	public static void initialize() {
 		driverStation = DriverStation.getInstance();
+		enhancedStation = driverStation.getEnhancedIO();
 	}
 
 	public static boolean getDigitalIn(int channel) {
-		return driverStation.getDigitalIn(channel);
+		try {
+			int lookAt = -1 - (int)enhancedStation.getDigitals();
+			int pow = 1;
+			for (int j = 0; j < channel; j++) {
+				pow *= 2;
+			}
+			lookAt = lookAt % pow;
+			lookAt /= (pow/2);
+			SmartDashboard.putNumber("Digitals",-1 - (int)enhancedStation.getDigitals());
+			return lookAt <= 0;
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return false;
 	}
 
 	public static double getAnalogIn(int channel) {
@@ -41,9 +57,7 @@ public class ControlBox {
 	}
 
 	public static void update() {
-		for (int i = 1; i <= 14; i++) {
-			SmartDashboard.putBoolean("Switch " + i, driverStation.getDigitalIn(i));
-		}
+		// nothing to do here
 	}
 
 	public static boolean getYellowButtonUpLeft() {

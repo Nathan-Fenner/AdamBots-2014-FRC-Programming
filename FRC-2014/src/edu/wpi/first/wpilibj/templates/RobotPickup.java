@@ -117,8 +117,8 @@ public class RobotPickup {
 
 	public static double getArmAngleAboveHorizontal() {
 		// apply some function to this to convert to angle
-		return RobotSensors.pickupPotentiometer.get() * 73.015 - 39.0664;
-		//return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
+		// return RobotSensors.pickupPotentiometer.get() * 73.015 - 39.0664; // Competition robot
+		return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
 	}
 
 	public static void initialize() {
@@ -128,22 +128,21 @@ public class RobotPickup {
 		SmartDashboard.putNumber("Adjust U", 1.0);
 	}
 
-	public static void overrideEncoder(boolean doOverride) {
-		overrideEncoder = doOverride;
-	}
-
 	public static void setIgnoreLimits(boolean ignore) {
 		ignoreLimitSwitches = ignore;
 	}
 
+	public static void setOverrideEncoderMode(boolean doOverride) {
+		overrideEncoder = doOverride;
+	}
+
 	public static void enterOverrideEncoderMode() {
-		overrideEncoder(true);
+		setOverrideEncoderMode(true);
 	}
 
 	public static void exitOverrideEncoderMode() {
-		overrideEncoder(false);
+		setOverrideEncoderMode(false);
 	}
-	private static double lastError = 0.0;
 	private static double lastAngle = 0.0;
 	private static double lastTime = 0.0;
 	private static double adjustRate = 0.0;
@@ -154,10 +153,10 @@ public class RobotPickup {
 		double mechSpeed = 0.0;
 		if (armEnabled) {
 			if (overrideEncoder) {
-				if ((!isUpperLimitReached() || ignoreLimitSwitches) && overrideSetValue > 0) {
+				if (!isUpperLimitReached() && overrideSetValue < 0) {
 					mechSpeed = overrideSetValue;
 				}
-				if ((!isLowerLimitReached() || ignoreLimitSwitches) && overrideSetValue < 0) {
+				if (!isLowerLimitReached() && overrideSetValue > 0) {
 					mechSpeed = overrideSetValue;
 				}
 			} else {
@@ -177,11 +176,7 @@ public class RobotPickup {
 				double targetSpeed = -Math.max(-30, Math.min(30, targetDistance * ADJUST_U));
 				//negative because down is positive and up is negative
 
-
-
 				adjustRate = -(targetSpeed - degreesPerSecond) * ADJUST_K / 1000.0;
-
-
 
 				targetTweak = Math.max(-5, Math.min(5, targetTweak));
 
@@ -201,50 +196,6 @@ public class RobotPickup {
 				SmartDashboard.putNumber("Target Speed", targetSpeed);
 				SmartDashboard.putNumber("Adjust Rate", adjustRate);
 
-
-
-				/*
-				 double error = armTargetAngle - getArmAngleAboveHorizontal();
-
-				 double errorDifference = error - lastError;
-
-				 lastError = error;
-
-				 SmartDashboard.putNumber("Angle Error", error);
-
-				 SmartDashboard.putNumber("Error Integral", angle_I);
-
-				 angle_K_P = -0.02;
-				 angle_K_I = -0.1;
-				 angle_K_D = 0;
-
-				 angle_I_DECAY = SmartDashboard.getNumber("Angle I Decay");
-
-				 double amt = error * angle_K_P + angle_I * angle_K_I / 1000.0 + angle_K_D * errorDifference;
-
-				 angle_I += error;
-				 angle_I *= angle_I_DECAY;
-
-				 amt = Math.max(-1, Math.min(1, amt));
-
-				 amt *= 0.5;
-
-
-				 *
-				 * */
-
-				/*
-				 double amt = Math.min(1,Math.abs( (getArmAngleAboveHorizontal() - armTargetAngle) / 10.0));
-				 amt *= amt;
-				 amt *= 0.2;
-				 amt += 0.03;
-				 if (getArmAngleAboveHorizontal() < armTargetAngle && (!isUpperLimitReached() || ignoreLimitSwitches)) {
-				 mechSpeed = -1 * amt;
-				 }
-				 if (getArmAngleAboveHorizontal() > armTargetAngle && (!isLowerLimitReached() || ignoreLimitSwitches)) {
-				 mechSpeed = 1 * amt;
-				 }
-				 */
 			}
 		}
 		SmartDashboard.putNumber("Arm Target Angle", armTargetAngle);

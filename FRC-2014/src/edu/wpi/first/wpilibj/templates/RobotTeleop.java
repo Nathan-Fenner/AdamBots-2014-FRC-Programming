@@ -5,6 +5,7 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -54,7 +55,7 @@ public class RobotTeleop {
 
 		//RobotPickup.adjustArmAngle(Gamepad.secondary.getTriggers());
 
-		RobotPickup.overrideEncoder(Gamepad.secondary.getBack());
+		RobotPickup.setOverrideEncoderMode(Gamepad.secondary.getBack());
 		RobotPickup.setOverrideSpeed(Gamepad.secondary.getTriggers() / 3.0);
 
 
@@ -92,6 +93,13 @@ public class RobotTeleop {
 				RobotPickup.moveToCatchPosition();
 				break;
 		}
+
+		double overridePickupAngleSpeed = (Gamepad.secondary.getLB() ? 0.35 : 0) + (Gamepad.secondary.getRB() ? -0.35 : 0);
+
+		RobotPickup.setOverrideSpeed(overridePickupAngleSpeed);
+		SmartDashboard.putBoolean("Left Switch 1", ControlBox.getLeftSwitch(1));
+		RobotPickup.setOverrideEncoderMode(ControlBox.getLeftSwitch(1));
+
 
 		if (Gamepad.secondary.getA()) {
 			if (!catchClosingDebounce) {
