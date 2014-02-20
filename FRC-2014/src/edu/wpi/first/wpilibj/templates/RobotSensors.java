@@ -35,10 +35,11 @@ public class RobotSensors {
 	public static void initialize() {
 		//// Analog
 		currentSensor = new AnalogChannel(1);
-		configSwitchA = new AnalogChannel(5); //TODO: FIX ME CONFIG
-		configSwitchB = new AnalogChannel(3);
-		configSwitchC = new AnalogChannel(4);
-		pickupPotentiometer = new AnalogPotentiometer(2); //NOW MOVED FROM FIVE
+		configSwitchA = new AnalogChannel(3);
+		configSwitchB = new AnalogChannel(4);
+		configSwitchC = new AnalogChannel(5);
+		pickupPotentiometer = new AnalogPotentiometer(2);
+		//Now in port TWO on both robots.
 
 		//// Digital In 1
 		rightDriveEncoder = new Encoder(1, 11);

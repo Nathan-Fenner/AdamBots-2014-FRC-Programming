@@ -68,16 +68,10 @@ public class MainRobot extends IterativeRobot {
 		if (Gamepad.secondary.getB()) {
 			RobotShoot.manualShoot();
 		}
-		SmartDashboard.putNumber("ANGLE POT",RobotSensors.pickupPotentiometer.get());
+		SmartDashboard.putNumber("ANGLE ANGLE",RobotPickup.getArmAngleAboveHorizontal());
 		
-		SmartDashboard.putNumber("LEFT ENC",RobotSensors.leftDriveEncoder.get());
-		SmartDashboard.putNumber("RIGHT ENC",RobotSensors.rightDriveEncoder.get());
-		
-		SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());
-		SmartDashboard.putBoolean("Too far", RobotSensors.shooterLoadedLim.get());
-		SmartDashboard.putBoolean("At Pick", RobotSensors.shooterAtBack.get());
-		//RobotShoot.manualWind(FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_A), FancyJoystick.primary.getRawButton(FancyJoystick.BUTTON_B));
-
+		SmartDashboard.putBoolean("PICKUP Upper Limit", RobotSensors.pickupSystemUpLim.get());
+		SmartDashboard.putBoolean("PICKUP Lower Limit", RobotSensors.pickupSystemDownLim.get());
 		runCompressor();
 
 		SmartDashboard.putNumber("Red Distance", RobotVision.redDistance());
