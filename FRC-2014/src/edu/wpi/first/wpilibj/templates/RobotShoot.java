@@ -311,9 +311,10 @@ public class RobotShoot {
 	}
 
 	////CURRENT CHECK CODE (ask Debjit)
-	public static void getCurrent() {
+	public static double getCurrent() {
 		voltage = RobotSensors.currentSensor.getVoltage();
 		current = (voltage - 500) * 0.05 - 100;
-		System.out.println("Current = " + current + " Voltage = " + voltage); //Not too sure about the units, though. (most likely milli-)
+		return current;
+		//System.out.println("Current = " + current + " Voltage = " + voltage); //Not too sure about the units, though. (most likely milli-)
 	}
 }
