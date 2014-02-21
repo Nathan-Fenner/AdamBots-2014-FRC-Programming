@@ -67,39 +67,59 @@ public class RobotTeleop {
 			RobotPickup.neutralRollerArm();
 		}
 
-		if (Gamepad.secondary.getLB() || Gamepad.secondary.getRB()) {
-			if (!pickupPositionDebounce) {
-				if (Gamepad.secondary.getLB()) {
-					pickupPosition--;
-				}
-				if (Gamepad.secondary.getRB()) {
-					pickupPosition++;
-				}
-				pickupPosition = Math.max(0, Math.min(2, pickupPosition));
-			}
-			pickupPositionDebounce = true;
-		} else {
-			pickupPositionDebounce = false;
-		}
-
-		switch (pickupPosition) {
-			case 0:
-				RobotPickup.moveToPickupPosition();
-				break;
-			case 1:
-				RobotPickup.moveToShootPosition();
-				break;
-			case 2:
-				RobotPickup.moveToCatchPosition();
-				break;
-		}
-
-		double overridePickupAngleSpeed = (Gamepad.secondary.getLB() ? 0.35 : 0) + (Gamepad.secondary.getRB() ? -0.35 : 0);
-
-		RobotPickup.setOverrideSpeed(overridePickupAngleSpeed);
 		SmartDashboard.putBoolean("Left Switch 1", ControlBox.getLeftSwitch(1));
-		RobotPickup.setOverrideEncoderMode(ControlBox.getLeftSwitch(1));
+		if (ControlBox.getLeftSwitch(1)) {
+			RobotPickup.enterOverrideEncoderMode();
+			double overridePickupAngleSpeed = Gamepad.secondary.getTriggers() * 0.4;
+			//double overridePickupAngleSpeed = (Gamepad.secondary.getLB() ? 0.35 : 0) + (Gamepad.secondary.getRB() ? -0.35 : 0);
+			RobotPickup.setOverrideSpeed(overridePickupAngleSpeed);
+			// automatic shooting uses opposite controls now
+			if (Gamepad.secondary.getRB()) {
+				if (!shootDebounce) {
+					//RobotShoot.shoot();
+				}
+				shootDebounce = true;
+			} else {
+				shootDebounce = false;
+			}
+		} else {
+			RobotPickup.exitOverrideEncoderMode();
+			if (Gamepad.secondary.getLB() || Gamepad.secondary.getRB()) {
+				if (!pickupPositionDebounce) {
+					if (Gamepad.secondary.getLB()) {
+						pickupPosition--;
+					}
+					if (Gamepad.secondary.getRB()) {
+						pickupPosition++;
+					}
+					pickupPosition = Math.max(0, Math.min(2, pickupPosition));
+				}
+				pickupPositionDebounce = true;
+			} else {
+				pickupPositionDebounce = false;
+			}
 
+			switch (pickupPosition) {
+				case 0:
+					RobotPickup.moveToPickupPosition();
+					break;
+				case 1:
+					RobotPickup.moveToShootPosition();
+					break;
+				case 2:
+					RobotPickup.moveToCatchPosition();
+					break;
+			}
+
+			if (Math.abs(Gamepad.secondary.getTriggers()) > 0.9) {
+				if (!shootDebounce) {
+					//RobotShoot.shoot();
+				}
+				shootDebounce = true;
+			} else {
+				shootDebounce = false;
+			}
+		}
 
 		if (Gamepad.secondary.getA()) {
 			if (!catchClosingDebounce) {
@@ -115,15 +135,6 @@ public class RobotTeleop {
 			}
 		} else {
 			catchClosingDebounce = false;
-		}
-
-		if (Math.abs(Gamepad.secondary.getTriggers()) > 0.9) {
-			if (!shootDebounce) {
-				//RobotShoot.shoot();
-			}
-			shootDebounce = true;
-		} else {
-			shootDebounce = false;
 		}
 
 	}
