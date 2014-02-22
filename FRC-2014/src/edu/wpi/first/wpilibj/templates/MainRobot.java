@@ -64,12 +64,13 @@ public class MainRobot extends IterativeRobot {
 		RobotDrive.update();
 		RobotTeleop.update();
 		RobotPickup.update();
-		//RobotShoot.update();
-		if (Gamepad.secondary.getB()) {
-			//RobotShoot.manualShoot();
+		RobotShoot.update();
+		
+		if (ControlBox.getTopSwitch(2)) {
+			RobotShoot.manualShoot();
 		}
+		
 		SmartDashboard.putNumber("ANGLE ANGLE", RobotPickup.getArmAngleAboveHorizontal());
-
 		SmartDashboard.putBoolean("PICKUP Upper Limit", RobotSensors.pickupSystemUpLim.get());
 		SmartDashboard.putBoolean("PICKUP Lower Limit", RobotSensors.pickupSystemDownLim.get());
 		runCompressor();

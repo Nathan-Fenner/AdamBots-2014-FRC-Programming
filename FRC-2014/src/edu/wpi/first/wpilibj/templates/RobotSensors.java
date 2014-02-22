@@ -48,8 +48,8 @@ public class RobotSensors {
 		shooterWinchEncoder = new Encoder(4, 5);
 		pickupSystemDownLim = new DigitalInput(6);
 		pickupSystemUpLim = new DigitalInput(7);
-		shooterLoadedLim = new DigitalInput(13);
-		shooterAtBack = new DigitalInput(9);
+		shooterLoadedLim = new DigitalInput(9);
+		shooterAtBack = new DigitalInput(13);
 		pressureSwitch = new DigitalInput(10);
 
 		//// Digital 1 Serial

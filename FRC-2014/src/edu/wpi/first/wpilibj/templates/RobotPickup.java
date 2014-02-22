@@ -16,7 +16,7 @@ public class RobotPickup {
 	static double angle_I_DECAY = 0.9;
 	private static final double ANGLE_TOLERANCE = 3;
 	private static final double PICKUP_POSITION = -10;
-	private static final double SHOOT_POSITION = 51.0;
+	private static final double SHOOT_POSITION = 47.0;
 	private static final double CATCH_POSITION = 90;
 	private static double armTargetAngle = CATCH_POSITION;
 	private static boolean overrideEncoder = false;

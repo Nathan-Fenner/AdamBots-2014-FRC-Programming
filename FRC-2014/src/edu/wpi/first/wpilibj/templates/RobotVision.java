@@ -147,7 +147,7 @@ public class RobotVision {
 			System.gc();
 			//System.out.println("GC took " + (timer.get() - t) + " seconds");
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(30000);
 			} catch (Exception e) {
 			}
 		}

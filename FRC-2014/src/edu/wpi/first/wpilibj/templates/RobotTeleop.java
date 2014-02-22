@@ -68,7 +68,8 @@ public class RobotTeleop {
 		}
 
 		SmartDashboard.putBoolean("Left Switch 1", ControlBox.getLeftSwitch(1));
-		if (ControlBox.getLeftSwitch(1)) {
+		// added the false &&
+		if (false && ControlBox.getLeftSwitch(1)) {
 			RobotPickup.enterOverrideEncoderMode();
 			double overridePickupAngleSpeed = Gamepad.secondary.getTriggers() * 0.4;
 			//double overridePickupAngleSpeed = (Gamepad.secondary.getLB() ? 0.35 : 0) + (Gamepad.secondary.getRB() ? -0.35 : 0);
@@ -76,7 +77,7 @@ public class RobotTeleop {
 			// automatic shooting uses opposite controls now
 			if (Gamepad.secondary.getRB()) {
 				if (!shootDebounce) {
-					//RobotShoot.shoot();
+					RobotShoot.shoot();
 				}
 				shootDebounce = true;
 			} else {
@@ -113,7 +114,8 @@ public class RobotTeleop {
 
 			if (Math.abs(Gamepad.secondary.getTriggers()) > 0.9) {
 				if (!shootDebounce) {
-					//RobotShoot.shoot();
+					System.out.println("Shoot!!!");
+					RobotShoot.shoot();
 				}
 				shootDebounce = true;
 			} else {

@@ -20,11 +20,11 @@ public class RobotShoot {
 	public static final double UNWIND_SPEED = -1.0;
 	public static final double WAIT_TIME = 2.0;
 	public static final double WIND_SPEED = 1.0;
-	public static final double MAX_REVS = 1400;
+	public static final double MAX_REVS = 1700;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
 	public static final double TENSION_TOLERANCE = 75;
-	private static double tensionTargetTicks = 1000;
+	private static double tensionTargetTicks = 1400;
 	private static Timer timer;
 	private static double currentTime;
 	private static double updatedSpeed;
@@ -32,6 +32,7 @@ public class RobotShoot {
 	private static boolean beenZeroed;
 	private static boolean latch;
 	private static String currentStage;
+	private static int stage;
 	private static boolean automatedShootOnce;
 	private static boolean stageThreeDone;
 	private static boolean stageFiveDone;
@@ -52,6 +53,7 @@ public class RobotShoot {
 		updatedSpeed = 0.0;
 		currentTime = 0.0;
 		currentStage = "";
+		stage = 2;
 		RobotSensors.shooterWinchEncoder.start();
 		stageThreeDone = false;
 		stageFiveDone = false;
@@ -60,13 +62,13 @@ public class RobotShoot {
 	//// STAGES ----------------------------------------------------------------
 	// releases the latch
 	public static void releaseBall() {
-		if (!stageOneDone) {
-			currentStage = "1";
-			if (RobotPickup.isBallInPickup()) {
-				releaseLatch();
-				timer.start();
-				stageOneDone = true;
-			}
+		currentStage = "1";
+		if (RobotPickup.isPickupInShootPosition()) {
+			releaseLatch();
+			stage = 2;
+		} else {
+			System.out.println("Youre going to hit the arm");
+			stage = 6;
 		}
 	}
 
@@ -74,107 +76,83 @@ public class RobotShoot {
 	// Nothing that is controlled is happening now
 	public static void ballInMotion() {
 		currentStage = "2";
+
+		timer.stop();
+		timer.reset();
+		timer.start();
+		releaseLatch();
+
+		stage = 3;
 	}
 
 	// waiting the 0.5 seconds before unwinding the shooter motor
 	public static void waitToUnwind() {
-		if (!stageThreeDone) {
-			currentStage = "3";
-			double time = timer.get();
-			if (time >= WAIT_TIME) {
-				releaseLatch();
-				timer.stop();
-				timer.reset();
-				stageThreeDone = true;
-			}
+		currentStage = "3";
+		double time = timer.get();
+		if (time >= WAIT_TIME) {
+			timer.stop();
+			timer.reset();
+			stage = 4;
 		}
 	}
 
 	// unwindes the shooter until it hits the back limit switch or reaches max revolutions
 	//and returns the limit value
-	public static boolean unwind() {
-		if (!stageFiveDone) {
-			currentStage = "4";
-			releaseLatch();
-			if (!stageThreeDone) {
-				System.out.println("In stage Four");
-			}
-			if (!RobotSensors.shooterAtBack.get()/* && RobotSensors.shooterWinchEncoder.get() >= BACKWARDS_REV*/) {
-				automatedUnwind();
-			} else {
-				updatedSpeed = 0.0;
-				return true;
-			}
+	public static void unwind() {
+		currentStage = "4";
+		if (RobotSensors.shooterAtBack.get() && timer.get() == 0) {
+			timer.start();
+			RobotSensors.shooterWinchEncoder.reset();
 		}
-		return false;
+		if (timer.get() <= 0.25) {
+			automatedUnwind();
+		} else {
+			updatedSpeed = 0.0;
+			timer.stop();
+			timer.reset();
+			stage = 5;
+		}
 	}
 
 	// relatches the shooter
 	public static void latchShooter() {
-		if (!stageFiveDone) {
-			currentStage = "5";
-			releaseLatch();
-			if (timer.get() == 0.0) {
-				timer.start();
-			}
-			// TODO: CHANGE THE TIME FROM 0.5 SECONDS TO WHATEVER WE THINK IT SHOULD BE LATER
-			if (timer.get() <= 0.2 && getEncoder() >= BACKWARDS_REV/* && RobotSensors.shooterAtBack.get()*/) {
-				automatedUnwind();
-			} else {
-				latch();
-				updatedSpeed = 0.0;
-				if (timer.get() - currentTime >= 1.5) {
-					timer.stop();
-					timer.reset();
-					stageFiveDone = true;
-				}
-
-			}
-			// TODO: CHANGE THE CONSTANT TIME LATER
-			if (timer.get() > 5.0) {
-				timer.stop();
-				timer.reset();
-				automatedShootOnce = true;
-			}
+		currentStage = "5";
+		if (timer.get() == 0.0) {
+			timer.start();
+		}
+		latch();
+		//// TODO: CHANGE THE TIME ON THIS LATER ON
+		if (timer.get() >= 1.5) {
+			timer.stop();
+			timer.reset();
+			stage = 6;
 		}
 	}
 
 	// rewinds the shooter
-	public static boolean rewindShooter() {
+	public static void rewindShooter() {
 		currentStage = "6";
-		System.out.println("Stage 6 of shooter");
+		//// TODO: TAKE OUT THE OR TRUE WHEN IT IS WORKING
 		if (getEncoder() <= tensionTargetTicks - TENSION_TOLERANCE && (true || !RobotSensors.shooterLoadedLim.get())) {
 			automatedWind();
-			return false;
+			return;
 		}
 
 		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && !RobotSensors.shooterAtBack.get()) {
 			automatedUnwind();
-			return false;
+			return;
 		}
-
 		updatedSpeed = 0.0;
-
-		return true;
-
 	}
 
 	// reshoot method
 	// needs to be called before reshooting
 	public static void shoot() {
-		automatedShootOnce = false;
-		stageOneDone = false;
-		stageThreeDone = false;
-		stageFiveDone = false;
-		timer.stop();
-		timer.reset();
-	}
-
-	// quick shoot method
-	// probably not going to be used
-	public static void quickShoot() {
-		if (getEncoder() <= QUICK_SHOOT_REVS) {
-			RobotActuators.shooterWinch.set(WIND_SPEED);
+		if (automatedShootOnce) {
+			stage = 1;
+			automatedShootOnce = false;
+			timer.stop();
+			timer.reset();
 		}
 	}
 
@@ -184,50 +162,63 @@ public class RobotShoot {
 		SmartDashboard.putString("Current Shooter Stage", currentStage);
 		SmartDashboard.putNumber("Shooter Timer", timer.get());
 		// shoots
-		if (!automatedShootOnce) {
-			if (!stageOneDone) {
+		switch (stage) {
+			case 1:
 				releaseBall();
+				break;
+			case 2:
 				ballInMotion();
-			} else {
-				// waitToUnwind();
-				if (stageThreeDone && unwind()) {
-					latchShooter();
-					//if (stageFiveDone) etc was here.
-				} else {
-					waitToUnwind();
-				}
-				if (stageFiveDone) {
-					rewindShooter();
-				}
-			}
-		} else {
-			updatedSpeed = 0.0;
+				break;
+			case 3:
+				waitToUnwind();
+				break;
+			case 4:
+				unwind();
+				break;
+			case 5:
+				latchShooter();
+				break;
+			case 6:
+				rewindShooter();
+				automatedShootOnce = true;
+				break;
+			default:
+				System.out.println("You have stage Fright");
+				System.out.println("Stage Issue: " + stage);
+				break;
 		}
 	}
 
 	// used for calibration
 	public static void manualShoot() {
 		updatedSpeed = Gamepad.secondary.getRightY();
-		SmartDashboard.putBoolean("is the shooterLoadedLim",RobotSensors.shooterLoadedLim.get());
-		if ((RobotSensors.shooterLoadedLim.get() || true) && getEncoder() <= -100 && Gamepad.secondary.getRightY() >= 0.0) {
-			updatedSpeed = 0.0;
-			System.out.println("Can't move back");
+		SmartDashboard.putBoolean("is the shooterLoadedLim", RobotSensors.shooterLoadedLim.get());
+		// TODO: TAKE OUT THE OR TRUE FOR THE REAL ROBOT WHEN THE SWITCH IS FIXED
+		/*if ((RobotSensors.shooterLoadedLim.get() || true) && getEncoder() <= BACKWARDS_REV && Gamepad.secondary.getRightY() <= 0.0) {
+		 updatedSpeed = 0.0;
+		 System.out.println("Can't move back");
+		 }*/
+
+		//// TODO: UNCOMMENT IT OUT WHEN IT IS DONE
+		/*if (RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0.0) {
+		 updatedSpeed = 0.0;
+		 }*/
+		if (ControlBox.getTopSwitch(1)) {
+			releaseLatch();
+		} else {
+			latch();
 		}
 
-		if (Gamepad.secondary.getStart()) {
-			releaseLatch();
-		}
-		if (Gamepad.primary.getBack()) {
+		if (Gamepad.secondary.getA()) {
 			RobotSensors.shooterWinchEncoder.reset();
 		}
+
+		RobotPickup.moveToShootPosition();
 	}
 
 	// sets speed to the unwind speed
 	private static void automatedUnwind() {
 		updatedSpeed = UNWIND_SPEED;
-		if (RobotSensors.shooterLoadedLim.get() && false) {
-			updatedSpeed = 0.0;
-		}
 	}
 
 	// sets the speed to the wind speed
@@ -244,7 +235,7 @@ public class RobotShoot {
 	// Releases the pnuematic
 	public static void releaseLatch() {
 		latch = true;
-		zeroEncoder();
+		//zeroEncoder();
 	}
 
 	// latches the pnuematic
@@ -254,21 +245,18 @@ public class RobotShoot {
 
 	// Zeroes the encoder
 	// check to see if the encoder is bad with this
-	private static void zeroEncoder() {
-		if (!RobotSensors.shooterAtBack.get()) {
-			beenZeroed = false;
-		}
-	}
-
+	/*private static void zeroEncoder() {
+	 if (!RobotSensors.shooterAtBack.get()) {
+	 beenZeroed = false;
+	 }
+	 }*/
 	//// UPDATE METHODS --------------------------------------------------------
 	public static void update() {
-		// checks to see if the encoder should be zeroed
-		if (!beenZeroed && RobotSensors.shooterAtBack.get()) {
-			beenZeroed = true;
-			RobotSensors.shooterWinchEncoder.reset();
-			SmartDashboard.putString("Zeroed", "True");
+		if (getEncoder() >= 100 && RobotSensors.shooterAtBack.get()) {
+			System.out.println("LIMIT SWITCH SUCKS!!!" + getEncoder());
 		}
 
+		// checks to see if the encoder should be zeroed
 		if ((getEncoder() <= BACKWARDS_REV && updatedSpeed <= 0.0) || (getEncoder() >= MAX_REVS && updatedSpeed >= 0.0)) {
 			updatedSpeed = 0.0;
 		}
@@ -276,7 +264,6 @@ public class RobotShoot {
 		/*if ((RobotSensors.shooterAtBack.get() && updatedSpeed <= 0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
 		 updatedSpeed = 0.0;
 		 }*/
-
 		// sets pnuematics
 		RobotActuators.latchRelease.set(latch);
 
@@ -289,6 +276,7 @@ public class RobotShoot {
 		SmartDashboard.putString("Stage: ", currentStage);
 		SmartDashboard.putNumber("Time: ", timer.get());
 		SmartDashboard.putBoolean("Shooter at back", RobotSensors.shooterAtBack.get());
+		SmartDashboard.putBoolean("Shooter loaded lim", RobotSensors.shooterLoadedLim.get());
 		//SmartDashboard.putString("Shooter at str back", MathUtils.rand(15) + "" + RobotSensors.shooterAtBack.get());
 		SmartDashboard.putBoolean("Latched", RobotShoot.latch);
 		SmartDashboard.putBoolean("beenZeroed", beenZeroed);
@@ -301,15 +289,18 @@ public class RobotShoot {
 			latch();
 		}
 
-		if (!shootDone()) {
-			automatedShoot();
+		if (ControlBox.getTopSwitch(2)) {
+			if (!shootDone()) {
+				System.out.println("Recalling automated shoot");
+				automatedShoot();
+			}
 		}
 	}
 
 	public static boolean shootDone() {
 		return automatedShootOnce;
 	}
-	
+
 	public static double getEncoder() {
 		return RobotSensors.shooterWinchEncoder.get();
 	}
