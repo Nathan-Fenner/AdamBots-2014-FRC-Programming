@@ -38,6 +38,14 @@ public class RobotPickup {
 		overrideSetValue = speed;
 	}
 
+	public static double getArmTargetAngle() {
+		return armTargetAngle;
+	}
+
+	public static boolean isManual() {
+		return overrideEncoder;
+	}
+
 	public static void openRollerArm() {
 		if (getArmAngleAboveHorizontal() > 80 || isUpperLimitReached()) {
 			return;

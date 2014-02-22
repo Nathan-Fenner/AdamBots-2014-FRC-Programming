@@ -118,7 +118,7 @@ public class RobotShoot {
 				timer.start();
 			}
 			// TODO: CHANGE THE TIME FROM 0.5 SECONDS TO WHATEVER WE THINK IT SHOULD BE LATER
-			if (timer.get() <= 0.2 && RobotSensors.shooterWinchEncoder.get() >= BACKWARDS_REV/* && RobotSensors.shooterAtBack.get()*/) {
+			if (timer.get() <= 0.2 && getEncoder() >= BACKWARDS_REV/* && RobotSensors.shooterAtBack.get()*/) {
 				automatedUnwind();
 			} else {
 				latch();
@@ -143,12 +143,12 @@ public class RobotShoot {
 	public static boolean rewindShooter() {
 		currentStage = "6";
 		System.out.println("Stage 6 of shooter");
-		if (RobotSensors.shooterWinchEncoder.get() <= tensionTargetTicks - TENSION_TOLERANCE && (true || !RobotSensors.shooterLoadedLim.get())) {
+		if (getEncoder() <= tensionTargetTicks - TENSION_TOLERANCE && (true || !RobotSensors.shooterLoadedLim.get())) {
 			automatedWind();
 			return false;
 		}
 
-		if (RobotSensors.shooterWinchEncoder.get() >= tensionTargetTicks + TENSION_TOLERANCE && !RobotSensors.shooterAtBack.get()) {
+		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && !RobotSensors.shooterAtBack.get()) {
 			automatedUnwind();
 			return false;
 		}
@@ -173,7 +173,7 @@ public class RobotShoot {
 	// quick shoot method
 	// probably not going to be used
 	public static void quickShoot() {
-		if (RobotSensors.shooterWinchEncoder.get() <= QUICK_SHOOT_REVS) {
+		if (getEncoder() <= QUICK_SHOOT_REVS) {
 			RobotActuators.shooterWinch.set(WIND_SPEED);
 		}
 	}
@@ -209,7 +209,7 @@ public class RobotShoot {
 	public static void manualShoot() {
 		updatedSpeed = Gamepad.secondary.getRightY();
 		SmartDashboard.putBoolean("is the shooterLoadedLim",RobotSensors.shooterLoadedLim.get());
-		if ((RobotSensors.shooterLoadedLim.get() || true) && RobotSensors.shooterWinchEncoder.get() <= -100 && Gamepad.secondary.getRightY() >= 0.0) {
+		if ((RobotSensors.shooterLoadedLim.get() || true) && getEncoder() <= -100 && Gamepad.secondary.getRightY() >= 0.0) {
 			updatedSpeed = 0.0;
 			System.out.println("Can't move back");
 		}
@@ -269,7 +269,7 @@ public class RobotShoot {
 			SmartDashboard.putString("Zeroed", "True");
 		}
 
-		if ((RobotSensors.shooterWinchEncoder.get() <= BACKWARDS_REV && updatedSpeed <= 0.0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
+		if ((getEncoder() <= BACKWARDS_REV && updatedSpeed <= 0.0) || (getEncoder() >= MAX_REVS && updatedSpeed >= 0.0)) {
 			updatedSpeed = 0.0;
 		}
 
@@ -308,6 +308,10 @@ public class RobotShoot {
 
 	public static boolean shootDone() {
 		return automatedShootOnce;
+	}
+	
+	public static double getEncoder() {
+		return RobotSensors.shooterWinchEncoder.get();
 	}
 
 	////CURRENT CHECK CODE (ask Debjit)
