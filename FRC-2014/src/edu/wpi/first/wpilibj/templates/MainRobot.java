@@ -40,6 +40,7 @@ public class MainRobot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		runCompressor();
 		RobotAuton.update();
+		DashboardPut.put();
 	}
 
 	public void teleopInit() {
@@ -60,7 +61,6 @@ public class MainRobot extends IterativeRobot {
 		RobotShoot.setTargetTicks(SmartDashboard.getNumber("Target Ticks"));
 
 		ControlBox.update();
-
 		RobotDrive.update();
 		RobotTeleop.update();
 		RobotPickup.update();
@@ -68,7 +68,7 @@ public class MainRobot extends IterativeRobot {
 		if (Gamepad.secondary.getB()) {
 			//RobotShoot.manualShoot();
 		}
-		SmartDashboard.putNumber("ANGLE ANGLE",RobotPickup.getArmAngleAboveHorizontal());
+		SmartDashboard.putNumber("ANGLE ANGLE", RobotPickup.getArmAngleAboveHorizontal());
 
 		SmartDashboard.putBoolean("PICKUP Upper Limit", RobotSensors.pickupSystemUpLim.get());
 		SmartDashboard.putBoolean("PICKUP Lower Limit", RobotSensors.pickupSystemDownLim.get());
@@ -76,12 +76,14 @@ public class MainRobot extends IterativeRobot {
 
 		SmartDashboard.putNumber("Red Distance", RobotVision.redDistance());
 
+		DashboardPut.put();
 	}
 
 	/**
 	 * This function is called periodically during test mode
 	 */
 	public void testPeriodic() {
+		DashboardPut.put();
 	}
 
 	private void runCompressor() {
@@ -100,6 +102,7 @@ public class MainRobot extends IterativeRobot {
 		RobotShoot.stopMotors();
 		AutonZero.reset();
 		RobotPickup.angle_I = 0;
+		DashboardPut.put();
 	}
 
 	public void autonomousInit() {
