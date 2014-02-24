@@ -17,14 +17,14 @@ public class RobotShoot {
 	////VARIABLES---------------------------------------------------------------
 
 	//// ADDED: SWITCHED THE SIGNS ON THE WIND AND UNWIND SPEED
-	public static final double UNWIND_SPEED = -1.0;
+	public static final double UNWIND_SPEED = -0.5; // TODO: may change
 	public static final double WAIT_TIME = 2.0;
 	public static final double WIND_SPEED = 1.0;
 	public static final double MAX_REVS = 1700;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
 	public static final double TENSION_TOLERANCE = 75;
-	private static double tensionTargetTicks = 1400;
+	private static double tensionTargetTicks = 1000;
 	private static Timer timer;
 	private static double currentTime;
 	private static double updatedSpeed;
@@ -74,8 +74,7 @@ public class RobotShoot {
 			releaseLatch();
 			stage = 2;
 		} else {
-			System.out.println("Youre going to hit the arm");
-			stage = 6;
+			stage = 99;
 		}
 	}
 
@@ -112,10 +111,12 @@ public class RobotShoot {
 			timer.start();
 			RobotSensors.shooterWinchEncoder.reset();
 		}
-		if (timer.get() <= 0.25) {
-			automatedUnwind();
-		} else {
+
+		automatedUnwind();
+
+		if ((timer.get() > 0.1 && getEncoder() < -200) || timer.get() > 0.5) {
 			updatedSpeed = 0.0;
+			System.out.println("Timer " + timer.get());
 			timer.stop();
 			timer.reset();
 			stage = 5;
@@ -156,9 +157,11 @@ public class RobotShoot {
 	// reshoot method
 	// needs to be called before reshooting
 	public static void shoot() {
+		if (RobotPickup.isPickupInShootPosition()) {
 			stage = 1;
 			timer.stop();
 			timer.reset();
+		}
 	}
 
 	// TODO: RUN AUTOMATED SHOOT BY ENUMERATION
@@ -185,6 +188,9 @@ public class RobotShoot {
 				break;
 			case 6:
 				rewindShooter();
+				break;
+			case 99:
+			case -99:
 				break;
 			default:
 				System.out.println("You have stage Fright");
@@ -215,6 +221,7 @@ public class RobotShoot {
 		}
 
 		if (Gamepad.secondary.getA()) {
+			System.out.println("A PRESSED AND ENCODER RESET"); // TODO remove
 			RobotSensors.shooterWinchEncoder.reset();
 		}
 
@@ -258,7 +265,7 @@ public class RobotShoot {
 	//// UPDATE METHODS --------------------------------------------------------
 	public static void update() {
 		if (getEncoder() >= 100 && RobotSensors.shooterAtBack.get()) {
-			System.out.println("LIMIT SWITCH SUCKS!!!" + getEncoder());
+			System.out.println("Bad limit switch: " + getEncoder());
 		}
 
 		// checks to see if the encoder should be zeroed

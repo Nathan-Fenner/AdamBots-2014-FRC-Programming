@@ -56,17 +56,31 @@ public class MainRobot extends IterativeRobot {
 	/**
 	 * This function is called periodically during operator control
 	 */
+
+	boolean on = true;
+
 	public void teleopPeriodic() {
 
 		RobotShoot.setTargetTicks(SmartDashboard.getNumber("Target Ticks"));
+
+		boolean r = RobotSensors.shooterAtBack.get();
+		if (r) {
+			System.out.println("SWITCH true");
+			on = true;
+		} else {
+			if (on) {
+				System.out.println("SWITCH false");
+				on = false;
+			}
+		}
 
 		ControlBox.update();
 		RobotDrive.update();
 		RobotPickup.update();
 		RobotShoot.update();
-		
+
 		RobotPickup.moveToShootPosition();
-		
+
 		//RobotTeleop.update();
 
 		if (ControlBox.getTopSwitch(2)) {
@@ -74,7 +88,7 @@ public class MainRobot extends IterativeRobot {
 		} else {
 			RobotShoot.useManual();
 		}
-		
+
 		if (Gamepad.secondary.getTriggers() > .9) {
 			RobotShoot.shoot();
 		}

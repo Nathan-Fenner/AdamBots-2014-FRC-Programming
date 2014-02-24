@@ -27,7 +27,7 @@ public class RobotSensors {
 	public static DigitalInput ballReadyToLiftLim;
 	public static DigitalInput pickupSystemDownLim;
 	public static DigitalInput pickupSystemUpLim;
-	public static DigitalInput shooterLoadedLim;
+	public static AnalogSwitch shooterLoadedLim;
 	public static DigitalInput shooterAtBack;
 	public static DigitalInput pressureSwitch;
 	public static ADXL345_I2C accelerometer;
@@ -39,6 +39,7 @@ public class RobotSensors {
 		configSwitchB = new AnalogChannel(4);
 		configSwitchC = new AnalogChannel(5);
 		pickupPotentiometer = new AnalogPotentiometer(2);
+		shooterLoadedLim = new AnalogSwitch(6);
 		//Now in port TWO on both robots.
 
 		//// Digital In 1
@@ -48,7 +49,6 @@ public class RobotSensors {
 		shooterWinchEncoder = new Encoder(4, 5);
 		pickupSystemDownLim = new DigitalInput(6);
 		pickupSystemUpLim = new DigitalInput(7);
-		shooterLoadedLim = new DigitalInput(9);
 		shooterAtBack = new DigitalInput(13);
 		pressureSwitch = new DigitalInput(10);
 
