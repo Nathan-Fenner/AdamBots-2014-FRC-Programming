@@ -28,12 +28,12 @@ public class RobotShoot {
 	private static Timer timer;
 	private static double currentTime;
 	private static double updatedSpeed;
+	private static boolean inManualMode = true;
 	private static boolean stageOneDone;
 	private static boolean beenZeroed;
 	private static boolean latch;
 	private static String currentStage;
 	private static int stage;
-	private static boolean automatedShootOnce;
 	private static boolean stageThreeDone;
 	private static boolean stageFiveDone;
 	public static double voltage;
@@ -48,7 +48,6 @@ public class RobotShoot {
 	public static void initialize() {
 		latch();
 		beenZeroed = false;
-		automatedShootOnce = true; //True means that the robot will NOT shoot when it turns on.
 		timer = new Timer();
 		updatedSpeed = 0.0;
 		currentTime = 0.0;
@@ -57,6 +56,14 @@ public class RobotShoot {
 		RobotSensors.shooterWinchEncoder.start();
 		stageThreeDone = false;
 		stageFiveDone = false;
+	}
+
+	public static void useManual() {
+		inManualMode = true;
+	}
+
+	public static void useAutomatic() {
+		inManualMode = false;
 	}
 
 	//// STAGES ----------------------------------------------------------------
@@ -100,6 +107,7 @@ public class RobotShoot {
 	//and returns the limit value
 	public static void unwind() {
 		currentStage = "4";
+		releaseLatch();
 		if (RobotSensors.shooterAtBack.get() && timer.get() == 0) {
 			timer.start();
 			RobotSensors.shooterWinchEncoder.reset();
@@ -148,12 +156,9 @@ public class RobotShoot {
 	// reshoot method
 	// needs to be called before reshooting
 	public static void shoot() {
-		if (automatedShootOnce) {
 			stage = 1;
-			automatedShootOnce = false;
 			timer.stop();
 			timer.reset();
-		}
 	}
 
 	// TODO: RUN AUTOMATED SHOOT BY ENUMERATION
@@ -180,7 +185,6 @@ public class RobotShoot {
 				break;
 			case 6:
 				rewindShooter();
-				automatedShootOnce = true;
 				break;
 			default:
 				System.out.println("You have stage Fright");
@@ -191,6 +195,7 @@ public class RobotShoot {
 
 	// used for calibration
 	public static void manualShoot() {
+		stage = -99;
 		updatedSpeed = Gamepad.secondary.getRightY();
 		SmartDashboard.putBoolean("is the shooterLoadedLim", RobotSensors.shooterLoadedLim.get());
 		// TODO: TAKE OUT THE OR TRUE FOR THE REAL ROBOT WHEN THE SWITCH IS FIXED
@@ -229,7 +234,7 @@ public class RobotShoot {
 	// sets the speed to 0.0
 	public static void stopMotors() {
 		updatedSpeed = 0.0;
-		automatedShootOnce = true;
+		stage = 99;
 	}
 
 	// Releases the pnuematic
@@ -273,7 +278,8 @@ public class RobotShoot {
 
 		// prints to smart dashboard
 		SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());
-		SmartDashboard.putString("Stage: ", currentStage);
+		SmartDashboard.putNumber("Stage", stage);
+		SmartDashboard.putString("Current Stage String:",currentStage);
 		SmartDashboard.putNumber("Time: ", timer.get());
 		SmartDashboard.putBoolean("Shooter at back", RobotSensors.shooterAtBack.get());
 		SmartDashboard.putBoolean("Shooter loaded lim", RobotSensors.shooterLoadedLim.get());
@@ -284,21 +290,12 @@ public class RobotShoot {
 		SmartDashboard.putBoolean("Stage Three", stageThreeDone);
 		SmartDashboard.putBoolean("Stage Five", stageFiveDone);
 
-		// latches
-		if (RobotSensors.shooterAtBack.get()) {
-			latch();
-		}
 
-		if (ControlBox.getTopSwitch(2)) {
-			if (!shootDone()) {
-				System.out.println("Recalling automated shoot");
-				automatedShoot();
-			}
+		if (inManualMode) {
+			manualShoot();
+		} else {
+			automatedShoot();
 		}
-	}
-
-	public static boolean shootDone() {
-		return automatedShootOnce;
 	}
 
 	public static double getEncoder() {

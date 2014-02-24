@@ -141,16 +141,6 @@ public class RobotVision {
 			//System.out.println("\t" + e);
 			//System.out.println("\t" + e.getMessage());
 		}
-		if (connectionFailure) {
-			//System.out.println("Connect Failure, gcing");
-			double t = timer.get();
-			System.gc();
-			//System.out.println("GC took " + (timer.get() - t) + " seconds");
-			try {
-				Thread.sleep(30000);
-			} catch (Exception e) {
-			}
-		}
 		try {
 			data.close();
 		} catch (Exception e) {
@@ -161,6 +151,16 @@ public class RobotVision {
 			http.close();
 		} catch (Exception e) {
 			//System.out.println("Error Closing HTTP: " + e);
+		}
+		if (connectionFailure) {
+			//System.out.println("Connect Failure, gcing");
+			double t = timer.get();
+			System.gc();
+			//System.out.println("GC took " + (timer.get() - t) + " seconds");
+			try {
+				Thread.sleep(30000);
+			} catch (Exception e) {
+			}
 		}
 	}
 }

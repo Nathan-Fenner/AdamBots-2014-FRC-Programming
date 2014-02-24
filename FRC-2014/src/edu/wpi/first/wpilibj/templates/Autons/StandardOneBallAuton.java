@@ -54,9 +54,9 @@ public class StandardOneBallAuton extends AutonZero{
 			System.out.println("Setting to 0");
 
 		}
-		if (RobotShoot.rewindShooter() && averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
+		/*if (RobotShoot.rewindShooter() && averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
 			step = 3;
-		}
+		}*/
 	}
 
 	// shoots if the goal is hot or timer says so

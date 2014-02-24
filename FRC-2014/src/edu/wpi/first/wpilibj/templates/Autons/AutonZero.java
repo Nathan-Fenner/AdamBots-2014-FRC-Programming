@@ -52,9 +52,9 @@ public class AutonZero {
 			//System.out.println("Unwinding: " + timer.get());
 			beenThru = true;
 		}
-		if (RobotShoot.unwind() && pickupBeenDown) {
+		/*if (RobotShoot.unwind() && pickupBeenDown) {
 			step = 2;
-		}
+		}*/
 	}
 	
 	public static void update() {

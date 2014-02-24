@@ -62,14 +62,23 @@ public class MainRobot extends IterativeRobot {
 
 		ControlBox.update();
 		RobotDrive.update();
-		RobotTeleop.update();
 		RobotPickup.update();
 		RobotShoot.update();
 		
+		RobotPickup.moveToShootPosition();
+		
+		//RobotTeleop.update();
+
 		if (ControlBox.getTopSwitch(2)) {
-			RobotShoot.manualShoot();
+			RobotShoot.useAutomatic();
+		} else {
+			RobotShoot.useManual();
 		}
 		
+		if (Gamepad.secondary.getTriggers() > .9) {
+			RobotShoot.shoot();
+		}
+
 		SmartDashboard.putNumber("ANGLE ANGLE", RobotPickup.getArmAngleAboveHorizontal());
 		SmartDashboard.putBoolean("PICKUP Upper Limit", RobotSensors.pickupSystemUpLim.get());
 		SmartDashboard.putBoolean("PICKUP Lower Limit", RobotSensors.pickupSystemDownLim.get());
@@ -102,7 +111,6 @@ public class MainRobot extends IterativeRobot {
 		RobotDrive.stopDrive();
 		RobotShoot.stopMotors();
 		AutonZero.reset();
-		RobotPickup.angle_I = 0;
 		DashboardPut.put();
 	}
 
