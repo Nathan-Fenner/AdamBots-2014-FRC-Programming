@@ -23,6 +23,8 @@ public class RobotPickup {
 	private static double overrideSetValue = 0.0;
 	private static boolean ignoreLimitSwitches = false;
 	private static boolean armEnabled = true;
+	private static double lastPosition = 0.0;
+	private static double velocity = 0.0;
 	private static Timer timer;
 	private static double targetTweak = 0;
 
@@ -108,7 +110,7 @@ public class RobotPickup {
 	}
 
 	public static boolean isPickupInPosition(double angle) {
-		return Math.abs(getArmAngleAboveHorizontal() - angle) < ANGLE_TOLERANCE;
+		return Math.abs(getArmAngleAboveHorizontal() - angle) < ANGLE_TOLERANCE && armTargetAngle == angle && Math.abs(getVelocity()) < 50;
 	}
 
 	public static boolean isPickupInPickupPosition() {
@@ -206,11 +208,14 @@ public class RobotPickup {
 
 			}
 		}
-		SmartDashboard.putNumber("Arm Target Angle", armTargetAngle);
-		SmartDashboard.putNumber("Mech Speed", mechSpeed);
-		SmartDashboard.putBoolean("upper limit arm", isUpperLimitReached());
-		SmartDashboard.putBoolean("lower limit arm", isLowerLimitReached());
-		SmartDashboard.putNumber("Angle", RobotTeleop.DEBUG_OSCILLATE / 800.0 + getArmAngleAboveHorizontal());
+
+		velocity = 0.8 * velocity + 0.2 * (getArmAngleAboveHorizontal() - lastPosition);
+		lastPosition = getArmAngleAboveHorizontal();
+
 		RobotActuators.pickupMechMotor.set(mechSpeed);
+	}
+
+	public static double getVelocity() {
+		return velocity;
 	}
 }
