@@ -107,7 +107,7 @@ public class RobotShoot {
 	public static void unwind() {
 		currentStage = "4";
 		releaseLatch();
-		if (RobotSensors.shooterAtBack.get() && timer.get() == 0) {
+		if (!RobotSensors.shooterAtBack.get() && timer.get() == 0) {
 			timer.start();
 			RobotSensors.shooterWinchEncoder.reset();
 		}
@@ -147,7 +147,7 @@ public class RobotShoot {
 			return;
 		}
 
-		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && !RobotSensors.shooterAtBack.get()) {
+		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && RobotSensors.shooterAtBack.get()) {
 			automatedUnwind();
 			return;
 		}
@@ -258,13 +258,13 @@ public class RobotShoot {
 	// Zeroes the encoder
 	// check to see if the encoder is bad with this
 	/*private static void zeroEncoder() {
-	 if (!RobotSensors.shooterAtBack.get()) {
+	 if (RobotSensors.shooterAtBack.get()) {
 	 beenZeroed = false;
 	 }
 	 }*/
 	//// UPDATE METHODS --------------------------------------------------------
 	public static void update() {
-		if (getEncoder() >= 100 && RobotSensors.shooterAtBack.get()) {
+		if (getEncoder() >= 100 && !RobotSensors.shooterAtBack.get()) {
 			System.out.println("Bad limit switch: " + getEncoder());
 		}
 
@@ -273,9 +273,13 @@ public class RobotShoot {
 			updatedSpeed = 0.0;
 		}
 
-		/*if ((RobotSensors.shooterAtBack.get() && updatedSpeed <= 0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
+		/*if ((!RobotSensors.shooterAtBack.get() && updatedSpeed <= 0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
 		 updatedSpeed = 0.0;
 		 }*/
+		
+		if (!RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0) {
+			updatedSpeed = 0.0;
+		}
 		// sets pnuematics
 		RobotActuators.latchRelease.set(latch);
 
@@ -288,7 +292,7 @@ public class RobotShoot {
 		SmartDashboard.putNumber("Stage", stage);
 		SmartDashboard.putString("Current Stage String:",currentStage);
 		SmartDashboard.putNumber("Time: ", timer.get());
-		SmartDashboard.putBoolean("Shooter at back", RobotSensors.shooterAtBack.get());
+		SmartDashboard.putBoolean("Shooter at back", !RobotSensors.shooterAtBack.get());
 		SmartDashboard.putBoolean("Shooter loaded lim", RobotSensors.shooterLoadedLim.get());
 		//SmartDashboard.putString("Shooter at str back", MathUtils.rand(15) + "" + RobotSensors.shooterAtBack.get());
 		SmartDashboard.putBoolean("Latched", RobotShoot.latch);
