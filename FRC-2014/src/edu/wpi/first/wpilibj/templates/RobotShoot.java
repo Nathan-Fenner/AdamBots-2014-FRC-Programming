@@ -18,7 +18,7 @@ public class RobotShoot {
 
 	//// ADDED: SWITCHED THE SIGNS ON THE WIND AND UNWIND SPEED
 	public static final double UNWIND_SPEED = -0.5; // TODO: may change
-	public static final double WAIT_TIME = 2.0;
+	public static final double WAIT_TIME = 1.0;
 	public static final double WIND_SPEED = 1.0;
 	public static final double MAX_REVS = 1700;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
@@ -52,7 +52,7 @@ public class RobotShoot {
 		updatedSpeed = 0.0;
 		currentTime = 0.0;
 		currentStage = "";
-		stage = 2;
+		stage = 0;
 		RobotSensors.shooterWinchEncoder.start();
 		stageThreeDone = false;
 		stageFiveDone = false;
@@ -64,6 +64,10 @@ public class RobotShoot {
 
 	public static void useAutomatic() {
 		inManualMode = false;
+	}
+	
+	public static boolean isManual() {
+		return inManualMode;
 	}
 
 	//// STAGES ----------------------------------------------------------------
@@ -131,7 +135,8 @@ public class RobotShoot {
 		}
 		latch();
 		//// TODO: CHANGE THE TIME ON THIS LATER ON
-		if (timer.get() >= 1.5) {
+		//// CHANGED: Latch time from 1.5
+		if (timer.get() >= 1.0) {
 			timer.stop();
 			timer.reset();
 			stage = 6;
@@ -157,7 +162,8 @@ public class RobotShoot {
 	// reshoot method
 	// needs to be called before reshooting
 	public static void shoot() {
-		if (RobotPickup.isPickupInShootPosition()) {
+		//// CHANGED: ADDED IN TO MAKE SURE WE DONT FIRE IN STAGES 2,3,4,5
+		if (RobotPickup.isPickupInShootPosition() && !(stage >= 2 && stage <= 5)) {
 			stage = 1;
 			timer.stop();
 			timer.reset();
@@ -214,7 +220,7 @@ public class RobotShoot {
 		/*if (RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0.0) {
 		 updatedSpeed = 0.0;
 		 }*/
-		if (ControlBox.getTopSwitch(1)) {
+		if (ControlBox.getTopSwitch(1) && RobotPickup.isPickupInShootPosition()) {
 			releaseLatch();
 		} else {
 			latch();
@@ -225,7 +231,7 @@ public class RobotShoot {
 			RobotSensors.shooterWinchEncoder.reset();
 		}
 
-		RobotPickup.moveToShootPosition();
+		//RobotPickup.moveToShootPosition();
 	}
 
 	// sets speed to the unwind speed

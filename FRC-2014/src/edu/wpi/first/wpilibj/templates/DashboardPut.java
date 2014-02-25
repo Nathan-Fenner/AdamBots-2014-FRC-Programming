@@ -27,7 +27,8 @@ public class DashboardPut {
 		//Drive
 		//SmartDashboard.putBoolean("drive ESTOP",RobotDrive.isStopped());
 		//General status
-		DriverStation d = DriverStation.getInstance();
-		SmartDashboard.putNumber("status BATTERY", d.getBatteryVoltage());
+		DriverStation driverStation = DriverStation.getInstance();
+		SmartDashboard.putNumber("status BATTERY", driverStation.getBatteryVoltage());
+		SmartDashboard.putBoolean("in MANUAL SHOOT MODE", RobotShoot.isManual());
 	}
 }

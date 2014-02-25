@@ -56,15 +56,15 @@ public class MainRobot extends IterativeRobot {
 	/**
 	 * This function is called periodically during operator control
 	 */
-	boolean on = true;
-	int trueCount = 0;
-	int maxTrueCount = Integer.MIN_VALUE;
+	//boolean on = true;
+	//int trueCount = 0;
+	//int maxTrueCount = Integer.MIN_VALUE;
 
 	public void teleopPeriodic() {
 
 		RobotShoot.setTargetTicks(SmartDashboard.getNumber("Target Ticks"));
 
-		boolean r = !RobotSensors.shooterAtBack.get();
+		/*boolean r = !RobotSensors.shooterAtBack.get();
 		if (r) {
 			System.out.println("SWITCH true");
 			on = true;
@@ -80,7 +80,7 @@ public class MainRobot extends IterativeRobot {
 			if (trueCount > maxTrueCount) {
 				maxTrueCount = trueCount;
 			}
-		}
+		}*/
 
 		ControlBox.update();
 		RobotDrive.update();
@@ -89,7 +89,7 @@ public class MainRobot extends IterativeRobot {
 
 		RobotPickup.moveToShootPosition();
 
-		//RobotTeleop.update();
+		RobotTeleop.update();
 		if (ControlBox.getTopSwitch(2)) {
 			RobotShoot.useAutomatic();
 		} else {
@@ -133,7 +133,7 @@ public class MainRobot extends IterativeRobot {
 		RobotShoot.stopMotors();
 		AutonZero.reset();
 		DashboardPut.put();
-		maxTrueCount = 0;
+		//maxTrueCount = 0;
 	}
 
 	public void autonomousInit() {

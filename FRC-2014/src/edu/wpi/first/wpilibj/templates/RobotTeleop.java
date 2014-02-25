@@ -69,7 +69,7 @@ public class RobotTeleop {
 
 		SmartDashboard.putBoolean("Left Switch 1", ControlBox.getLeftSwitch(1));
 		// added the false &&
-		if (false && ControlBox.getLeftSwitch(1)) {
+		if (/*false && */ControlBox.getLeftSwitch(1)) {
 			RobotPickup.enterOverrideEncoderMode();
 			double overridePickupAngleSpeed = Gamepad.secondary.getTriggers() * 0.4;
 			//double overridePickupAngleSpeed = (Gamepad.secondary.getLB() ? 0.35 : 0) + (Gamepad.secondary.getRB() ? -0.35 : 0);
