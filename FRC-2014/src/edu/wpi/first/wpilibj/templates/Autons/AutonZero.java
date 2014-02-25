@@ -35,7 +35,7 @@ public class AutonZero {
 	}
 	
 	public static void stepOne() {
-		if (!RobotPickup.isPickupInPickupPosition() && !pickupBeenDown) {
+		/*if (!RobotPickup.isPickupInPickupPosition() && !pickupBeenDown) {
 			RobotPickup.moveToPickupPosition();
 		} else {
 			pickupBeenDown = true;
@@ -48,13 +48,22 @@ public class AutonZero {
 		if (timer.get() == 0) {
 			timer.start();
 		}
-		if (!beenThru /*&& RobotShoot.unwind()*/) {
+		if (!beenThru *//*&& RobotShoot.unwind()*//*) {
 			//System.out.println("Unwinding: " + timer.get());
 			beenThru = true;
-		}
+		}*/
 		/*if (RobotShoot.unwind() && pickupBeenDown) {
 			step = 2;
 		}*/
+		if (timer.get() == 0) {
+			timer.start()ss;
+		}
+		
+		RobotPickup.moveToPickupPosition();
+		if (RobotShoot.isReadyToShoot()) {
+			RobotShoot.shoot();
+			step = 2;
+		}
 	}
 	
 	public static void update() {

@@ -36,8 +36,17 @@ public class StandardOneBallAuton extends AutonZero{
 	// Moves forward while putting the arm down
 	public static void stepTwo() {
 		RobotDrive.disableSmoothing();
+		
+		double forward = 0.5;
 		if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
-			//double forward = speed * Math.max(-1, Math.min(1, (STRAIGHT_DISTANCE - averageDriveEncoder) / 1000.0)) + .2;
+			RobotDrive.drive(-forward, -forward);
+		} else {
+			RobotDrive.stopDrive();
+			step = 3;
+		}
+		
+		
+		/*if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
 			if (secondTimer.get() == 0) {
 				secondTimer.start();
 			}
@@ -46,14 +55,13 @@ public class StandardOneBallAuton extends AutonZero{
 			} else {
 				RobotPickup.setRollerSpeed(0.0);
 			}
-			double forward = 0.5;
-			RobotDrive.drive(-forward, -forward);
+			
 			System.out.println("-->stage 2: drive speed = " + forward);
 		} else {
 			RobotDrive.drive(0, 0);
 			System.out.println("Setting to 0");
 
-		}
+		}*/
 		/*if (RobotShoot.rewindShooter() && averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
 			step = 3;
 		}*/
@@ -61,16 +69,9 @@ public class StandardOneBallAuton extends AutonZero{
 
 	// shoots if the goal is hot or timer says so
 	public static void stepThree() {
-		if (currentTime == 0) {
-			RobotPickup.openRollerArm();
-			currentTime = timer.get();
-		}
-		System.out.println(timer.get() - (currentTime + openingTime));
-		SmartDashboard.putNumber("timer", timer.get());
-		SmartDashboard.putNumber("current time", currentTime);
-		if ((RobotVision.isHot() || timer.get() >= 5.0) && timer.get() - (currentTime + openingTime) >= 0.5) {
+		RobotPickup.openRollerArm();
+		if (RobotVision.isHot() || timer.get() >= 5.0) {
 			RobotShoot.shoot();
-			System.out.println("Shoot");
 			startMovingBack = timer.get() + 0.5;
 			step = 4;
 		}
@@ -86,12 +87,12 @@ public class StandardOneBallAuton extends AutonZero{
 	// moves back to the white line
 	public static void stepFive() {
 		if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
-			double forward = speed * Math.max(-1, Math.min(1, (BACKWARDS_DISTANCE - averageDriveEncoder) / 1000.0)) - .2;
-			//Forward is negative, so actually, backwards, but counting in the direction of forwards.
+			//double forward = speed * Math.max(-1, Math.min(1, (BACKWARDS_DISTANCE - averageDriveEncoder) / 1000.0)) - .2;
+			double forward = 0.5;
 			RobotDrive.drive(-forward, -forward);
 		} else {
 			RobotDrive.stopDrive();
-			step = 6;
+			step = 99;
 		}
 	}
 
