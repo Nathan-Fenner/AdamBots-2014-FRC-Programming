@@ -56,31 +56,9 @@ public class MainRobot extends IterativeRobot {
 	/**
 	 * This function is called periodically during operator control
 	 */
-	//boolean on = true;
-	//int trueCount = 0;
-	//int maxTrueCount = Integer.MIN_VALUE;
-
 	public void teleopPeriodic() {
 
 		RobotShoot.setTargetTicks(SmartDashboard.getNumber("Target Ticks"));
-
-		/*boolean r = !RobotSensors.shooterAtBack.get();
-		if (r) {
-			System.out.println("SWITCH true");
-			on = true;
-			trueCount = 0;
-		} else {
-			if (on) {
-				System.out.println("MaxTrueCount: " + maxTrueCount);
-				System.out.println("True Count: " + trueCount);
-				System.out.println("SWITCH false");
-				on = false;
-			}
-			trueCount++;
-			if (trueCount > maxTrueCount) {
-				maxTrueCount = trueCount;
-			}
-		}*/
 
 		ControlBox.update();
 		RobotDrive.update();
@@ -100,9 +78,6 @@ public class MainRobot extends IterativeRobot {
 			RobotShoot.shoot();
 		}
 
-		SmartDashboard.putNumber("ANGLE ANGLE", RobotPickup.getArmAngleAboveHorizontal());
-		SmartDashboard.putBoolean("PICKUP Upper Limit", RobotSensors.pickupSystemUpLim.get());
-		SmartDashboard.putBoolean("PICKUP Lower Limit", RobotSensors.pickupSystemDownLim.get());
 		runCompressor();
 
 		SmartDashboard.putNumber("Red Distance", RobotVision.redDistance());

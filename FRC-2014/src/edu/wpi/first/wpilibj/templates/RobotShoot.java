@@ -26,16 +26,12 @@ public class RobotShoot {
 	public static final double TENSION_TOLERANCE = 75;
 	private static double tensionTargetTicks = 1000;
 	private static Timer timer;
-	private static double currentTime;
 	private static double updatedSpeed;
 	private static boolean inManualMode = true;
-	private static boolean stageOneDone;
-	private static boolean beenZeroed;
 	private static boolean latch;
 	private static String currentStage;
 	private static int stage;
-	private static boolean stageThreeDone;
-	private static boolean stageFiveDone;
+	private static int returnStage = 0;
 	public static double voltage;
 	public static double current;
 
@@ -47,15 +43,15 @@ public class RobotShoot {
 	//// INIT ------------------------------------------------------------------
 	public static void initialize() {
 		latch();
-		beenZeroed = false;
 		timer = new Timer();
 		updatedSpeed = 0.0;
-		currentTime = 0.0;
 		currentStage = "";
 		stage = 0;
 		RobotSensors.shooterWinchEncoder.start();
-		stageThreeDone = false;
-		stageFiveDone = false;
+	}
+
+	public static void startShoot() {
+		stage = 2;
 	}
 
 	public static void useManual() {
@@ -65,9 +61,13 @@ public class RobotShoot {
 	public static void useAutomatic() {
 		inManualMode = false;
 	}
-	
+
 	public static boolean isManual() {
 		return inManualMode;
+	}
+
+	public static boolean isReadyToShoot() {
+		return stage == 6 && Math.abs(getEncoder() - tensionTargetTicks) < TENSION_TOLERANCE * 1.5;
 	}
 
 	//// STAGES ----------------------------------------------------------------
@@ -78,7 +78,7 @@ public class RobotShoot {
 			releaseLatch();
 			stage = 2;
 		} else {
-			stage = 99;
+			stage = returnStage;
 		}
 	}
 
@@ -164,6 +164,9 @@ public class RobotShoot {
 	public static void shoot() {
 		//// CHANGED: ADDED IN TO MAKE SURE WE DONT FIRE IN STAGES 2,3,4,5
 		if (RobotPickup.isPickupInShootPosition() && !(stage >= 2 && stage <= 5)) {
+			if (stage != 1) {
+				returnStage = stage;
+			}
 			stage = 1;
 			timer.stop();
 			timer.reset();
@@ -199,17 +202,22 @@ public class RobotShoot {
 			case -99:
 				break;
 			default:
-				System.out.println("You have stage Fright");
-				System.out.println("Stage Issue: " + stage);
+				//System.out.println("You have stage Fright");
+				//System.out.println("Stage Issue: " + stage);
 				break;
 		}
+
+		if (stage != 1) {
+			returnStage = stage;
+		}
+
 	}
 
 	// used for calibration
 	public static void manualShoot() {
 		stage = -99;
 		updatedSpeed = Gamepad.secondary.getRightY();
-		SmartDashboard.putBoolean("is the shooterLoadedLim", RobotSensors.shooterLoadedLim.get());
+		//SmartDashboard.putBoolean("is the shooterLoadedLim", RobotSensors.shooterLoadedLim.get());
 		// TODO: TAKE OUT THE OR TRUE FOR THE REAL ROBOT WHEN THE SWITCH IS FIXED
 		/*if ((RobotSensors.shooterLoadedLim.get() || true) && getEncoder() <= BACKWARDS_REV && Gamepad.secondary.getRightY() <= 0.0) {
 		 updatedSpeed = 0.0;
@@ -227,7 +235,7 @@ public class RobotShoot {
 		}
 
 		if (Gamepad.secondary.getA()) {
-			System.out.println("A PRESSED AND ENCODER RESET"); // TODO remove
+			//System.out.println("A PRESSED AND ENCODER RESET"); // TODO remove
 			RobotSensors.shooterWinchEncoder.reset();
 		}
 
@@ -282,7 +290,7 @@ public class RobotShoot {
 		/*if ((!RobotSensors.shooterAtBack.get() && updatedSpeed <= 0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
 		 updatedSpeed = 0.0;
 		 }*/
-		
+
 		if (!RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0) {
 			updatedSpeed = 0.0;
 		}
@@ -291,22 +299,8 @@ public class RobotShoot {
 
 		// sets motor
 		RobotActuators.shooterWinch.set(updatedSpeed);
-		SmartDashboard.putNumber("updatedSpeed: ", updatedSpeed);
 
 		// prints to smart dashboard
-		SmartDashboard.putNumber("Shooter Encoder", RobotSensors.shooterWinchEncoder.get());
-		SmartDashboard.putNumber("Stage", stage);
-		SmartDashboard.putString("Current Stage String:",currentStage);
-		SmartDashboard.putNumber("Time: ", timer.get());
-		SmartDashboard.putBoolean("Shooter at back", !RobotSensors.shooterAtBack.get());
-		SmartDashboard.putBoolean("Shooter loaded lim", RobotSensors.shooterLoadedLim.get());
-		//SmartDashboard.putString("Shooter at str back", MathUtils.rand(15) + "" + RobotSensors.shooterAtBack.get());
-		SmartDashboard.putBoolean("Latched", RobotShoot.latch);
-		SmartDashboard.putBoolean("beenZeroed", beenZeroed);
-		SmartDashboard.putBoolean("Stage One", stageOneDone);
-		SmartDashboard.putBoolean("Stage Three", stageThreeDone);
-		SmartDashboard.putBoolean("Stage Five", stageFiveDone);
-
 
 		if (inManualMode) {
 			manualShoot();
