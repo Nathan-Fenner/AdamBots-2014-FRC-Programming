@@ -26,6 +26,7 @@ public class RobotShoot {
 	public static final double TENSION_TOLERANCE = 75;
 	private static double tensionTargetTicks = 1200;
 	private static Timer timer;
+	public static Timer gameTime;
 	private static double updatedSpeed;
 	private static boolean inManualMode = true;
 	private static boolean latch;
@@ -47,6 +48,7 @@ public class RobotShoot {
 		updatedSpeed = 0.0;
 		currentStage = "";
 		stage = 0;
+		gameTime = new Timer();
 		RobotSensors.shooterWinchEncoder.start();
 	}
 
@@ -153,7 +155,7 @@ public class RobotShoot {
 			return;
 		}
 
-		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && getAtBack()) {
+		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && !getAtBack()) {
 			automatedUnwind();
 			return;
 		}
@@ -162,6 +164,8 @@ public class RobotShoot {
 	
 	public static void reset() {
 		RobotSensors.shooterWinchEncoder.reset();
+		gameTime.stop();
+		gameTime.reset();
 		timer.stop();
 		timer.reset();
 	}
@@ -214,7 +218,7 @@ public class RobotShoot {
 				break;
 		}
 
-		System.out.println("-->stage: " + stage);
+		//System.out.println("-->stage: " + stage);
 		
 		if (stage != 1) {
 			returnStage = stage;
@@ -293,7 +297,7 @@ public class RobotShoot {
 	//// UPDATE METHODS --------------------------------------------------------
 	public static void update() {
 		if (getEncoder() >= 100 && !getAtBack()) {
-			System.out.println("Bad limit switch: " + getEncoder());
+			//System.out.println("Bad limit switch: " + getEncoder());
 		}
 
 		// checks to see if the encoder should be zeroed
@@ -312,6 +316,9 @@ public class RobotShoot {
 		}
 		// sets pnuematics
 		RobotActuators.latchRelease.set(latch);
+		if (RobotActuators.latchRelease.get()) {
+			System.out.println(gameTime.get() + "   Latches");
+		}
 
 		// sets motor
 		RobotActuators.shooterWinch.set(updatedSpeed);

@@ -62,6 +62,9 @@ public class MainRobot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
+		if (RobotShoot.gameTime.get() == 0) {
+			RobotShoot.gameTime.start();
+		}
 
 		RobotShoot.setTargetTicks(SmartDashboard.getNumber("Target Ticks"));
 
@@ -73,7 +76,7 @@ public class MainRobot extends IterativeRobot {
 		RobotPickup.moveToShootPosition();
 
 		RobotTeleop.update();
-		if (ControlBox.getTopSwitch(2)) {
+		if (!ControlBox.getTopSwitch(2)) {
 			RobotShoot.useAutomatic();
 		} else {
 			RobotShoot.useManual();
