@@ -19,7 +19,7 @@ public class StandardOneBallAuton extends AutonZero{
 	public static final double speed = 0.5;
 	public static double startMovingBack;
 	public static final double STRAIGHT_DISTANCE = 450; // needs to be found in testing
-	public static final double BACKWARDS_DISTANCE = -700; // needs to be found in testing
+	public static final double BACKWARDS_DISTANCE = -500; // needs to be found in testing
 	public static double openingTime = 0.5;
 	public static double currentTime = 0.0;
 	public static Timer secondTimer;
@@ -37,9 +37,9 @@ public class StandardOneBallAuton extends AutonZero{
 	public static void stepTwo() {
 		RobotDrive.disableSmoothing();
 		
-		double forward = 0.5;
+		double forward = -1.0;
 		if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
-			RobotDrive.drive(-forward, -forward);
+			RobotDrive.drive(forward, forward);
 		} else {
 			RobotDrive.stopDrive();
 			step = 3;
@@ -70,7 +70,7 @@ public class StandardOneBallAuton extends AutonZero{
 	// shoots if the goal is hot or timer says so
 	public static void stepThree() {
 		RobotPickup.openRollerArm();
-		if (RobotVision.isHot() || timer.get() >= 5.0) {
+		if ((RobotVision.isHot() || timer.get() >= 5.0) && RobotShoot.isReadyToShoot()) {
 			RobotShoot.shoot();
 			startMovingBack = timer.get() + 0.5;
 			step = 4;
@@ -88,8 +88,8 @@ public class StandardOneBallAuton extends AutonZero{
 	public static void stepFive() {
 		if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
 			//double forward = speed * Math.max(-1, Math.min(1, (BACKWARDS_DISTANCE - averageDriveEncoder) / 1000.0)) - .2;
-			double forward = 0.5;
-			RobotDrive.drive(-forward, -forward);
+			double forward = 1.0;
+			RobotDrive.drive(forward, forward);
 		} else {
 			RobotDrive.stopDrive();
 			step = 99;
@@ -102,23 +102,23 @@ public class StandardOneBallAuton extends AutonZero{
 		averageDriveEncoder = RobotDrive.getEncoderRightTicks();
 		switch (step) {
 			case 1:
-				System.out.println("Stage 1");
+				//System.out.println("Stage 1");
 				stepOne();
 				break;
 			case 2:
-				System.out.println("Stage 2");
+				//System.out.println("Stage 2");
 				stepTwo();
 				break;
 			case 3:
-				System.out.println("Stage 3");
+				//System.out.println("Stage 3");
 				stepThree();
 				break;
 			case 4:
-				System.out.println("Stage 4");
+				//System.out.println("Stage 4");
 				stepFour();
 				break;
 			case 5:
-				System.out.println("Stage 5");
+				//System.out.println("Stage 5");
 				stepFive();
 				break;
 			default:

@@ -7,6 +7,7 @@
 package edu.wpi.first.wpilibj.templates.Autons;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.templates.*;
 
 /**
@@ -32,6 +33,8 @@ public class AutonZero {
 		RobotSensors.leftDriveEncoder.reset();
 		RobotSensors.rightDriveEncoder.reset();
 		RobotSensors.shooterWinchEncoder.reset();
+		timer.stop();
+		timer.reset();
 	}
 	
 	public static void stepOne() {
@@ -56,17 +59,20 @@ public class AutonZero {
 			step = 2;
 		}*/
 		if (timer.get() == 0) {
-			timer.start()ss;
+			timer.start();
+			RobotShoot.startShoot();
+			System.out.println("start at 0");
 		}
 		
-		RobotPickup.moveToPickupPosition();
-		if (RobotShoot.isReadyToShoot()) {
-			RobotShoot.shoot();
+		RobotPickup.moveToShootPosition();
+		if (RobotPickup.isPickupInShootPosition()) {
+			//RobotShoot.shoot();
 			step = 2;
 		}
 	}
 	
 	public static void update() {
+		SmartDashboard.putBoolean("Pickup in shoot", RobotPickup.isPickupInShootPosition());
 		StandardOneBallAuton.update();
 	}
 }

@@ -32,14 +32,19 @@ public class MainRobot extends IterativeRobot {
 		RobotVision.initialize();
 		RobotAuton.initialize();
 		ControlBox.initialize();
+		System.out.println("Initialized");
 	}
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
+		RobotShoot.useAutomatic();
 		runCompressor();
 		RobotAuton.update();
+		RobotDrive.update();
+		RobotPickup.update();
+		RobotShoot.update();
 		DashboardPut.put();
 	}
 
@@ -112,6 +117,7 @@ public class MainRobot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
+		RobotShoot.reset();
 		RobotAuton.initialize();
 	}
 }

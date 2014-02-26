@@ -49,8 +49,5 @@ public class RobotAuton {
 		//averageDriveEncoder = (RobotSensors.rightDriveEncoder.get() + RobotSensors.leftDriveEncoder.get()) / 2.0;
 		//StandardOneBallAuton.update();
 		AutonZero.update();
-		RobotDrive.update();
-		RobotPickup.update();
-		RobotShoot.update();
 	}
 }

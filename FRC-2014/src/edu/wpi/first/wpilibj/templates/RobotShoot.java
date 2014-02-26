@@ -17,14 +17,14 @@ public class RobotShoot {
 	////VARIABLES---------------------------------------------------------------
 
 	//// ADDED: SWITCHED THE SIGNS ON THE WIND AND UNWIND SPEED
-	public static final double UNWIND_SPEED = -0.5; // TODO: may change
-	public static final double WAIT_TIME = 1.0;
+	public static final double UNWIND_SPEED = -0.75; // TODO: may change
+	public static final double WAIT_TIME = 0.75;
 	public static final double WIND_SPEED = 1.0;
 	public static final double MAX_REVS = 1700;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
 	public static final double TENSION_TOLERANCE = 75;
-	private static double tensionTargetTicks = 1000;
+	private static double tensionTargetTicks = 1200;
 	private static Timer timer;
 	private static double updatedSpeed;
 	private static boolean inManualMode = true;
@@ -52,6 +52,7 @@ public class RobotShoot {
 
 	public static void startShoot() {
 		stage = 2;
+		//stage = 1;
 	}
 
 	public static void useManual() {
@@ -111,7 +112,7 @@ public class RobotShoot {
 	public static void unwind() {
 		currentStage = "4";
 		releaseLatch();
-		if (!RobotSensors.shooterAtBack.get() && timer.get() == 0) {
+		if (getAtBack() && timer.get() == 0) {
 			timer.start();
 			RobotSensors.shooterWinchEncoder.reset();
 		}
@@ -135,8 +136,8 @@ public class RobotShoot {
 		}
 		latch();
 		//// TODO: CHANGE THE TIME ON THIS LATER ON
-		//// CHANGED: Latch time from 1.5
-		if (timer.get() >= 1.0) {
+		//// CHANGED: Latch time from 1.0
+		if (timer.get() >= 0.5) {
 			timer.stop();
 			timer.reset();
 			stage = 6;
@@ -152,11 +153,17 @@ public class RobotShoot {
 			return;
 		}
 
-		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && RobotSensors.shooterAtBack.get()) {
+		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && getAtBack()) {
 			automatedUnwind();
 			return;
 		}
 		updatedSpeed = 0.0;
+	}
+	
+	public static void reset() {
+		RobotSensors.shooterWinchEncoder.reset();
+		timer.stop();
+		timer.reset();
 	}
 
 	// reshoot method
@@ -207,6 +214,8 @@ public class RobotShoot {
 				break;
 		}
 
+		System.out.println("-->stage: " + stage);
+		
 		if (stage != 1) {
 			returnStage = stage;
 		}
@@ -268,17 +277,22 @@ public class RobotShoot {
 	public static void latch() {
 		latch = false;
 	}
+	
+	// get the limit switch
+	public static boolean getAtBack() {
+		return !RobotSensors.shooterAtBack.get();
+	}
 
 	// Zeroes the encoder
 	// check to see if the encoder is bad with this
 	/*private static void zeroEncoder() {
-	 if (RobotSensors.shooterAtBack.get()) {
+	 if (getAtBack()) {
 	 beenZeroed = false;
 	 }
 	 }*/
 	//// UPDATE METHODS --------------------------------------------------------
 	public static void update() {
-		if (getEncoder() >= 100 && !RobotSensors.shooterAtBack.get()) {
+		if (getEncoder() >= 100 && !getAtBack()) {
 			System.out.println("Bad limit switch: " + getEncoder());
 		}
 
@@ -287,10 +301,12 @@ public class RobotShoot {
 			updatedSpeed = 0.0;
 		}
 
-		/*if ((!RobotSensors.shooterAtBack.get() && updatedSpeed <= 0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
+		/*if ((!getAtBack() && updatedSpeed <= 0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
 		 updatedSpeed = 0.0;
 		 }*/
 
+		SmartDashboard.putBoolean("Shooter At back", getAtBack());
+		
 		if (!RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0) {
 			updatedSpeed = 0.0;
 		}
@@ -301,7 +317,6 @@ public class RobotShoot {
 		RobotActuators.shooterWinch.set(updatedSpeed);
 
 		// prints to smart dashboard
-
 		if (inManualMode) {
 			manualShoot();
 		} else {
