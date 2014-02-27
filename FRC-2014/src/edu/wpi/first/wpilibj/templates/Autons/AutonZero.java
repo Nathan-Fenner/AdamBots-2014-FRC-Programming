@@ -32,7 +32,7 @@ public class AutonZero {
 	public static void reset() {
 		RobotSensors.leftDriveEncoder.reset();
 		RobotSensors.rightDriveEncoder.reset();
-		RobotSensors.shooterWinchEncoder.reset();
+		//RobotSensors.shooterWinchEncoder.reset();
 		timer.stop();
 		timer.reset();
 	}

@@ -112,6 +112,13 @@ public class MainRobot extends IterativeRobot {
 	 */
 	public void testPeriodic() {
 		DashboardPut.put();
+		if (RobotPickup.isPickupInShootPosition()) {
+			RobotShoot.releaseLatch();
+		}
+		RobotPickup.moveToShootPosition();
+		RobotShoot.useManual();
+		RobotShoot.update();
+		RobotPickup.update();
 	}
 	
 	private void runCompressor() {
