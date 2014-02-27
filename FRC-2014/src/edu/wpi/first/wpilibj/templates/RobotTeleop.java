@@ -27,7 +27,7 @@ public class RobotTeleop {
 		}
 		double a = 1.02058885;
 		double b = 0.0039712;
-		return (Math.sqrt(a*x + b)-Math.sqrt(b)) / Math.sqrt(a+b);
+		return (Math.sqrt(a * x + b) - Math.sqrt(b)) / Math.sqrt(a + b);
 	}
 
 	public static void update() {
@@ -45,7 +45,8 @@ public class RobotTeleop {
 		double leftDrive = forwardRate - turnRate;
 		double rightDrive = forwardRate + turnRate;
 
-
+		leftDrive = Math.max(-1.0, Math.min(1.0, leftDrive));
+		rightDrive = Math.max(-1.0, Math.min(1.0, rightDrive));
 
 		double leftPWM = RobotDrive.pwmFromTPS(leftDrive * 900);
 		double rightPWM = RobotDrive.pwmFromTPS(rightDrive * 900);
