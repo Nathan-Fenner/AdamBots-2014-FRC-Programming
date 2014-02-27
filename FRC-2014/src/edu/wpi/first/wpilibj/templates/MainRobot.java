@@ -42,8 +42,8 @@ public class MainRobot extends IterativeRobot {
 		RobotShoot.useAutomatic();
 		runCompressor();
 		RobotAuton.update();
-		RobotDrive.update();
-		RobotPickup.update();
+		//+RobotDrive.update();
+		RobotPickup.update();													// TODO: UNDISABLE WHEN IT CAN DRIVE AGAIN
 		RobotShoot.update();
 		DashboardPut.put();
 	}
@@ -56,6 +56,8 @@ public class MainRobot extends IterativeRobot {
 	public void disabledInit() {
 		StandardOneBallAuton.timer.stop();
 		StandardOneBallAuton.timer.reset();
+		StandardOneBallAuton.secondTimer.stop();
+		StandardOneBallAuton.secondTimer.reset();
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class MainRobot extends IterativeRobot {
 		RobotShoot.setTargetTicks(SmartDashboard.getNumber("Target Ticks"));
 
 		ControlBox.update();
-		RobotDrive.update();
+		//RobotDrive.update();
 		RobotPickup.update();
 		RobotShoot.update();
 

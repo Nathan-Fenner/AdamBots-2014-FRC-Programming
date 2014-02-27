@@ -218,6 +218,8 @@ public class RobotShoot {
 				break;
 		}
 
+		SmartDashboard.putNumber("latch", latch ? 1 + MathUtils.rand(1)/1000 : 0 + MathUtils.rand(1)/1000);
+		SmartDashboard.putNumber("stage SHOOTER", stage + MathUtils.rand(1)/1000);
 		//System.out.println("-->stage: " + stage);
 		
 		if (stage != 1) {

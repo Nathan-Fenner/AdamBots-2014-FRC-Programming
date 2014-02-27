@@ -34,8 +34,9 @@ public class StandardOneBallAuton extends AutonZero{
 	}
 
 	// Moves forward while putting the arm down
+	//// TODO: UNCOMMENT OUT THE DRIVE CODE WHEN DRIVE IS WORKING AGAIN
 	public static void stepTwo() {
-		RobotDrive.disableSmoothing();
+		/*RobotDrive.disableSmoothing();
 		
 		double forward = -1.0;
 		if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
@@ -43,9 +44,11 @@ public class StandardOneBallAuton extends AutonZero{
 		} else {
 			RobotDrive.stopDrive();
 			step = 3;
-		}
+		}*/
 		
+		step = 3;																// TODO: TAKE OUT WHEN THE ROBOT WE CAN DRIVE AGAIN
 		
+		//// DO NOT UNCOMMENT OUT BELOW WHEN UNCOMMENTING FOR DRIVE TO WORK AGAIN
 		/*if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
 			if (secondTimer.get() == 0) {
 				secondTimer.start();
@@ -61,7 +64,8 @@ public class StandardOneBallAuton extends AutonZero{
 			RobotDrive.drive(0, 0);
 			System.out.println("Setting to 0");
 
-		}*/
+//		}*/
+		
 		/*if (RobotShoot.rewindShooter() && averageDriveEncoder >= STRAIGHT_DISTANCE && RobotPickup.isPickupInShootPosition()) {
 			step = 3;
 		}*/
@@ -70,7 +74,12 @@ public class StandardOneBallAuton extends AutonZero{
 	// shoots if the goal is hot or timer says so
 	public static void stepThree() {
 		RobotPickup.openRollerArm();
-		if ((RobotVision.isHot() || timer.get() >= 5.0) && RobotShoot.isReadyToShoot()) {
+		if (secondTimer.get() == 0 && (RobotVision.isHot() || true) && RobotShoot.isReadyToShoot()) {
+			secondTimer.start();
+		}
+		if ((secondTimer.get() >= 0.5 || timer.get() >= 5.0) && RobotShoot.isReadyToShoot()) {
+			secondTimer.stop();
+			secondTimer.reset();
 			RobotShoot.shoot();
 			startMovingBack = timer.get() + 0.5;
 			step = 4;
@@ -85,15 +94,18 @@ public class StandardOneBallAuton extends AutonZero{
 	}
 
 	// moves back to the white line
+	//// TODO: UNCOMMENT THINGS WHEN IT IS OK TO DRIVE AGAIN
+	////	   COMMENT OUT THE step = 99 PORTION WHEN IT IS OK TO DRIVE AGAIN
 	public static void stepFive() {
-		if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
+		/*if (averageDriveEncoder >= BACKWARDS_DISTANCE) {
 			//double forward = speed * Math.max(-1, Math.min(1, (BACKWARDS_DISTANCE - averageDriveEncoder) / 1000.0)) - .2;
 			double forward = 1.0;
 			RobotDrive.drive(forward, forward);
 		} else {
 			RobotDrive.stopDrive();
 			step = 99;
-		}
+		}*/
+		step = 99;
 	}
 
 	// update method
