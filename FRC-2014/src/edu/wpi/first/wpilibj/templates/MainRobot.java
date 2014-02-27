@@ -102,6 +102,8 @@ public class MainRobot extends IterativeRobot {
 		
 		SmartDashboard.putNumber("Red Distance", RobotVision.redDistance());
 		
+		SmartDashboard.putNumber("Trigger Values", Math.abs(Gamepad.secondary.getTriggers()));
+		
 		DashboardPut.put();
 	}
 

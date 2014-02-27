@@ -19,7 +19,7 @@ public class StandardOneBallAuton extends AutonZero{
 	public static final double speed = 0.5;
 	public static double startMovingBack;
 	public static final double STRAIGHT_DISTANCE = 450; // needs to be found in testing
-	public static final double BACKWARDS_DISTANCE = -500; // needs to be found in testing
+	public static final double BACKWARDS_DISTANCE = 50; // needs to be found in testing
 	public static double openingTime = 0.5;
 	public static double currentTime = 0.0;
 	public static Timer secondTimer;
@@ -31,6 +31,7 @@ public class StandardOneBallAuton extends AutonZero{
 		AutonZero.reset();
 		startMovingBack = 0.0;
 		secondTimer = new Timer();
+		RobotShoot.setTargetTicks(1075);
 	}
 
 	// Moves forward while putting the arm down
@@ -70,7 +71,7 @@ public class StandardOneBallAuton extends AutonZero{
 	// shoots if the goal is hot or timer says so
 	public static void stepThree() {
 		RobotPickup.openRollerArm();
-		if (secondTimer.get() == 0 && (RobotVision.isHot() || true) && RobotShoot.isReadyToShoot()) {
+		if (secondTimer.get() == 0 && RobotVision.isHot() && RobotShoot.isReadyToShoot()) {
 			secondTimer.start();
 		}
 		if ((secondTimer.get() >= 0.5 || timer.get() >= 5.0) && RobotShoot.isReadyToShoot()) {
