@@ -47,12 +47,12 @@ public class MainRobot extends IterativeRobot {
 		RobotShoot.update();
 		DashboardPut.put();
 	}
-
+	
 	public void teleopInit() {
 		SmartDashboard.putNumber("Target Ticks", 1000);
 		RobotDrive.enableSmoothing();
 	}
-
+	
 	public void disabledInit() {
 		StandardOneBallAuton.timer.stop();
 		StandardOneBallAuton.timer.reset();
@@ -67,31 +67,41 @@ public class MainRobot extends IterativeRobot {
 		if (RobotShoot.gameTime.get() == 0) {
 			RobotShoot.gameTime.start();
 		}
-
-		RobotShoot.setTargetTicks(SmartDashboard.getNumber("Target Ticks"));
-
+		
+		SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
+		if (ControlBox.getTopSwitch(3)) {
+			RobotShoot.setTargetTicks(RobotVision.getEncoder());
+		} else {
+			if (ControlBox.getBlackButtonLeft()) {
+				RobotShoot.adjustTargetDown();
+			}
+			if (ControlBox.getBlackButtonRight()) {
+				RobotShoot.adjustTargetUp();
+			}
+		}
+		
 		ControlBox.update();
 		RobotDrive.update();
 		RobotPickup.update();
 		RobotShoot.update();
-
+		
 		RobotPickup.moveToShootPosition();
-
+		
 		RobotTeleop.update();
 		if (!ControlBox.getTopSwitch(2)) {
 			RobotShoot.useAutomatic();
 		} else {
 			RobotShoot.useManual();
 		}
-
+		
 		if (Gamepad.secondary.getTriggers() > .9) {
 			RobotShoot.shoot();
 		}
-
+		
 		runCompressor();
-
+		
 		SmartDashboard.putNumber("Red Distance", RobotVision.redDistance());
-
+		
 		DashboardPut.put();
 	}
 
@@ -101,7 +111,7 @@ public class MainRobot extends IterativeRobot {
 	public void testPeriodic() {
 		DashboardPut.put();
 	}
-
+	
 	private void runCompressor() {
 		SmartDashboard.putBoolean("Pressure Switch", RobotSensors.pressureSwitch.get());
 		if (!RobotSensors.pressureSwitch.get()) {
@@ -112,7 +122,7 @@ public class MainRobot extends IterativeRobot {
 		}
 		//System.out.println("runCompressor finished");
 	}
-
+	
 	public void disabledPeriodic() {
 		RobotDrive.stopDrive();
 		RobotShoot.stopMotors();
@@ -120,7 +130,7 @@ public class MainRobot extends IterativeRobot {
 		DashboardPut.put();
 		//maxTrueCount = 0;
 	}
-
+	
 	public void autonomousInit() {
 		RobotShoot.reset();
 		RobotAuton.initialize();

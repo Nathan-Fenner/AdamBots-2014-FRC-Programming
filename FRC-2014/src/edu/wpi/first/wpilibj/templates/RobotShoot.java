@@ -39,6 +39,15 @@ public class RobotShoot {
 	public static void setTargetTicks(double ticks) {
 		ticks = Math.max(500, Math.min(1400, ticks));
 		tensionTargetTicks = ticks;
+		SmartDashboard.putNumber("shooter TARGET TICKS", tensionTargetTicks);
+	}
+
+	public static void adjustTargetUp() {
+		setTargetTicks(tensionTargetTicks + 5);
+	}
+
+	public static void adjustTargetDown() {
+		setTargetTicks(tensionTargetTicks - 5);
 	}
 
 	//// INIT ------------------------------------------------------------------
@@ -161,7 +170,7 @@ public class RobotShoot {
 		}
 		updatedSpeed = 0.0;
 	}
-	
+
 	public static void reset() {
 		RobotSensors.shooterWinchEncoder.reset();
 		gameTime.stop();
@@ -218,10 +227,10 @@ public class RobotShoot {
 				break;
 		}
 
-		SmartDashboard.putNumber("latch", latch ? 1 + MathUtils.rand(1)/1000 : 0 + MathUtils.rand(1)/1000);
-		SmartDashboard.putNumber("stage SHOOTER", stage + MathUtils.rand(1)/1000);
+		SmartDashboard.putNumber("latch", latch ? 1 + MathUtils.rand(1) / 1000 : 0 + MathUtils.rand(1) / 1000);
+		SmartDashboard.putNumber("stage SHOOTER", stage + MathUtils.rand(1) / 1000);
 		//System.out.println("-->stage: " + stage);
-		
+
 		if (stage != 1) {
 			returnStage = stage;
 		}
@@ -283,7 +292,7 @@ public class RobotShoot {
 	public static void latch() {
 		latch = false;
 	}
-	
+
 	// get the limit switch
 	public static boolean getAtBack() {
 		return !RobotSensors.shooterAtBack.get();
@@ -312,7 +321,7 @@ public class RobotShoot {
 		 }*/
 
 		SmartDashboard.putBoolean("Shooter At back", getAtBack());
-		
+
 		if (!RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0) {
 			updatedSpeed = 0.0;
 		}
