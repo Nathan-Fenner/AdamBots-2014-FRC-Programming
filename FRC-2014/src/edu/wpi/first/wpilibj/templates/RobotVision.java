@@ -18,6 +18,22 @@ public class RobotVision {
 	private static Timer timer = new Timer();
 	private static String database = "";
 	private static final String BEAGELIP = "10.2.45.3:3000";
+	private static double previousEncoder = 1000;
+
+	public static double getEncoder() {
+		double d;
+		if (ControlBox.isRed()) {
+			d = redDistance();
+		} else {
+			d = blueDistance();
+		}
+		if (d <= 5) {
+			return previousEncoder;
+		}
+		d = 1.4674 * d * d - 27.253 * d + 1226.5;
+		previousEncoder = d;
+		return Math.max(500, Math.min(1500, previousEncoder));
+	}
 
 	public static void initialize() {
 		timer.start();

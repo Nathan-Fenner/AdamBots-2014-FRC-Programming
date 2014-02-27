@@ -5,6 +5,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -30,6 +31,10 @@ public class ControlBox {
 	public static DriverStation driverStation;
 	public static DriverStationEnhancedIO enhancedStation;
 
+	public static boolean isRed() {
+		return driverStation.getAlliance().value == Alliance.kRed_val;
+	}
+
 	public static void initialize() {
 		driverStation = DriverStation.getInstance();
 		enhancedStation = driverStation.getEnhancedIO();
@@ -37,14 +42,14 @@ public class ControlBox {
 
 	public static boolean getDigitalIn(int channel) {
 		try {
-			int lookAt = -1 - (int)enhancedStation.getDigitals();
+			int lookAt = -1 - (int) enhancedStation.getDigitals();
 			int pow = 1;
 			for (int j = 0; j < channel; j++) {
 				pow *= 2;
 			}
 			lookAt = lookAt % pow;
-			lookAt /= (pow/2);
-			SmartDashboard.putNumber("Digitals",-1 - (int)enhancedStation.getDigitals());
+			lookAt /= (pow / 2);
+			SmartDashboard.putNumber("Digitals", -1 - (int) enhancedStation.getDigitals());
 			return lookAt <= 0;
 		} catch (Exception e) {
 			System.out.println(e);
