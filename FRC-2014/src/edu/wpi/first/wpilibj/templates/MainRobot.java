@@ -47,12 +47,12 @@ public class MainRobot extends IterativeRobot {
 		RobotShoot.update();
 		DashboardPut.put();
 	}
-	
+
 	public void teleopInit() {
-		SmartDashboard.putNumber("Target Ticks", 1000);
+		SmartDashboard.putNumber("Target Ticks", 1200);
 		RobotDrive.enableSmoothing();
 	}
-	
+
 	public void disabledInit() {
 		StandardOneBallAuton.timer.stop();
 		StandardOneBallAuton.timer.reset();
@@ -67,10 +67,11 @@ public class MainRobot extends IterativeRobot {
 		if (RobotShoot.gameTime.get() == 0) {
 			RobotShoot.gameTime.start();
 		}
-		
+
 		SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
 		if (ControlBox.getTopSwitch(3)) {
-			RobotShoot.setTargetTicks(RobotVision.getEncoder());
+			//RobotShoot.setTargetTicks(RobotVision.getEncoder());
+			RobotShoot.setTargetTicks(1300);
 		} else {
 			if (ControlBox.getBlackButtonLeft()) {
 				RobotShoot.adjustTargetDown();
@@ -79,48 +80,74 @@ public class MainRobot extends IterativeRobot {
 				RobotShoot.adjustTargetUp();
 			}
 		}
-		
+
 		ControlBox.update();
 		RobotDrive.update();
 		RobotPickup.update();
 		RobotShoot.update();
-		
+
 		RobotPickup.moveToShootPosition();
-		
+
 		RobotTeleop.update();
 		if (!ControlBox.getTopSwitch(2)) {
 			RobotShoot.useAutomatic();
 		} else {
 			RobotShoot.useManual();
 		}
-		
+
 		if (Gamepad.secondary.getTriggers() > .9) {
 			RobotShoot.shoot();
 		}
-		
+
 		runCompressor();
-		
+
 		SmartDashboard.putNumber("Red Distance", RobotVision.redDistance());
-		
+
 		SmartDashboard.putNumber("Trigger Values", Math.abs(Gamepad.secondary.getTriggers()));
-		
+
 		DashboardPut.put();
 	}
+
+	int counterOnTest;
 
 	/**
 	 * This function is called periodically during test mode
 	 */
 	public void testPeriodic() {
+		runCompressor();
 		DashboardPut.put();
 		if (RobotPickup.isPickupInShootPosition()) {
 			RobotShoot.releaseLatch();
 		}
+		RobotPickup.closeRollerArm();
 		RobotPickup.moveToShootPosition();
-		RobotShoot.useManual();
-		RobotShoot.update();
 		RobotPickup.update();
+
+		if (counterOnTest <= 15) {
+			RobotActuators.shooterWinch.set(-0.3);
+			RobotActuators.latchRelease.set(false);
+			if (!RobotSensors.shooterAtBack.get()) {
+				counterOnTest++;
+			}
+		} else {
+			RobotActuators.latchRelease.set(true);
+		}
+		if (counterOnTest >= 16 && counterOnTest <= 30) {
+			RobotActuators.shooterWinch.set(0.3);
+			counterOnTest++;
+			RobotActuators.latchRelease.set(true);
+		}
+		if (counterOnTest >= 31) {
+			RobotActuators.shooterWinch.set(0.0);
+		}
+		
+		System.out.println("counterOnTest: " + counterOnTest);
 	}
-	
+
+	public void testInit() {
+		counterOnTest = 0;
+	}
+
 	private void runCompressor() {
 		SmartDashboard.putBoolean("Pressure Switch", RobotSensors.pressureSwitch.get());
 		if (!RobotSensors.pressureSwitch.get()) {
@@ -131,7 +158,7 @@ public class MainRobot extends IterativeRobot {
 		}
 		//System.out.println("runCompressor finished");
 	}
-	
+
 	public void disabledPeriodic() {
 		RobotDrive.stopDrive();
 		RobotShoot.stopMotors();
@@ -139,7 +166,7 @@ public class MainRobot extends IterativeRobot {
 		DashboardPut.put();
 		//maxTrueCount = 0;
 	}
-	
+
 	public void autonomousInit() {
 		RobotShoot.reset();
 		RobotAuton.initialize();

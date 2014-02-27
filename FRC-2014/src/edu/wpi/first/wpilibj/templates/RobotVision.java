@@ -22,6 +22,7 @@ public class RobotVision {
 
 	public static double getEncoder() {
 		double d;
+		double ticks;
 		if (ControlBox.isRed()) {
 			d = redDistance();
 		} else {
@@ -30,8 +31,8 @@ public class RobotVision {
 		if (d <= 5) {
 			return previousEncoder;
 		}
-		d = 1.4674 * d * d - 27.253 * d + 1226.5;
-		previousEncoder = d;
+		ticks = 1.4674 * d * d - 27.253 * d + 1226.5;
+		previousEncoder = ticks;
 		return Math.max(500, Math.min(1500, previousEncoder));
 	}
 

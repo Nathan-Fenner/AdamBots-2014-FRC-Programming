@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * TODO: RUN AUTOMATED SHOOT BY ENUMERATION
+ * 
  *
  * @author Tyler
  */
@@ -17,7 +17,7 @@ public class RobotShoot {
 	////VARIABLES---------------------------------------------------------------
 
 	//// ADDED: SWITCHED THE SIGNS ON THE WIND AND UNWIND SPEED
-	public static final double UNWIND_SPEED = -0.75; // TODO: may change
+	public static final double UNWIND_SPEED = -0.6; // TODO: may change
 	public static final double WAIT_TIME = 0.75;
 	public static final double WIND_SPEED = 1.0;
 	public static final double MAX_REVS = 1700;
@@ -39,6 +39,7 @@ public class RobotShoot {
 	public static void setTargetTicks(double ticks) {
 		ticks = Math.max(500, Math.min(1400, ticks));
 		tensionTargetTicks = ticks;
+		SmartDashboard.putNumber("shooter TICKS", ticks);
 		SmartDashboard.putNumber("shooter TARGET TICKS", tensionTargetTicks);
 	}
 
@@ -158,8 +159,7 @@ public class RobotShoot {
 	// rewinds the shooter
 	public static void rewindShooter() {
 		currentStage = "6";
-		//// TODO: TAKE OUT THE OR TRUE WHEN IT IS WORKING
-		if (getEncoder() <= tensionTargetTicks - TENSION_TOLERANCE && (true || !RobotSensors.shooterLoadedLim.get())) {
+		if (getEncoder() <= tensionTargetTicks - TENSION_TOLERANCE && RobotSensors.shooterLoadedLim.get()) {
 			automatedWind();
 			return;
 		}
@@ -168,6 +168,7 @@ public class RobotShoot {
 			automatedUnwind();
 			return;
 		}
+		
 		updatedSpeed = 0.0;
 	}
 
@@ -193,7 +194,6 @@ public class RobotShoot {
 		}
 	}
 
-	// TODO: RUN AUTOMATED SHOOT BY ENUMERATION
 	// Automated shoot
 	public static void automatedShoot() {
 		SmartDashboard.putString("Current Shooter Stage", currentStage);
