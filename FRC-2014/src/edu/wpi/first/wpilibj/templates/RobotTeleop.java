@@ -21,6 +21,15 @@ public class RobotTeleop {
 	private static boolean shootDebounce = false;
 	public static double DEBUG_OSCILLATE = 0.0;
 
+	public static double adjustInput(double x) {
+		if (x < 0) {
+			return -adjustInput(-x);
+		}
+		double a = 1.02058885;
+		double b = 0.0039712;
+		return (Math.sqrt(a*x + b)-Math.sqrt(b)) / Math.sqrt(a+b);
+	}
+
 	public static void update() {
 
 		if (Gamepad.primary.getB()) {
@@ -35,6 +44,8 @@ public class RobotTeleop {
 		double turnRate = Gamepad.primary.getLeftX() * 1;
 		double leftDrive = forwardRate - turnRate;
 		double rightDrive = forwardRate + turnRate;
+
+
 
 		double leftPWM = RobotDrive.pwmFromTPS(leftDrive * 900);
 		double rightPWM = RobotDrive.pwmFromTPS(rightDrive * 900);
