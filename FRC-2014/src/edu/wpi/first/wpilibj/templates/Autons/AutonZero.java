@@ -66,7 +66,6 @@ public class AutonZero {
 		
 		RobotPickup.moveToShootPosition();
 		if (RobotPickup.isPickupInShootPosition()) {
-			//RobotShoot.shoot();
 			step = 2;
 		}
 	}
