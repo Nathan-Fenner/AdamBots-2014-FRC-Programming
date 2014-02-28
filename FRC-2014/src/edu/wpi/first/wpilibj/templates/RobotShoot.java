@@ -23,7 +23,7 @@ public class RobotShoot {
 	public static final double MAX_REVS = 1700;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
-	public static final double TENSION_TOLERANCE = 35;
+	public static final double TENSION_TOLERANCE = 15;
 	private static double tensionTargetTicks = 1200;
 	private static double givenTensionTargetTicks = 1200;
 	private static int tensionTargetDirection = -1;
@@ -38,17 +38,11 @@ public class RobotShoot {
 	public static double voltage;
 	public static double current;
 
-
-
-
 	public static void setTargetTicks(double ticks) {
 		ticks = Math.max(500, Math.min(1400, ticks));
 		givenTensionTargetTicks = ticks;
-		if (Math.abs(givenTensionTargetTicks - getEncoder()) > TENSION_TOLERANCE / 4.0) {
-			tensionTargetDirection = (int)MathUtils.sign(givenTensionTargetTicks - getEncoder());
-		}
-		tensionTargetTicks = ticks + tensionTargetDirection * TENSION_TOLERANCE;
-		tensionTargetTicks = Math.max(500, Math.min(1400,tensionTargetTicks));
+		tensionTargetTicks = ticks;
+		tensionTargetTicks = Math.max(500, Math.min(1400, tensionTargetTicks));
 		SmartDashboard.putNumber("shooter TICKS", ticks);
 		SmartDashboard.putNumber("shooter TARGET TICKS", tensionTargetTicks);
 		SmartDashboard.putNumber("shooter GIVEN TICKS", givenTensionTargetTicks);
@@ -172,13 +166,21 @@ public class RobotShoot {
 		currentStage = "6";
 		if (getEncoder() <= tensionTargetTicks - TENSION_TOLERANCE && RobotSensors.shooterLoadedLim.get()) {
 			automatedWind();
+			if (Math.abs(getEncoder() - tensionTargetTicks) < TENSION_TOLERANCE * 3) {
+				updatedSpeed /= 3.0;
+			}
 			return;
 		}
 
 		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && !getAtBack()) {
 			automatedUnwind();
+			if (Math.abs(getEncoder() - tensionTargetTicks) < TENSION_TOLERANCE * 3) {
+				updatedSpeed /= 3.0;
+			}
 			return;
 		}
+
+
 
 		updatedSpeed = 0.0;
 	}

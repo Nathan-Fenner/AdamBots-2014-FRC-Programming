@@ -75,6 +75,7 @@ public class MainRobot extends IterativeRobot {
 
 
 		//SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
+		SmartDashboard.putNumber("VISION DISTANCE", RobotVision.getEncoder());
 		if (!targetInManualMode) {
 			RobotShoot.setTargetTicks(RobotVision.getEncoder());
 			// reinstated the vision's encoder
