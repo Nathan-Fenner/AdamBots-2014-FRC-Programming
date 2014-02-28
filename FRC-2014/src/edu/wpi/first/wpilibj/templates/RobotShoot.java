@@ -126,12 +126,16 @@ public class RobotShoot {
 
 	// unwindes the shooter until it hits the back limit switch or reaches max revolutions
 	//and returns the limit value
+	static boolean zeroedBefore = false;
 	public static void unwind() {
 		currentStage = "4";
 		releaseLatch();
 		if (getAtBack() && timer.get() == 0) {
 			timer.start();
-			RobotSensors.shooterWinchEncoder.reset();
+			if (!zeroedBefore) {
+				RobotSensors.shooterWinchEncoder.reset();
+				zeroedBefore = true;
+			}
 		}
 
 		automatedUnwind();
