@@ -70,8 +70,9 @@ public class MainRobot extends IterativeRobot {
 
 		SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
 		if (ControlBox.getTopSwitch(3)) {
-			//RobotShoot.setTargetTicks(RobotVision.getEncoder());
-			RobotShoot.setTargetTicks(1300);
+			RobotShoot.setTargetTicks(RobotVision.getEncoder());
+			// reinstated the vision's encoder
+			//RobotShoot.setTargetTicks(1300);
 		} else {
 			if (ControlBox.getBlackButtonLeft()) {
 				RobotShoot.adjustTargetDown();
@@ -140,7 +141,7 @@ public class MainRobot extends IterativeRobot {
 		if (counterOnTest >= 31) {
 			RobotActuators.shooterWinch.set(0.0);
 		}
-		
+
 		System.out.println("counterOnTest: " + counterOnTest);
 	}
 

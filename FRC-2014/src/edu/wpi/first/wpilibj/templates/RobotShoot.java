@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * 
+ *
  *
  * @author Tyler
  */
@@ -23,8 +23,10 @@ public class RobotShoot {
 	public static final double MAX_REVS = 1700;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
-	public static final double TENSION_TOLERANCE = 75;
+	public static final double TENSION_TOLERANCE = 35;
 	private static double tensionTargetTicks = 1200;
+	private static double givenTensionTargetTicks = 1200;
+	private static int tensionTargetDirection = -1;
 	private static Timer timer;
 	public static Timer gameTime;
 	private static double updatedSpeed;
@@ -36,19 +38,28 @@ public class RobotShoot {
 	public static double voltage;
 	public static double current;
 
+
+
+
 	public static void setTargetTicks(double ticks) {
 		ticks = Math.max(500, Math.min(1400, ticks));
-		tensionTargetTicks = ticks;
+		givenTensionTargetTicks = ticks;
+		if (Math.abs(givenTensionTargetTicks - getEncoder()) > TENSION_TOLERANCE / 4.0) {
+			tensionTargetDirection = (int)MathUtils.sign(givenTensionTargetTicks - getEncoder());
+		}
+		tensionTargetTicks = ticks + tensionTargetDirection * TENSION_TOLERANCE;
+		tensionTargetTicks = Math.max(500, Math.min(1400,tensionTargetTicks));
 		SmartDashboard.putNumber("shooter TICKS", ticks);
 		SmartDashboard.putNumber("shooter TARGET TICKS", tensionTargetTicks);
+		SmartDashboard.putNumber("shooter GIVEN TICKS", givenTensionTargetTicks);
 	}
 
 	public static void adjustTargetUp() {
-		setTargetTicks(tensionTargetTicks + 5);
+		setTargetTicks(givenTensionTargetTicks + 5);
 	}
 
 	public static void adjustTargetDown() {
-		setTargetTicks(tensionTargetTicks - 5);
+		setTargetTicks(givenTensionTargetTicks - 5);
 	}
 
 	//// INIT ------------------------------------------------------------------
@@ -168,7 +179,7 @@ public class RobotShoot {
 			automatedUnwind();
 			return;
 		}
-		
+
 		updatedSpeed = 0.0;
 	}
 
