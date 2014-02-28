@@ -263,7 +263,7 @@ public class RobotShoot {
 		/*if (RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0.0) {
 		 updatedSpeed = 0.0;
 		 }*/
-		if (ControlBox.getTopSwitch(1) && RobotPickup.isPickupInShootPosition()) {
+		if (Math.abs(Gamepad.secondary.getTriggers()) > .8 && RobotPickup.isPickupInShootPosition()) {
 			releaseLatch();
 		} else {
 			latch();

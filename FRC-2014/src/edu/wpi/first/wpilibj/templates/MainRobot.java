@@ -63,21 +63,27 @@ public class MainRobot extends IterativeRobot {
 	/**
 	 * This function is called periodically during operator control
 	 */
+
+	public static boolean shooterInManualMode = false;
+	public static boolean targetInManualMode = false;
+
 	public void teleopPeriodic() {
 		if (RobotShoot.gameTime.get() == 0) {
 			RobotShoot.gameTime.start();
 		}
 
-		SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
-		if (ControlBox.getTopSwitch(3)) {
+
+
+		//SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
+		if (!targetInManualMode) {
 			RobotShoot.setTargetTicks(RobotVision.getEncoder());
 			// reinstated the vision's encoder
 			//RobotShoot.setTargetTicks(1300);
 		} else {
-			if (ControlBox.getBlackButtonLeft()) {
+			if (Gamepad.secondary.getLeftX() < -.8) {
 				RobotShoot.adjustTargetDown();
 			}
-			if (ControlBox.getBlackButtonRight()) {
+			if (Gamepad.secondary.getLeftX() > .8) {
 				RobotShoot.adjustTargetUp();
 			}
 		}
@@ -90,14 +96,24 @@ public class MainRobot extends IterativeRobot {
 		RobotPickup.moveToShootPosition();
 
 		RobotTeleop.update();
-		if (!ControlBox.getTopSwitch(2)) {
+		//SmartDashboard.putBoolean("TOP SWITCH TWO", ControlBox.getTopSwitch(2));
+		if (!shooterInManualMode) {
 			RobotShoot.useAutomatic();
 		} else {
 			RobotShoot.useManual();
 		}
 
-		if (Gamepad.secondary.getTriggers() > .9) {
-			RobotShoot.shoot();
+		if (Gamepad.secondary.getBack()) {
+			shooterInManualMode = true;
+		}
+		if (Gamepad.secondary.getStart()) {
+			shooterInManualMode = false;
+		}
+		if (Gamepad.primary.getBack()) {
+			targetInManualMode = true;
+		}
+		if (Gamepad.primary.getStart()) {
+			targetInManualMode = false;
 		}
 
 		runCompressor();
@@ -117,13 +133,7 @@ public class MainRobot extends IterativeRobot {
 	public void testPeriodic() {
 		runCompressor();
 		DashboardPut.put();
-		if (RobotPickup.isPickupInShootPosition()) {
-			RobotShoot.releaseLatch();
-		}
 		RobotPickup.closeRollerArm();
-		RobotPickup.moveToShootPosition();
-		RobotPickup.update();
-
 		if (counterOnTest <= 15) {
 			RobotActuators.shooterWinch.set(-0.3);
 			RobotActuators.latchRelease.set(false);

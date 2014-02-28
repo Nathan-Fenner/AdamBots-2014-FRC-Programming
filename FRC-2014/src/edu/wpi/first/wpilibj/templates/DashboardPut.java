@@ -19,7 +19,8 @@ public class DashboardPut {
 		SmartDashboard.putBoolean("shooter IS AT BACK", !RobotSensors.shooterAtBack.get());
 		SmartDashboard.putNumber("shooter EXPECT CURRENT", RobotShoot.getEncoder() * 0.01);
 		SmartDashboard.putNumber("shooter ENCODER",RobotShoot.getEncoder());
-		//SmartDashboard.putBoolean("shooter MANUAL", RobotShoot.isManual());
+		SmartDashboard.putBoolean("shooter MANUAL", RobotShoot.isManual());
+		SmartDashboard.putBoolean("shoter TARGET MANUAL",MainRobot.targetInManualMode);
 		//Pickup diagnostics:
 		SmartDashboard.putNumber("pickup ARM ANGLE", RobotPickup.getArmAngleAboveHorizontal());
 		SmartDashboard.putNumber("pickup ARM ANGLE TARGET", RobotPickup.getArmTargetAngle());
@@ -31,6 +32,5 @@ public class DashboardPut {
 		//General status
 		DriverStation driverStation = DriverStation.getInstance();
 		SmartDashboard.putNumber("status BATTERY", driverStation.getBatteryVoltage());
-		SmartDashboard.putBoolean("in MANUAL SHOOT MODE", RobotShoot.isManual());
 	}
 }
