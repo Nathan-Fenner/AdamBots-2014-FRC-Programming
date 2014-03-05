@@ -9,6 +9,7 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.templates.Autons.*;
+import java.util.Calendar;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -65,17 +66,13 @@ public class MainRobot extends IterativeRobot {
 	 */
 
 	public static boolean shooterInManualMode = false;
-	public static boolean targetInManualMode = false;
+	public static boolean targetInManualMode = true;
 
 	public void teleopPeriodic() {
 		if (RobotShoot.gameTime.get() == 0) {
 			RobotShoot.gameTime.start();
 		}
-
-
-
-		//SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
-		SmartDashboard.putNumber("VISION DISTANCE", RobotVision.getEncoder());
+		SmartDashboard.putNumber("VISION ENCODER TARGET", RobotVision.getEncoder());
 		if (!targetInManualMode) {
 			RobotShoot.setTargetTicks(RobotVision.getEncoder());
 			// reinstated the vision's encoder
@@ -120,8 +117,9 @@ public class MainRobot extends IterativeRobot {
 		runCompressor();
 
 		SmartDashboard.putNumber("Red Distance", RobotVision.redDistance());
+		SmartDashboard.putNumber("Blue Distance",RobotVision.blueDistance());
 
-		SmartDashboard.putNumber("Trigger Values", Math.abs(Gamepad.secondary.getTriggers()));
+		SmartDashboard.putNumber("Camera Distance",RobotVision.getTargetDistance());
 
 		DashboardPut.put();
 	}
@@ -171,7 +169,14 @@ public class MainRobot extends IterativeRobot {
 		//System.out.println("runCompressor finished");
 	}
 
+	public static String logValue = "";
+
 	public void disabledPeriodic() {
+		if (logValue.length() != 0) {
+			String today = Calendar.MONTH + "-" + Calendar.DATE + " " + Calendar.HOUR + "-" + Calendar.MINUTE;
+			FileWrite.writeFile("Log " + today + ".txt", logValue);
+			logValue = "";
+		}
 		RobotDrive.stopDrive();
 		RobotShoot.stopMotors();
 		AutonZero.reset();

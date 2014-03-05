@@ -20,6 +20,13 @@ public class RobotVision {
 	private static final String BEAGELIP = "10.2.45.3:3000";
 	private static double previousEncoder = 1000;
 
+	public static double getTargetDistance() {
+		if (ControlBox.isRed()) {
+			return redDistance();
+		}
+		return blueDistance();
+	}
+
 	public static double getEncoder() {
 		double d;
 		double ticks;
@@ -99,7 +106,7 @@ public class RobotVision {
 	}
 
 	public static boolean isHot() {
-		return getNumber("hot") > 0.5 && getNumber("hot") < 1.5;
+		return getNumber("hot") > 50;
 	}
 
 	public static double redDistance() {

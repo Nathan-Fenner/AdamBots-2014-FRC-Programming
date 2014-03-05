@@ -134,8 +134,6 @@ public class RobotPickup {
 	public static void initialize() {
 		timer = new Timer();
 		timer.start();
-		SmartDashboard.putNumber("Adjust K", 1.0);
-		SmartDashboard.putNumber("Adjust U", 1.0);
 	}
 
 	public static void setIgnoreLimits(boolean ignore) {
@@ -176,7 +174,6 @@ public class RobotPickup {
 				double angleDifference = getArmAngleAboveHorizontal() - lastAngle;
 				double timeDifference = timer.get() - lastTime;
 				double degreesPerSecond = angleDifference / timeDifference;
-				double lastTime = timer.get();
 
 				lastAngle = getArmAngleAboveHorizontal();
 
@@ -190,8 +187,6 @@ public class RobotPickup {
 
 				targetTweak = Math.max(-5, Math.min(5, targetTweak));
 
-				SmartDashboard.putNumber("Target Tweak", targetTweak);
-
 				adjustRate = Math.max(-1, Math.min(1, adjustRate));
 
 				double amt = Math.max(-0.3, Math.min(0.3, adjustRate + targetSpeed / 100.0));
@@ -202,9 +197,6 @@ public class RobotPickup {
 				if (amt > 0 && (!isLowerLimitReached() || ignoreLimitSwitches)) {
 					mechSpeed = amt;
 				}
-
-				SmartDashboard.putNumber("Target Speed", targetSpeed);
-				SmartDashboard.putNumber("Adjust Rate", adjustRate);
 
 			}
 		}

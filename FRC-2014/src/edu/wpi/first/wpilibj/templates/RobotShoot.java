@@ -26,7 +26,6 @@ public class RobotShoot {
 	public static final double TENSION_TOLERANCE = 15;
 	private static double tensionTargetTicks = 1200;
 	private static double givenTensionTargetTicks = 1200;
-	private static int tensionTargetDirection = -1;
 	private static Timer timer;
 	public static Timer gameTime;
 	private static double updatedSpeed;
@@ -123,10 +122,10 @@ public class RobotShoot {
 			stage = 4;
 		}
 	}
-
 	// unwindes the shooter until it hits the back limit switch or reaches max revolutions
 	//and returns the limit value
 	static boolean zeroedBefore = false;
+
 	public static void unwind() {
 		currentStage = "4";
 		releaseLatch();
@@ -204,6 +203,7 @@ public class RobotShoot {
 		if (RobotPickup.isPickupInShootPosition() && !(stage >= 2 && stage <= 5)) {
 			if (stage != 1) {
 				returnStage = stage;
+				MainRobot.logValue += "Shot at " + RobotVision.getTargetDistance() + " with encoder " + getEncoder() + "\n";
 			}
 			stage = 1;
 			timer.stop();
