@@ -41,6 +41,8 @@ public class ControlBox {
 	}
 
 	public static boolean getDigitalIn(int channel) {
+		return driverStation.getDigitalIn(channel);
+		/*
 		try {
 			int lookAt = -1 - (int) enhancedStation.getDigitals();
 			int pow = 1;
@@ -54,7 +56,7 @@ public class ControlBox {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		return false;
+		return false;*/
 	}
 
 	public static double getAnalogIn(int channel) {
@@ -94,7 +96,7 @@ public class ControlBox {
 	 * @param which numbered from top to bottom (1-5)
 	 * @return
 	 */
-	public static boolean getLeftSwitch(int which) {
+	private static boolean getLeftSwitch(int which) {
 		return !getDigitalIn(9 + which);
 	}
 
@@ -103,7 +105,7 @@ public class ControlBox {
 	 * @param which from left to right (1-3)
 	 * @return
 	 */
-	public static boolean getTopSwitch(int which) {
+	private static boolean getTopSwitch(int which) {
 		return getDigitalIn(10 - which);
 	}
 }
