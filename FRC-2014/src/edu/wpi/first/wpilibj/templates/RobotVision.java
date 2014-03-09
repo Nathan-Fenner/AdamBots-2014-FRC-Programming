@@ -5,6 +5,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.InputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.SocketConnection;
@@ -99,7 +100,14 @@ public class RobotVision {
 	}
 
 	public static boolean isHot() {
-		return getNumber("hot") > 0.5 && getNumber("hot") < 1.5;
+		return getNumber("hot") > 300;
+	}
+	
+	public static double getDistance() {
+		if (ControlBox.isRed()) {
+			return redDistance();
+		}
+		return blueDistance();
 	}
 
 	public static double redDistance() {
@@ -144,16 +152,19 @@ public class RobotVision {
 			data = http.openInputStream();
 			String mdatabase = "";
 			int p = data.read();
-			while (p >= 0) {
+			int length = 0;
+			while (p >= 0 && length < 1000) {
 				mdatabase += (char) p;
+				length++;
 				p = data.read();
 			}
 			data.close();
 			http.close();
 
 			database = mdatabase;
+			//SmartDashboard.putNumber("vision DATABASE SIZE",database.length());
 
-		} catch (Exception e) {
+;		} catch (Exception e) {
 			//System.out.println("Exception in RobotVision.retrieve() (networking):");
 			//System.out.println("\t" + e);
 			//System.out.println("\t" + e.getMessage());

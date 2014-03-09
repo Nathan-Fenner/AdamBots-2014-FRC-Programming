@@ -9,11 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotPickup {
 
-	static double angle_K_P = -0.1;
-	static double angle_K_I = 0.0;
-	static double angle_K_D = 0.0;
-	static double angle_I = 0.0;
-	static double angle_I_DECAY = 0.9;
 	private static final double ANGLE_TOLERANCE = 10;                            //// TODO: CHANGE BACK TO 3
 	private static final double PICKUP_POSITION = -10;
 	private static final double SHOOT_POSITION = 47.0;
@@ -26,7 +21,8 @@ public class RobotPickup {
 	private static double lastPosition = 0.0;
 	private static double velocity = 0.0;
 	private static Timer timer;
-	private static double targetTweak = 0;
+
+	private static double lastTime = 0;
 
 	public static void disableArm() {
 		armEnabled = false;
@@ -87,9 +83,6 @@ public class RobotPickup {
 	}
 
 	public static void movePickupToAngle(double givenAngle) {
-		if (Math.abs(givenAngle - armTargetAngle) > 1) {
-			angle_I = 0;
-		}
 		armTargetAngle = givenAngle;
 	}
 
@@ -127,15 +120,13 @@ public class RobotPickup {
 
 	public static double getArmAngleAboveHorizontal() {
 		// apply some function to this to convert to angle
-		// return RobotSensors.pickupPotentiometer.get() * 73.015 - 39.0664; // Competition robot
-		return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
+		return RobotSensors.pickupPotentiometer.get() * 73.015 - 39.0664; // Competition robot
+		// return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
 	}
 
 	public static void initialize() {
 		timer = new Timer();
 		timer.start();
-		SmartDashboard.putNumber("Adjust K", 1.0);
-		SmartDashboard.putNumber("Adjust U", 1.0);
 	}
 
 	public static void setIgnoreLimits(boolean ignore) {
@@ -153,64 +144,43 @@ public class RobotPickup {
 	public static void exitOverrideEncoderMode() {
 		setOverrideEncoderMode(false);
 	}
-	private static double lastAngle = 0.0;
-	private static double lastTime = 0.0;
-	private static double adjustRate = 0.0;
-	static double ADJUST_K = 1.0;
-	static double ADJUST_U = 1.0;
 
 	public static void update() {
-		double mechSpeed = 0.0;
-		if (armEnabled) {
-			if (overrideEncoder) {
-				if (!isUpperLimitReached() && overrideSetValue < 0) {
-					mechSpeed = overrideSetValue;
-				}
-				if (!isLowerLimitReached() && overrideSetValue > 0) {
-					mechSpeed = overrideSetValue;
-				}
-			} else {
 
-				ADJUST_K = 0; // SmartDashboard.getNumber("Adjust K");
-				ADJUST_U = 2.5; // SmartDashboard.getNumber("Adjust U");
-				double angleDifference = getArmAngleAboveHorizontal() - lastAngle;
-				double timeDifference = timer.get() - lastTime;
-				double degreesPerSecond = angleDifference / timeDifference;
-				double lastTime = timer.get();
-
-				lastAngle = getArmAngleAboveHorizontal();
-
-				targetTweak = 0.5 * (armTargetAngle - getArmAngleAboveHorizontal());
-
-				double targetDistance = armTargetAngle - getArmAngleAboveHorizontal();
-				double targetSpeed = -Math.max(-30, Math.min(30, targetDistance * ADJUST_U));
-				//negative because down is positive and up is negative
-
-				adjustRate = -(targetSpeed - degreesPerSecond) * ADJUST_K / 1000.0;
-
-				targetTweak = Math.max(-5, Math.min(5, targetTweak));
-
-				SmartDashboard.putNumber("Target Tweak", targetTweak);
-
-				adjustRate = Math.max(-1, Math.min(1, adjustRate));
-
-				double amt = Math.max(-0.3, Math.min(0.3, adjustRate + targetSpeed / 100.0));
-
-				if (amt < 0 && (!isUpperLimitReached() || ignoreLimitSwitches)) {
-					mechSpeed = amt;
-				}
-				if (amt > 0 && (!isLowerLimitReached() || ignoreLimitSwitches)) {
-					mechSpeed = amt;
-				}
-
-				SmartDashboard.putNumber("Target Speed", targetSpeed);
-				SmartDashboard.putNumber("Adjust Rate", adjustRate);
-
-			}
+		double now = timer.get();
+		if (now - lastTime < 0.2) {
+			velocity = 0.5 * velocity + 0.5 * (getArmAngleAboveHorizontal() - lastPosition) / (now - lastTime);
+		} else {
+			// been more than 0.2 seconds since last time
+			// so assumed it's stopped
+			velocity = 0;
 		}
-
-		velocity = 0.8 * velocity + 0.2 * (getArmAngleAboveHorizontal() - lastPosition);
+		lastTime = now;
 		lastPosition = getArmAngleAboveHorizontal();
+
+		double mechSpeed = 0.0;
+		double targetAngleDifference = armTargetAngle - getArmAngleAboveHorizontal();
+		double targetSpeed = Math.min(1.0,Math.max(-1.0,targetAngleDifference / 10)) * 0.3;
+		
+		if (Math.abs(targetAngleDifference) < 3.5 + (armTargetAngle < 0 ? 3 : 0) ) {
+			targetSpeed = 0;
+		}
+		
+		if (targetAngleDifference > 0) {
+			targetSpeed *= 1.5;
+		}
+		
+		//double targetSpeed = -Math.max(-30 / 2.5, Math.min(30 / 2.5, armTargetAngle - getArmAngleAboveHorizontal())) * 2.5 / 100.0;
+		//negative because down is positive and up is negative
+
+		double amt = -targetSpeed; // since up is negative
+		
+		if (amt < 0 && (!isUpperLimitReached() || ignoreLimitSwitches)) {
+			mechSpeed = amt;
+		}
+		if (amt > 0 && (!isLowerLimitReached() || ignoreLimitSwitches)) {
+			mechSpeed = amt;
+		}
 
 		RobotActuators.pickupMechMotor.set(mechSpeed);
 	}

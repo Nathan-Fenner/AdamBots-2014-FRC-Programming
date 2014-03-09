@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * 
+ *
  *
  * @author Tyler
  */
@@ -17,14 +17,16 @@ public class RobotShoot {
 	////VARIABLES---------------------------------------------------------------
 
 	//// ADDED: SWITCHED THE SIGNS ON THE WIND AND UNWIND SPEED
-	public static final double UNWIND_SPEED = -0.6; // TODO: may change
+	public static final double UNWIND_SPEED = -0.4; // TODO: may change
 	public static final double WAIT_TIME = 0.75;
 	public static final double WIND_SPEED = 1.0;
-	public static final double MAX_REVS = 1700;
+	public static final double MAX_REVS = 1500;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
-	public static final double TENSION_TOLERANCE = 75;
+	public static final double TENSION_TOLERANCE = 15;
 	private static double tensionTargetTicks = 1200;
+	private static double givenTensionTargetTicks = 1200;
+	private static int tensionTargetDirection = -1;
 	private static Timer timer;
 	public static Timer gameTime;
 	private static double updatedSpeed;
@@ -38,17 +40,20 @@ public class RobotShoot {
 
 	public static void setTargetTicks(double ticks) {
 		ticks = Math.max(500, Math.min(1400, ticks));
+		givenTensionTargetTicks = ticks;
 		tensionTargetTicks = ticks;
+		tensionTargetTicks = Math.max(500, Math.min(1400, tensionTargetTicks));
 		SmartDashboard.putNumber("shooter TICKS", ticks);
 		SmartDashboard.putNumber("shooter TARGET TICKS", tensionTargetTicks);
+		SmartDashboard.putNumber("shooter GIVEN TICKS", givenTensionTargetTicks);
 	}
 
 	public static void adjustTargetUp() {
-		setTargetTicks(tensionTargetTicks + 5);
+		setTargetTicks(givenTensionTargetTicks + 5);
 	}
 
 	public static void adjustTargetDown() {
-		setTargetTicks(tensionTargetTicks - 5);
+		setTargetTicks(givenTensionTargetTicks - 5);
 	}
 
 	//// INIT ------------------------------------------------------------------
@@ -96,7 +101,7 @@ public class RobotShoot {
 	}
 
 	// Is Shown in our diagram as the shooter head moving forward
-	// Nothing that is controlled is happening now
+	// Nothing that is controlled is happening nows
 	public static void ballInMotion() {
 		currentStage = "2";
 
@@ -121,19 +126,27 @@ public class RobotShoot {
 
 	// unwindes the shooter until it hits the back limit switch or reaches max revolutions
 	//and returns the limit value
+	static boolean zeroedBefore = false;
+
 	public static void unwind() {
 		currentStage = "4";
 		releaseLatch();
-		if (getAtBack() && timer.get() == 0) {
+		if (getAtBack() && timer.get() <= .05) {
 			timer.start();
-			RobotSensors.shooterWinchEncoder.reset();
+			if (!zeroedBefore) {
+				RobotSensors.shooterWinchEncoder.reset();
+				zeroedBefore = true;
+			}
+			System.out.println("RobotShoot.java\tHIT BACK");
 		}
 
 		automatedUnwind();
-
-		if ((timer.get() > 0.1 && getEncoder() < -200) || timer.get() > 0.5) {
+		SmartDashboard.putNumber("STAGE 4 TIMER", timer.get());
+		if ((zeroedBefore && (timer.get() > 0.5 || getEncoder() < -200)) || timer.get() > 3) {
 			updatedSpeed = 0.0;
-			System.out.println("Timer " + timer.get());
+			System.out.println("RobotShoot.java\tSTOP:");
+			System.out.println("RobotShoot.java\tTimer " + timer.get());
+			System.out.println("RobotShoot.java\tEncoder " + getEncoder());
 			timer.stop();
 			timer.reset();
 			stage = 5;
@@ -154,11 +167,13 @@ public class RobotShoot {
 			timer.reset();
 			stage = 6;
 		}
+		updatedSpeed = 0;
 	}
 
 	// rewinds the shooter
 	public static void rewindShooter() {
 		currentStage = "6";
+		updatedSpeed = 0;
 		if (getEncoder() <= tensionTargetTicks - TENSION_TOLERANCE && RobotSensors.shooterLoadedLim.get()) {
 			automatedWind();
 			return;
@@ -166,9 +181,12 @@ public class RobotShoot {
 
 		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && !getAtBack()) {
 			automatedUnwind();
+			if (Math.abs(getEncoder() - tensionTargetTicks) < TENSION_TOLERANCE * 3) {
+				updatedSpeed /= 3.0;
+			}
 			return;
 		}
-		
+
 		updatedSpeed = 0.0;
 	}
 
@@ -187,6 +205,7 @@ public class RobotShoot {
 		if (RobotPickup.isPickupInShootPosition() && !(stage >= 2 && stage <= 5)) {
 			if (stage != 1) {
 				returnStage = stage;
+				MainRobot.logData += getEncoder() + "\t" + RobotVision.getDistance() + "\n";
 			}
 			stage = 1;
 			timer.stop();
@@ -252,7 +271,7 @@ public class RobotShoot {
 		/*if (RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0.0) {
 		 updatedSpeed = 0.0;
 		 }*/
-		if (ControlBox.getTopSwitch(1) && RobotPickup.isPickupInShootPosition()) {
+		if (Math.abs(Gamepad.secondary.getTriggers()) > .8 && RobotPickup.isPickupInShootPosition()) {
 			releaseLatch();
 		} else {
 			latch();
@@ -279,7 +298,7 @@ public class RobotShoot {
 	// sets the speed to 0.0
 	public static void stopMotors() {
 		updatedSpeed = 0.0;
-		stage = 99;
+		//stage = 99;
 	}
 
 	// Releases the pnuematic
@@ -319,7 +338,6 @@ public class RobotShoot {
 		/*if ((!getAtBack() && updatedSpeed <= 0) || (RobotSensors.shooterWinchEncoder.get() >= MAX_REVS && updatedSpeed >= 0.0)) {
 		 updatedSpeed = 0.0;
 		 }*/
-
 		SmartDashboard.putBoolean("Shooter At back", getAtBack());
 
 		if (!RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0) {
@@ -333,6 +351,7 @@ public class RobotShoot {
 
 		// sets motor
 		RobotActuators.shooterWinch.set(updatedSpeed);
+		SmartDashboard.putNumber("Updated Speed Value",updatedSpeed);
 
 		// prints to smart dashboard
 		if (inManualMode) {

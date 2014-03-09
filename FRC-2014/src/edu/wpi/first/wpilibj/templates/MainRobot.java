@@ -9,6 +9,7 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.templates.Autons.*;
+import java.util.Calendar;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -18,6 +19,10 @@ import edu.wpi.first.wpilibj.templates.Autons.*;
  * directory.
  */
 public class MainRobot extends IterativeRobot {
+
+	public static String logData = "";
+	public static boolean shooterInManualMode = false;
+	public static boolean targetInManualMode = true;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -68,15 +73,16 @@ public class MainRobot extends IterativeRobot {
 			RobotShoot.gameTime.start();
 		}
 
-		SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
-		if (ControlBox.getTopSwitch(3)) {
-			//RobotShoot.setTargetTicks(RobotVision.getEncoder());
-			RobotShoot.setTargetTicks(1300);
+		//SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
+		if (!targetInManualMode) {
+			RobotShoot.setTargetTicks(RobotVision.getEncoder());
+			// reinstated the vision's encoder
+			//RobotShoot.setTargetTicks(1300);
 		} else {
-			if (ControlBox.getBlackButtonLeft()) {
+			if (Gamepad.secondary.getLeftX() < -.8) {
 				RobotShoot.adjustTargetDown();
 			}
-			if (ControlBox.getBlackButtonRight()) {
+			if (Gamepad.secondary.getLeftX() > .8) {
 				RobotShoot.adjustTargetUp();
 			}
 		}
@@ -89,26 +95,36 @@ public class MainRobot extends IterativeRobot {
 		RobotPickup.moveToShootPosition();
 
 		RobotTeleop.update();
-		if (!ControlBox.getTopSwitch(2)) {
+		//SmartDashboard.putBoolean("TOP SWITCH TWO", ControlBox.getTopSwitch(2));
+		if (!shooterInManualMode) {
 			RobotShoot.useAutomatic();
 		} else {
 			RobotShoot.useManual();
 		}
 
-		if (Gamepad.secondary.getTriggers() > .9) {
-			RobotShoot.shoot();
+		if (Gamepad.secondary.getBack()) {
+			shooterInManualMode = true;
+		}
+		if (Gamepad.secondary.getStart()) {
+			shooterInManualMode = false;
+		}
+		if (Gamepad.primary.getBack()) {
+			targetInManualMode = true;
+		}
+		if (Gamepad.primary.getStart()) {
+			targetInManualMode = false;
+		}
+		
+		if (Gamepad.secondary.getA() && Gamepad.secondary.getB()) {
+			RobotShoot.zeroedBefore = false;
 		}
 
 		runCompressor();
 
-		SmartDashboard.putNumber("Red Distance", RobotVision.redDistance());
-
-		SmartDashboard.putNumber("Trigger Values", Math.abs(Gamepad.secondary.getTriggers()));
-
 		DashboardPut.put();
 	}
 
-	int counterOnTest;
+	private int counterOnTest; //Used in testPeriodic, testInit for debug.
 
 	/**
 	 * This function is called periodically during test mode
@@ -116,13 +132,7 @@ public class MainRobot extends IterativeRobot {
 	public void testPeriodic() {
 		runCompressor();
 		DashboardPut.put();
-		if (RobotPickup.isPickupInShootPosition()) {
-			RobotShoot.releaseLatch();
-		}
 		RobotPickup.closeRollerArm();
-		RobotPickup.moveToShootPosition();
-		RobotPickup.update();
-
 		if (counterOnTest <= 15) {
 			RobotActuators.shooterWinch.set(-0.3);
 			RobotActuators.latchRelease.set(false);
@@ -140,7 +150,7 @@ public class MainRobot extends IterativeRobot {
 		if (counterOnTest >= 31) {
 			RobotActuators.shooterWinch.set(0.0);
 		}
-		
+
 		System.out.println("counterOnTest: " + counterOnTest);
 	}
 
@@ -165,6 +175,10 @@ public class MainRobot extends IterativeRobot {
 		AutonZero.reset();
 		DashboardPut.put();
 		//maxTrueCount = 0;
+		if (logData.length() != 0) {
+			FileWrite.writeFile("log" + Calendar.HOUR + "_" + Calendar.MINUTE + ".txt", logData);
+		}
+		logData = "";
 	}
 
 	public void autonomousInit() {
