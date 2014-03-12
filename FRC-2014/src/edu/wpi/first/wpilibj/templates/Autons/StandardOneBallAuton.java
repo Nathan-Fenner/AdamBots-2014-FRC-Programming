@@ -120,14 +120,16 @@ public class StandardOneBallAuton extends AutonZero {
 				//System.out.println("Stage 3");
 				stepThree();
 				break;
-			case 4:
+			//// CHANGED: COMMENTED OUT THE BELOW
+			////		  SHOULD NOT MOVE BACKWARDS NOW
+			/*case 4:
 				//System.out.println("Stage 4");
 				stepFour();
 				break;
 			case 5:
 				//System.out.println("Stage 5");
 				stepFive();
-				break;
+				break;*/
 			default:
 				break;
 		}
