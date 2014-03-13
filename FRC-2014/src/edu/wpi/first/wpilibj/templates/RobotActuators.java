@@ -25,13 +25,13 @@ public class RobotActuators {
 	public static Solenoid rollerArmUp;
 	public static Solenoid rollerArmDown;
 	public static Solenoid latchRelease;
-	public static Solenoid greenLEDStrip;
+	/*public static Solenoid greenLEDStrip;
 	public static Solenoid redLEDStrip;
-	public static Solenoid yellowGroundFXStrip;
-	public static Relay groundLEDStrip1;
-	public static Relay groundLEDStrip2;
-	public static Relay groundLEDStrip3;
-	public static Relay groundLEDStrip4;
+	public static Solenoid yellowGroundFXStrip;*/
+	public static Solenoid groundLEDStrip1;
+	public static Solenoid groundLEDStrip2;
+	public static Solenoid groundLEDStrip3;
+	public static Solenoid groundLEDStrip4;
 	public static Relay LEDStripRightPanel;
 	public static Relay LEDStripLeftPanel;
 
@@ -52,9 +52,10 @@ public class RobotActuators {
 		rollerArmUp = new Solenoid(2);
 		rollerArmDown = new Solenoid(3);
 		latchRelease = new Solenoid(4);
-		greenLEDStrip = new Solenoid(5);
-		redLEDStrip = new Solenoid(6);
-		yellowGroundFXStrip = new Solenoid(7);
+		groundLEDStrip1 = new Solenoid(5);
+		groundLEDStrip2 = new Solenoid(6);
+		groundLEDStrip3 = new Solenoid(7);
+		groundLEDStrip4 = new Solenoid(8);
 
 		// Output
 		System.out.println("RobotActuautors init done");

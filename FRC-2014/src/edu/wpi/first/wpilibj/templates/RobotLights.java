@@ -24,7 +24,7 @@ public class RobotLights {
     }
 
     //randomly turning on and off lights
-    public void swagMode() {
+    /*public void swagMode() {
         int strand = (int) MathUtils.rand(6) + 1;
         switch (strand) {
             case 1:
@@ -75,7 +75,7 @@ public class RobotLights {
                 System.out.println("rand: " + strand);
                 break;
         }
-    }
+    }*/
 
     public void shootingLights() {
         //INSERT CODE HERE
@@ -111,18 +111,18 @@ public class RobotLights {
         // RobotActuators.groundLEDStrip1.set(Relay.Value.kOn);
         // turns off
         // RobotActuators.groundLEDStrip1.set(Relay.Value.kOff);
-        RobotActuators.groundLEDStrip1.set(Relay.Value.kOn);
-        RobotActuators.groundLEDStrip2.set(Relay.Value.kOn);
-        RobotActuators.groundLEDStrip3.set(Relay.Value.kOn);
-        RobotActuators.groundLEDStrip4.set(Relay.Value.kOn);
+        RobotActuators.groundLEDStrip1.set(true);
+        RobotActuators.groundLEDStrip2.set(true);
+        RobotActuators.groundLEDStrip3.set(true);
+        RobotActuators.groundLEDStrip4.set(true);
 
     }
 
     public static void underglowOff() {
-        RobotActuators.groundLEDStrip1.set(Relay.Value.kOff);
-        RobotActuators.groundLEDStrip2.set(Relay.Value.kOff);
-        RobotActuators.groundLEDStrip3.set(Relay.Value.kOff);
-        RobotActuators.groundLEDStrip4.set(Relay.Value.kOff);
+        RobotActuators.groundLEDStrip1.set(false);
+        RobotActuators.groundLEDStrip2.set(false);
+        RobotActuators.groundLEDStrip3.set(false);
+        RobotActuators.groundLEDStrip4.set(false);
     }
 
     public void cameraSpotlight() {

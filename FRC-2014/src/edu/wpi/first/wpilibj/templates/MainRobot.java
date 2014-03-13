@@ -58,6 +58,7 @@ public class MainRobot extends IterativeRobot {
 	public void teleopInit() {
 		SmartDashboard.putNumber("Target Ticks", 1200);
 		RobotDrive.enableSmoothing();
+		RobotLights.underglowOn();
 	}
 
 	public void disabledInit() {
@@ -65,6 +66,7 @@ public class MainRobot extends IterativeRobot {
 		StandardOneBallAuton.timer.reset();
 		StandardOneBallAuton.secondTimer.stop();
 		StandardOneBallAuton.secondTimer.reset();
+		RobotLights.underglowOn();
 	}
 
 	/**
@@ -186,5 +188,6 @@ public class MainRobot extends IterativeRobot {
 	public void autonomousInit() {
 		RobotShoot.reset();
 		RobotAuton.initialize();
+		RobotLights.underglowOn();
 	}
 }

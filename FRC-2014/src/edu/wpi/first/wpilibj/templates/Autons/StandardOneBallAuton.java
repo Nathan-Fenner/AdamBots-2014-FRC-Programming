@@ -20,6 +20,7 @@ public class StandardOneBallAuton extends AutonZero {
 	public static double startMovingBack;
 	public static final double STRAIGHT_DISTANCE = 450; // needs to be found in testing
 	public static final double BACKWARDS_DISTANCE = 0; // needs to be found in testing
+	public static final int TENSION_VALUE = 940;
 	public static double openingTime = 0.5;
 	public static double currentTime = 0.0;
 	public static Timer secondTimer;
@@ -31,7 +32,7 @@ public class StandardOneBallAuton extends AutonZero {
 		AutonZero.reset();
 		startMovingBack = 0.0;
 		secondTimer = new Timer();
-		RobotShoot.setTargetTicks(1000);	// AUTON TARGET TICKS
+		RobotShoot.setTargetTicks(TENSION_VALUE);	// AUTON TARGET TICKS
 	}
 
 	// Moves forward while putting the arm down
