@@ -79,7 +79,7 @@ public class StandardOneBallAuton extends AutonZero {
 			RobotShoot.shoot();
 			//FileWrite.writeFile("washot.txt", "\nhot: " + RobotVision.isHot() + "\nTime: " + timer.get());
 			startMovingBack = timer.get() + 0.5;
-			step = 4;
+			step = 99;		// IF YOU EVER WANT OT MOVE BACK AFTER SHOOTING IN AUTON, CHANGE TO step = 4;
 		}
 	}
 
