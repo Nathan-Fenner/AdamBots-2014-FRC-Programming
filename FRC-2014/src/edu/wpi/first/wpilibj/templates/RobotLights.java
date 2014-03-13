@@ -105,7 +105,7 @@ public class RobotLights {
         //INSERT CODE HERE
     }
 
-    public void underglowOn() {
+    public static void underglowOn() {
         //INSERT CODE HERE
         // turns on
         // RobotActuators.groundLEDStrip1.set(Relay.Value.kOn);
@@ -118,7 +118,7 @@ public class RobotLights {
 
     }
 
-    public void underglowOff() {
+    public static void underglowOff() {
         RobotActuators.groundLEDStrip1.set(Relay.Value.kOff);
         RobotActuators.groundLEDStrip2.set(Relay.Value.kOff);
         RobotActuators.groundLEDStrip3.set(Relay.Value.kOff);
