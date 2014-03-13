@@ -38,6 +38,7 @@ public class MainRobot extends IterativeRobot {
 		RobotAuton.initialize();
 		ControlBox.initialize();
 		System.out.println("Initialized");
+		//// ADDED: UNDERGLOW FROM THE LINE BELOW
 		RobotLights.underglowOn();
 	}
 
