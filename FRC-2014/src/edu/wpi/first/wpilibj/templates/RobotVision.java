@@ -151,20 +151,32 @@ public class RobotVision {
 			connectionFailure = false;
 			data = http.openInputStream();
 			String mdatabase = "";
-			int p = data.read();
+			int p = 1;
 			int length = 0;
-			while (p >= 0 && length < 1000) {
-				mdatabase += (char) p;
-				length++;
-				p = data.read();
+			int failTime = 0;
+			while (p >= 0 && length < 1000 && failTime < 300) {
+				if (data.available() > 0) {
+					p = data.read();
+					mdatabase += (char) p;
+					length++;
+					failTime = 0;
+				} else {
+					try {
+						Thread.sleep(20);	
+					} catch (Exception e) {
+						
+					}
+					failTime += 20;
+				}
 			}
+			System.out.println("RobotVision message received:\n\t" + length + "/1000 , " + failTime + "/300ms");
 			data.close();
 			http.close();
 
 			database = mdatabase;
 			//SmartDashboard.putNumber("vision DATABASE SIZE",database.length());
 
-;		} catch (Exception e) {
+		} catch (Exception e) {
 			//System.out.println("Exception in RobotVision.retrieve() (networking):");
 			//System.out.println("\t" + e);
 			//System.out.println("\t" + e.getMessage());
