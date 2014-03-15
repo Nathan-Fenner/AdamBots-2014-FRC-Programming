@@ -182,7 +182,7 @@ public class RobotShoot {
 		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && !getAtBack()) {
 			automatedUnwind();
 			if (Math.abs(getEncoder() - tensionTargetTicks) < TENSION_TOLERANCE * 3) {
-				updatedSpeed /= 3.0;
+				updatedSpeed /= 4.0;
 			}
 			return;
 		}
