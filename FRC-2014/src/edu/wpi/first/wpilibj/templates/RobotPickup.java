@@ -171,6 +171,10 @@ public class RobotPickup {
 			targetSpeed *= 1.5;
 		}
 		
+		if (lastPosition > 80 && armTargetAngle < 80) {
+			targetSpeed *= 1.8;
+		}
+		
 		if (armTargetAngle > -10 && lastPosition < 0) {
 			targetSpeed = 1;
 		}
