@@ -65,12 +65,6 @@ public class RobotTeleop {
 		// care must be taken here
 		RobotPickup.setRollerSpeed(Gamepad.primary.getRightY() + Gamepad.secondary.getLeftY());
 
-		//RobotPickup.adjustArmAngle(Gamepad.secondary.getTriggers());
-
-		RobotPickup.setOverrideEncoderMode(Gamepad.secondary.getBack());
-		RobotPickup.setOverrideSpeed(Gamepad.secondary.getTriggers() / 3.0);
-
-
 		if (Gamepad.secondary.getY()) {
 			RobotPickup.openRollerArm();
 		} else if (Gamepad.secondary.getX()) {
@@ -79,60 +73,43 @@ public class RobotTeleop {
 			RobotPickup.neutralRollerArm();
 		}
 
-		// added the false &&
-		if (false) {
-			RobotPickup.enterOverrideEncoderMode();
-			double overridePickupAngleSpeed = Gamepad.secondary.getTriggers() * 0.4;
-			//double overridePickupAngleSpeed = (Gamepad.secondary.getLB() ? 0.35 : 0) + (Gamepad.secondary.getRB() ? -0.35 : 0);
-			RobotPickup.setOverrideSpeed(overridePickupAngleSpeed);
-			// automatic shooting uses opposite controls now
-			if (Gamepad.secondary.getRB()) {
-				if (!shootDebounce) {
-					RobotShoot.shoot();
+		if (Gamepad.secondary.getLB() || Gamepad.secondary.getRB()) {
+			if (!pickupPositionDebounce) {
+				if (Gamepad.secondary.getLB()) {
+					pickupPosition--;
 				}
-				shootDebounce = true;
-			} else {
-				shootDebounce = false;
+				if (Gamepad.secondary.getRB()) {
+					pickupPosition++;
+				}
+				pickupPosition = Math.max(0, Math.min(2, pickupPosition));
 			}
+			pickupPositionDebounce = true;
 		} else {
-			RobotPickup.exitOverrideEncoderMode();
-			if (Gamepad.secondary.getLB() || Gamepad.secondary.getRB()) {
-				if (!pickupPositionDebounce) {
-					if (Gamepad.secondary.getLB()) {
-						pickupPosition--;
-					}
-					if (Gamepad.secondary.getRB()) {
-						pickupPosition++;
-					}
-					pickupPosition = Math.max(0, Math.min(2, pickupPosition));
-				}
-				pickupPositionDebounce = true;
-			} else {
-				pickupPositionDebounce = false;
-			}
-
-			switch (pickupPosition) {
-				case 0:
-					RobotPickup.moveToPickupPosition();
-					break;
-				case 1:
-					RobotPickup.moveToShootPosition();
-					break;
-				case 2:
-					RobotPickup.moveToCatchPosition();
-					break;
-			}
-
-			if (Math.abs(Gamepad.secondary.getTriggers()) > 0.9) {
-				if (!shootDebounce) {
-					System.out.println("Shoot!!!");
-					RobotShoot.shoot();
-				}
-				shootDebounce = true;
-			} else {
-				shootDebounce = false;
-			}
+			pickupPositionDebounce = false;
 		}
+
+		switch (pickupPosition) {
+			case 0:
+				RobotPickup.moveToPickupPosition();
+				break;
+			case 1:
+				RobotPickup.moveToShootPosition();
+				break;
+			case 2:
+				RobotPickup.moveToCatchPosition();
+				break;
+		}
+
+		if (Math.abs(Gamepad.secondary.getTriggers()) > 0.9) {
+			if (!shootDebounce) {
+				System.out.println("Shoot!!!");
+				RobotShoot.shoot();
+			}
+			shootDebounce = true;
+		} else {
+			shootDebounce = false;
+		}
+
 
 		if (Gamepad.secondary.getA()) {
 			if (!catchClosingDebounce) {

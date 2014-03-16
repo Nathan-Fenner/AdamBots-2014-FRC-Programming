@@ -1,7 +1,6 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -9,39 +8,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class RobotPickup {
 
-	private static final double ANGLE_TOLERANCE = 10;                            //// TODO: CHANGE BACK TO 3
+	private static final double ANGLE_TOLERANCE = 4; // much closer than before
 	private static final double PICKUP_POSITION = -18;
 	private static final double SHOOT_POSITION = 45.0;
 	private static final double CATCH_POSITION = 90;
 	private static double armTargetAngle = CATCH_POSITION;
-	private static boolean overrideEncoder = false;
-	private static double overrideSetValue = 0.0;
-	private static boolean ignoreLimitSwitches = false;
-	private static boolean armEnabled = true;
 	private static double lastPosition = 0.0;
 	private static double velocity = 0.0;
 	private static Timer timer;
-
 	private static double lastTime = 0;
-
-	public static void disableArm() {
-		armEnabled = false;
-	}
-
-	public static void enableArm() {
-		armEnabled = true;
-	}
-
-	public static void setOverrideSpeed(double speed) {
-		overrideSetValue = speed;
-	}
 
 	public static double getArmTargetAngle() {
 		return armTargetAngle;
 	}
 
-	public static boolean isManual() {
-		return overrideEncoder;
+	public static double getVelocity() {
+		return velocity;
 	}
 
 	public static void openRollerArm() {
@@ -120,8 +102,7 @@ public class RobotPickup {
 
 	public static double getArmAngleAboveHorizontal() {
 		// apply some function to this to convert to angle
-		return RobotSensors.pickupPotentiometer.get() * 73.015 - 179.257;
-		//return RobotSensors.pickupPotentiometer.get() * 73.015 - 39.0664; // Competition robot
+		return RobotSensors.pickupPotentiometer.get() * 73.015 - 179.257; // Competition robot
 		// return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
 	}
 
@@ -129,28 +110,50 @@ public class RobotPickup {
 		timer = new Timer();
 		timer.start();
 	}
-
-	public static void setIgnoreLimits(boolean ignore) {
-		ignoreLimitSwitches = ignore;
-	}
-
-	public static void setOverrideEncoderMode(boolean doOverride) {
-		overrideEncoder = doOverride;
-	}
-
-	public static void enterOverrideEncoderMode() {
-		setOverrideEncoderMode(true);
-	}
-
-	public static void exitOverrideEncoderMode() {
-		setOverrideEncoderMode(false);
-	}
+	public static boolean rapidFall = true;
 
 	public static void update() {
 
+		double mechSpeed = 0.0;
+		double targetAngleDifference = armTargetAngle - getArmAngleAboveHorizontal();
+		double targetSpeed = 0;
+
+		if (targetAngleDifference > 3.5) {
+			targetSpeed = 0.8; // almost full throttle, upward
+			rapidFall = false; // do not want to oscillate when coming down.
+		}
+
+		if (targetAngleDifference < -20) {
+			rapidFall = true;
+		}
+
+		if (targetAngleDifference < -3.5) {
+			// down
+			if (targetAngleDifference < -10 && rapidFall) {
+				// go fast
+				targetSpeed = -0.8;
+			} else {
+				// go slow
+				targetSpeed = -0.15;
+			}
+
+		}
+
+		// be very careful: up is negative, so 'mechspeed' is inverted
+		if (targetSpeed > 0 && !isUpperLimitReached()) {
+			mechSpeed = -targetSpeed;
+		}
+		if (targetSpeed < 0 && !isLowerLimitReached()) {
+			mechSpeed = -targetSpeed;
+		}
+
+		RobotActuators.pickupMechMotor.set(mechSpeed);
+
+		// arm velocity calculations
+
 		double now = timer.get();
 		if (now - lastTime < 0.2) {
-			velocity = 0.5 * velocity + 0.5 * (getArmAngleAboveHorizontal() - lastPosition) / (now - lastTime);
+			velocity = 0.25 * velocity + 0.75 * (getArmAngleAboveHorizontal() - lastPosition) / (now - lastTime);
 		} else {
 			// been more than 0.2 seconds since last time
 			// so assumed it's stopped
@@ -159,42 +162,6 @@ public class RobotPickup {
 		lastTime = now;
 		lastPosition = getArmAngleAboveHorizontal();
 
-		double mechSpeed = 0.0;
-		double targetAngleDifference = armTargetAngle - getArmAngleAboveHorizontal();
-		double targetSpeed = Math.min(1.0,Math.max(-0.75,targetAngleDifference / 10)) * 0.3;
-		
-		if (Math.abs(targetAngleDifference) < 3.5 + (armTargetAngle < 0 ? 3 : 0) ) {
-			targetSpeed = 0;
-		}
-		
-		if (targetAngleDifference > 0) {
-			targetSpeed *= 1.5;
-		}
-		
-		if (lastPosition > 80 && armTargetAngle < 80) {
-			targetSpeed *= 1.8;
-		}
-		
-		if (armTargetAngle > -10 && lastPosition < 0) {
-			targetSpeed = 1;
-		}
-		
-		//double targetSpeed = -Math.max(-30 / 2.5, Math.min(30 / 2.5, armTargetAngle - getArmAngleAboveHorizontal())) * 2.5 / 100.0;
-		//negative because down is positive and up is negative
 
-		double amt = -targetSpeed; // since up is negative
-		
-		if (amt < 0 && (!isUpperLimitReached() || ignoreLimitSwitches)) {
-			mechSpeed = amt;
-		}
-		if (amt > 0 && (!isLowerLimitReached() || ignoreLimitSwitches)) {
-			mechSpeed = amt;
-		}
-
-		RobotActuators.pickupMechMotor.set(mechSpeed);
-	}
-
-	public static double getVelocity() {
-		return velocity;
 	}
 }

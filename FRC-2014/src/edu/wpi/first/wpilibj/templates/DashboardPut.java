@@ -24,7 +24,6 @@ public class DashboardPut {
 		//Pickup diagnostics:
 		SmartDashboard.putNumber("pickup ARM ANGLE", RobotPickup.getArmAngleAboveHorizontal());
 		SmartDashboard.putNumber("pickup ARM ANGLE TARGET", RobotPickup.getArmTargetAngle());
-		SmartDashboard.putBoolean("pickup MANUAL", RobotPickup.isManual());
 		SmartDashboard.putBoolean("pickup ARM LIMIT UPPER", RobotPickup.isUpperLimitReached());
 		SmartDashboard.putBoolean("pickup ARM LIMIT LOWER", RobotPickup.isLowerLimitReached());
 		//Drive
@@ -35,9 +34,9 @@ public class DashboardPut {
 		SmartDashboard.putNumber("vision RED DISTANCE",RobotVision.redDistance());
 		SmartDashboard.putNumber("vision BLUE DISTANCE",RobotVision.blueDistance());
 		SmartDashboard.putNumber("vision DISTANCE",RobotVision.getDistance());
-		
+
 		SmartDashboard.putNumber("vision HOT NUMBER",RobotVision.getNumber("hot")); //this is on the robot
-		
+
 		// TESTING VARIABLES
 		SmartDashboard.putNumber("pickup POTENTIOMETER", RobotSensors.pickupPotentiometer.get());
 	}
