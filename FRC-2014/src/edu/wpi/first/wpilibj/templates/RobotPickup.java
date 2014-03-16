@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotPickup {
 
 	private static final double ANGLE_TOLERANCE = 10;                            //// TODO: CHANGE BACK TO 3
-	private static final double PICKUP_POSITION = -10;
-	private static final double SHOOT_POSITION = 47.0;
+	private static final double PICKUP_POSITION = -18;
+	private static final double SHOOT_POSITION = 45.0;
 	private static final double CATCH_POSITION = 90;
 	private static double armTargetAngle = CATCH_POSITION;
 	private static boolean overrideEncoder = false;
@@ -120,7 +120,8 @@ public class RobotPickup {
 
 	public static double getArmAngleAboveHorizontal() {
 		// apply some function to this to convert to angle
-		return RobotSensors.pickupPotentiometer.get() * 73.015 - 39.0664; // Competition robot
+		return RobotSensors.pickupPotentiometer.get() * 73.015 - 179.257;
+		//return RobotSensors.pickupPotentiometer.get() * 73.015 - 39.0664; // Competition robot
 		// return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
 	}
 
@@ -160,7 +161,7 @@ public class RobotPickup {
 
 		double mechSpeed = 0.0;
 		double targetAngleDifference = armTargetAngle - getArmAngleAboveHorizontal();
-		double targetSpeed = Math.min(1.0,Math.max(-1.0,targetAngleDifference / 10)) * 0.3;
+		double targetSpeed = Math.min(1.0,Math.max(-0.75,targetAngleDifference / 10)) * 0.3;
 		
 		if (Math.abs(targetAngleDifference) < 3.5 + (armTargetAngle < 0 ? 3 : 0) ) {
 			targetSpeed = 0;
@@ -170,7 +171,11 @@ public class RobotPickup {
 			targetSpeed *= 1.5;
 		}
 		
-		if (armTargetAngle > 0 && lastPosition < 10) {
+		if (lastPosition > 80 && armTargetAngle < 80) {
+			targetSpeed *= 1.8;
+		}
+		
+		if (armTargetAngle > -10 && lastPosition < 0) {
 			targetSpeed = 1;
 		}
 		

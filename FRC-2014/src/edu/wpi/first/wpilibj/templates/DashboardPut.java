@@ -35,5 +35,10 @@ public class DashboardPut {
 		SmartDashboard.putNumber("vision RED DISTANCE",RobotVision.redDistance());
 		SmartDashboard.putNumber("vision BLUE DISTANCE",RobotVision.blueDistance());
 		SmartDashboard.putNumber("vision DISTANCE",RobotVision.getDistance());
+		
+		SmartDashboard.putNumber("vision HOT NUMBER",RobotVision.getNumber("hot")); //this is on the robot
+		
+		// TESTING VARIABLES
+		SmartDashboard.putNumber("pickup POTENTIOMETER", RobotSensors.pickupPotentiometer.get());
 	}
 }

@@ -100,7 +100,7 @@ public class RobotVision {
 	}
 
 	public static boolean isHot() {
-		return getNumber("hot") > 300;
+		return getNumber("hot") > 40;
 	}
 	
 	public static double getDistance() {
@@ -154,7 +154,7 @@ public class RobotVision {
 			int p = 1;
 			int length = 0;
 			int failTime = 0;
-			while (p >= 0 && length < 1000 && failTime < 300) {
+			while (p >= 0 && length < 100 && failTime < 300) { // this is on the robot.
 				if (data.available() > 0) {
 					p = data.read();
 					mdatabase += (char) p;
@@ -169,7 +169,8 @@ public class RobotVision {
 					failTime += 20;
 				}
 			}
-			System.out.println("RobotVision message received:\n\t" + length + "/1000 , " + failTime + "/300ms");
+			System.out.println("RobotVision message received:\n\t" + length + "/100 , " + failTime + "/300ms");
+			System.out.println("database:" + mdatabase);
 			data.close();
 			http.close();
 
