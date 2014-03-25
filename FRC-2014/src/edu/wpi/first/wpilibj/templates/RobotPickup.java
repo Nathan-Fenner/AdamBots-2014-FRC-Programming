@@ -11,7 +11,9 @@ public class RobotPickup {
 
 	private static final double ANGLE_TOLERANCE = 10;                            //// TODO: CHANGE BACK TO 3
 	private static final double PICKUP_POSITION = -18;
-	private static final double SHOOT_POSITION = 45.0;
+	//private static final double SHOOT_POSITION = 45.0;
+	private static final double SHOOT_POSITION = 48.0;							// Changed to bring angle up a few degrees.  Actually targeting 45
+	private static final double TRUSS_POSITION = 55.0;
 	private static final double CATCH_POSITION = 90;
 	private static double armTargetAngle = CATCH_POSITION;
 	private static boolean overrideEncoder = false;
@@ -93,6 +95,10 @@ public class RobotPickup {
 	public static void moveToShootPosition() {
 		movePickupToAngle(SHOOT_POSITION);
 	}
+	
+	public static void moveToTrussPosition() {
+		movePickupToAngle(TRUSS_POSITION);
+	}
 
 	public static void moveToCatchPosition() {
 		movePickupToAngle(CATCH_POSITION);
@@ -113,6 +119,10 @@ public class RobotPickup {
 	public static boolean isPickupInShootPosition() {
 		return isPickupInPosition(SHOOT_POSITION);
 	}
+	
+	public static boolean isPickupInTrussPosition() {
+		return isPickupInPosition(TRUSS_POSITION);
+	}
 
 	public static boolean isPickupInCatchPosition() {
 		return isPickupInPosition(CATCH_POSITION);
@@ -120,9 +130,8 @@ public class RobotPickup {
 
 	public static double getArmAngleAboveHorizontal() {
 		// apply some function to this to convert to angle
-		return RobotSensors.pickupPotentiometer.get() * 73.015 - 179.257;
-		//return RobotSensors.pickupPotentiometer.get() * 73.015 - 39.0664; // Competition robot
-		// return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
+		// return RobotSensors.pickupPotentiometer.get() * 73.015 - 179.257;  // Competition robot
+		return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
 	}
 
 	public static void initialize() {
@@ -161,7 +170,8 @@ public class RobotPickup {
 
 		double mechSpeed = 0.0;
 		double targetAngleDifference = armTargetAngle - getArmAngleAboveHorizontal();
-		double targetSpeed = Math.min(1.0,Math.max(-0.75,targetAngleDifference / 10)) * 0.3;
+		double targetSpeed = Math.min(1.0,Math.max(-0.75,targetAngleDifference / 15)) * 0.3;
+		// double targetSpeed = Math.min(1.0,Math.max(-0.75,targetAngleDifference / 15)) * 0.3;
 		
 		if (Math.abs(targetAngleDifference) < 3.5 + (armTargetAngle < 0 ? 3 : 0) ) {
 			targetSpeed = 0;

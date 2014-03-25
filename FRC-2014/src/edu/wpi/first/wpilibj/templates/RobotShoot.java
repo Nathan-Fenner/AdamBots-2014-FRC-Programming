@@ -24,7 +24,8 @@ public class RobotShoot {
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
 	public static final double TENSION_TOLERANCE = 15;
-	private static double tensionTargetTicks = 1000;								// WONT CHANGE AUTON VALUE, GO TO THE AUTON CLASS
+	private static double tensionTargetTicks = 1200;							// Practice robot
+	//private static double tensionTargetTicks = 1000;								// WONT CHANGE AUTON VALUE, GO TO THE AUTON CLASS
 	private static double givenTensionTargetTicks = 1200;
 	private static int tensionTargetDirection = -1;
 	private static Timer timer;
@@ -92,7 +93,7 @@ public class RobotShoot {
 	// releases the latch
 	public static void releaseBall() {
 		currentStage = "1";
-		if (RobotPickup.isPickupInShootPosition()) {
+		if (RobotPickup.isPickupInShootPosition() || RobotPickup.isPickupInTrussPosition()) {
 			releaseLatch();
 			stage = 2;
 		} else {
@@ -202,7 +203,8 @@ public class RobotShoot {
 	// needs to be called before reshooting
 	public static void shoot() {
 		//// CHANGED: ADDED IN TO MAKE SURE WE DONT FIRE IN STAGES 2,3,4,5
-		if (RobotPickup.isPickupInShootPosition() && !(stage >= 2 && stage <= 5)) {
+		if ((RobotPickup.isPickupInShootPosition() || RobotPickup.isPickupInTrussPosition()) && !(stage >= 2 && stage <= 5)) {
+			SmartDashboard.putBoolean("Truss: ", RobotPickup.isPickupInTrussPosition());
 			if (stage != 1) {
 				returnStage = stage;
 				MainRobot.logData += getEncoder() + "\t" + RobotVision.getDistance() + "\n";
@@ -271,7 +273,7 @@ public class RobotShoot {
 		/*if (RobotSensors.shooterLoadedLim.get() && updatedSpeed >= 0.0) {
 		 updatedSpeed = 0.0;
 		 }*/
-		if (Math.abs(Gamepad.secondary.getTriggers()) > .8 && RobotPickup.isPickupInShootPosition()) {
+		if (Math.abs(Gamepad.secondary.getTriggers()) > .8 && (RobotPickup.isPickupInShootPosition() || RobotPickup.isPickupInTrussPosition())) {
 			releaseLatch();
 		} else {
 			latch();

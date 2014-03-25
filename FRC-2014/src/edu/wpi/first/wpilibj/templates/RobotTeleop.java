@@ -104,7 +104,7 @@ public class RobotTeleop {
 					if (Gamepad.secondary.getRB()) {
 						pickupPosition++;
 					}
-					pickupPosition = Math.max(0, Math.min(2, pickupPosition));
+					pickupPosition = Math.max(0, Math.min(3, pickupPosition));
 				}
 				pickupPositionDebounce = true;
 			} else {
@@ -119,6 +119,9 @@ public class RobotTeleop {
 					RobotPickup.moveToShootPosition();
 					break;
 				case 2:
+					RobotPickup.moveToTrussPosition();
+					break;
+				case 3:
 					RobotPickup.moveToCatchPosition();
 					break;
 			}
