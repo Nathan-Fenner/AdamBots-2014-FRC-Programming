@@ -25,6 +25,9 @@ public class MainRobot extends IterativeRobot {
 	public static boolean targetInManualMode = true;
 	public static boolean previousShooterLeft = false;
 	public static boolean previousShooterRight = false;
+	
+	public static Timer timer;
+	public static int frames;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -61,6 +64,9 @@ public class MainRobot extends IterativeRobot {
 		SmartDashboard.putNumber("Target Ticks", 1200);
 		RobotDrive.enableSmoothing();
 		RobotLights.underglowOn();
+		timer = new Timer();
+		timer.start();
+		frames = 0;
 	}
 
 	public void disabledInit() {
@@ -75,6 +81,8 @@ public class MainRobot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
+		frames++;
+		System.out.println("FPS: " + frames / timer.get());
 		if (RobotShoot.gameTime.get() == 0) {
 			RobotShoot.gameTime.start();
 		}
