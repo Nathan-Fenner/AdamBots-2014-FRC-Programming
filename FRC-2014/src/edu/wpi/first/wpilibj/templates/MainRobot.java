@@ -118,7 +118,7 @@ public class MainRobot extends IterativeRobot {
 		if (Gamepad.primary.getStart()) {
 			targetInManualMode = false;
 		}
-		
+
 		if (Gamepad.secondary.getA() && Gamepad.secondary.getB()) {
 			RobotShoot.zeroedBefore = false;
 		}
@@ -127,7 +127,6 @@ public class MainRobot extends IterativeRobot {
 
 		DashboardPut.put();
 	}
-
 	private int counterOnTest; //Used in testPeriodic, testInit for debug.
 
 	/**

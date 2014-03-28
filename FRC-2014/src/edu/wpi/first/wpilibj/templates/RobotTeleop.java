@@ -16,8 +16,6 @@ public class RobotTeleop {
 	static double fine_speed = 0.0;
 	private static int pickupPosition = 1;
 	private static boolean pickupPositionDebounce = false;
-	private static boolean catchClosing = false;
-	private static boolean catchClosingDebounce = false;
 	private static boolean shootDebounce = false;
 	public static double DEBUG_OSCILLATE = 0.0;
 
@@ -135,22 +133,6 @@ public class RobotTeleop {
 			} else {
 				shootDebounce = false;
 			}
-		}
-
-		if (Gamepad.secondary.getA()) {
-			if (!catchClosingDebounce) {
-				catchClosing = false;
-			}
-			catchClosingDebounce = true;
-			double col = RobotVision.highBlueBall();
-			if (col > 200) {
-				catchClosing = true;
-			}
-			if (catchClosing) {
-				RobotPickup.closeRollerArm();
-			}
-		} else {
-			catchClosingDebounce = false;
 		}
 
 	}

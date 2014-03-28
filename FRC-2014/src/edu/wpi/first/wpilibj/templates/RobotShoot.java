@@ -278,12 +278,6 @@ public class RobotShoot {
 		} else {
 			latch();
 		}
-
-		if (Gamepad.secondary.getA()) {
-			//System.out.println("A PRESSED AND ENCODER RESET"); // TODO remove
-			RobotSensors.shooterWinchEncoder.reset();
-		}
-
 		//RobotPickup.moveToShootPosition();
 	}
 
