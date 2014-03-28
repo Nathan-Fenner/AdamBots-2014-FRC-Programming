@@ -23,7 +23,6 @@ public class MainRobot extends IterativeRobot {
 	public static String logData = "";
 	public static boolean shooterInManualMode = false;
 	public static boolean targetInManualMode = true;
-	
 	public static boolean previousShooterLeft = false;
 	public static boolean previousShooterRight = false;
 
@@ -82,10 +81,19 @@ public class MainRobot extends IterativeRobot {
 
 		//SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
 		if (!targetInManualMode) {
+			//Automatic targetting Mode (Using camera to figure out encoder)
 			RobotShoot.setTargetTicks(RobotVision.getEncoder());
 			// reinstated the vision's encoder
 			//RobotShoot.setTargetTicks(1300);
 		} else {
+			//Manual targetting mode (using driver to tap left and right)
+			if (Gamepad.secondary.getA()) {
+				RobotShoot.setTargetTicks(1000);
+			}
+			if (Gamepad.secondary.getB()) {
+				RobotShoot.setTargetTicks(1300);
+			}
+
 			if (Gamepad.secondary.getLeftX() < -.8 && !previousShooterLeft) {
 				previousShooterLeft = true;
 				RobotShoot.adjustTargetDown();
