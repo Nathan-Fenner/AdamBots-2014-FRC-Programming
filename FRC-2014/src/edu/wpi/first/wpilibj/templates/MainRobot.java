@@ -23,6 +23,9 @@ public class MainRobot extends IterativeRobot {
 	public static String logData = "";
 	public static boolean shooterInManualMode = false;
 	public static boolean targetInManualMode = true;
+	
+	public static boolean previousShooterLeft = false;
+	public static boolean previousShooterRight = false;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -83,11 +86,17 @@ public class MainRobot extends IterativeRobot {
 			// reinstated the vision's encoder
 			//RobotShoot.setTargetTicks(1300);
 		} else {
-			if (Gamepad.secondary.getLeftX() < -.8) {
+			if (Gamepad.secondary.getLeftX() < -.8 && !previousShooterLeft) {
+				previousShooterLeft = true;
 				RobotShoot.adjustTargetDown();
+			} else {
+				previousShooterLeft = false;
 			}
-			if (Gamepad.secondary.getLeftX() > .8) {
+			if (Gamepad.secondary.getLeftX() > .8 && !previousShooterRight) {
+				previousShooterRight = true;
 				RobotShoot.adjustTargetUp();
+			} else {
+				previousShooterRight = false;
 			}
 		}
 
