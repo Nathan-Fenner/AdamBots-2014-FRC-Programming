@@ -101,15 +101,19 @@ public class MainRobot extends IterativeRobot {
 				RobotShoot.setTargetTicks(1300);
 			}
 
-			if (Gamepad.secondary.getLeftX() < -.8 && !previousShooterLeft) {
+			if (Gamepad.secondary.getLeftX() < -.8) {
+				if (!previousShooterLeft) {
+					RobotShoot.adjustTargetDown();
+				}
 				previousShooterLeft = true;
-				RobotShoot.adjustTargetDown();
 			} else {
 				previousShooterLeft = false;
 			}
-			if (Gamepad.secondary.getLeftX() > .8 && !previousShooterRight) {
+			if (Gamepad.secondary.getLeftX() > .8) {
+				if (!previousShooterRight) {
+					RobotShoot.adjustTargetUp();
+				}
 				previousShooterRight = true;
-				RobotShoot.adjustTargetUp();
 			} else {
 				previousShooterRight = false;
 			}
