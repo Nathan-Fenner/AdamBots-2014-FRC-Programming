@@ -16,34 +16,13 @@ public class RobotPickup {
 	private static final double TRUSS_POSITION = 55.0;
 	private static final double CATCH_POSITION = 90;
 	private static double armTargetAngle = CATCH_POSITION;
-	private static boolean overrideEncoder = false;
-	private static double overrideSetValue = 0.0;
-	private static boolean ignoreLimitSwitches = false;
-	private static boolean armEnabled = true;
 	private static double lastPosition = 0.0;
 	private static double velocity = 0.0;
 	private static Timer timer;
-
 	private static double lastTime = 0;
-
-	public static void disableArm() {
-		armEnabled = false;
-	}
-
-	public static void enableArm() {
-		armEnabled = true;
-	}
-
-	public static void setOverrideSpeed(double speed) {
-		overrideSetValue = speed;
-	}
 
 	public static double getArmTargetAngle() {
 		return armTargetAngle;
-	}
-
-	public static boolean isManual() {
-		return overrideEncoder;
 	}
 
 	public static void openRollerArm() {
@@ -95,7 +74,7 @@ public class RobotPickup {
 	public static void moveToShootPosition() {
 		movePickupToAngle(SHOOT_POSITION);
 	}
-	
+
 	public static void moveToTrussPosition() {
 		movePickupToAngle(TRUSS_POSITION);
 	}
@@ -119,7 +98,7 @@ public class RobotPickup {
 	public static boolean isPickupInShootPosition() {
 		return isPickupInPosition(SHOOT_POSITION);
 	}
-	
+
 	public static boolean isPickupInTrussPosition() {
 		return isPickupInPosition(TRUSS_POSITION);
 	}
@@ -139,22 +118,6 @@ public class RobotPickup {
 		timer.start();
 	}
 
-	public static void setIgnoreLimits(boolean ignore) {
-		ignoreLimitSwitches = ignore;
-	}
-
-	public static void setOverrideEncoderMode(boolean doOverride) {
-		overrideEncoder = doOverride;
-	}
-
-	public static void enterOverrideEncoderMode() {
-		setOverrideEncoderMode(true);
-	}
-
-	public static void exitOverrideEncoderMode() {
-		setOverrideEncoderMode(false);
-	}
-
 	public static void update() {
 
 		double now = timer.get();
@@ -170,34 +133,34 @@ public class RobotPickup {
 
 		double mechSpeed = 0.0;
 		double targetAngleDifference = armTargetAngle - getArmAngleAboveHorizontal();
-		double targetSpeed = Math.min(1.0,Math.max(-0.75,targetAngleDifference / 15)) * 0.3;
+		double targetSpeed = Math.min(1.0, Math.max(-0.75, targetAngleDifference / 15)) * 0.3;
 		// double targetSpeed = Math.min(1.0,Math.max(-0.75,targetAngleDifference / 15)) * 0.3;
-		
-		if (Math.abs(targetAngleDifference) < 3.5 + (armTargetAngle < 0 ? 3 : 0) ) {
+
+		if (Math.abs(targetAngleDifference) < 3.5 + (armTargetAngle < 0 ? 3 : 0)) {
 			targetSpeed = 0;
 		}
-		
+
 		if (targetAngleDifference > 0) {
 			targetSpeed *= 1.5;
 		}
-		
+
 		if (lastPosition > 80 && armTargetAngle < 80) {
 			targetSpeed *= 1.8;
 		}
-		
+
 		if (armTargetAngle > -10 && lastPosition < 0) {
 			targetSpeed = 1;
 		}
-		
+
 		//double targetSpeed = -Math.max(-30 / 2.5, Math.min(30 / 2.5, armTargetAngle - getArmAngleAboveHorizontal())) * 2.5 / 100.0;
 		//negative because down is positive and up is negative
 
 		double amt = -targetSpeed; // since up is negative
-		
-		if (amt < 0 && (!isUpperLimitReached() || ignoreLimitSwitches)) {
+
+		if (amt < 0 && (!isUpperLimitReached())) {
 			mechSpeed = amt;
 		}
-		if (amt > 0 && (!isLowerLimitReached() || ignoreLimitSwitches)) {
+		if (amt > 0 && (!isLowerLimitReached())) {
 			mechSpeed = amt;
 		}
 
