@@ -25,7 +25,6 @@ public class MainRobot extends IterativeRobot {
 	public static boolean targetInManualMode = true;
 	public static boolean previousShooterLeft = false;
 	public static boolean previousShooterRight = false;
-	
 	public static Timer timer;
 	public static int frames;
 
@@ -144,7 +143,7 @@ public class MainRobot extends IterativeRobot {
 			targetInManualMode = false;
 		}
 
-		if (Gamepad.secondary.getA() && Gamepad.secondary.getB()) {
+		if (Gamepad.primary.getX() && Gamepad.primary.getY()) {
 			RobotShoot.zeroedBefore = false;
 		}
 
