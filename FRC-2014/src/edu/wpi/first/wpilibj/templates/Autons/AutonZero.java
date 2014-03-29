@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj.templates.*;
  */
 public class AutonZero {
 	
+	public static double averageDriveEncoder;
+	public static final double STRAIGHT_DISTANCE = 450; // needs to be found in testing
+	public static final double BACKWARDS_DISTANCE = 0; // needs to be found in testing
 	public static Timer timer;
 	public static double fallTimer = 2.0;
 	public static double closeTime = 2.0;
@@ -64,13 +67,23 @@ public class AutonZero {
 			System.out.println("start at 0");
 		}
 		
+		RobotDrive.disableSmoothing();
+
+		double forward = -1.0;
+		if (averageDriveEncoder <= STRAIGHT_DISTANCE) {
+			RobotDrive.drive(forward, forward);
+		} else {
+			RobotDrive.stopDrive();
+		}
+		
 		RobotPickup.moveToShootPosition();
-		if (RobotPickup.isPickupInShootPosition()) {
-			step = 2;
+		if (RobotPickup.isPickupInShootPosition() && averageDriveEncoder <= STRAIGHT_DISTANCE) {
+			step = 3;
 		}
 	}
 	
 	public static void update() {
+		averageDriveEncoder = RobotDrive.getEncoderRightTicks();
 		SmartDashboard.putBoolean("Pickup in shoot", RobotPickup.isPickupInShootPosition());
 		StandardOneBallAuton.update();
 	}
