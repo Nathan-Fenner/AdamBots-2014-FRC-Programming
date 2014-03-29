@@ -101,7 +101,7 @@ public class MainRobot extends IterativeRobot {
 				RobotShoot.setTargetTicks(1300);
 			}
 
-			if (Gamepad.secondary.getLeftX() < -.8) {
+			if (Gamepad.secondary.getDPadLeft()) {
 				if (!previousShooterLeft) {
 					RobotShoot.adjustTargetDown();
 				}
@@ -109,7 +109,7 @@ public class MainRobot extends IterativeRobot {
 			} else {
 				previousShooterLeft = false;
 			}
-			if (Gamepad.secondary.getLeftX() > .8) {
+			if (Gamepad.secondary.getDPadRight()) {
 				if (!previousShooterRight) {
 					RobotShoot.adjustTargetUp();
 				}
