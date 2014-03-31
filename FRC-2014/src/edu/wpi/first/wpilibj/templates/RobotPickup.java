@@ -109,8 +109,8 @@ public class RobotPickup {
 
 	public static double getArmAngleAboveHorizontal() {
 		// apply some function to this to convert to angle
-		// return RobotSensors.pickupPotentiometer.get() * 73.015 - 179.257;  // Competition robot
-		return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
+		return RobotSensors.pickupPotentiometer.get() * 73.015 - 179.257;  // Competition robot
+		// return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68; //Practice robot
 	}
 
 	public static void initialize() {
