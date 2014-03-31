@@ -56,14 +56,15 @@ public class RobotVision {
 	}
 
 	public static String getProperty(String s) {
-		if (database == null) {
+		String databaseCopy = RobotVision.database;
+		if (databaseCopy == null) {
 			return "";
 		}
 		String key = "";
 		String val = "";
 		boolean mode = true;
-		for (int i = 0; i < database.length(); i++) {
-			char c = database.charAt(i);
+		for (int i = 0; i < databaseCopy.length(); i++) {
+			char c = databaseCopy.charAt(i);
 			if (c == ':') {
 				mode = false;
 				continue;
@@ -102,7 +103,7 @@ public class RobotVision {
 	public static boolean isHot() {
 		return getNumber("hot") > 40;
 	}
-	
+
 	public static double getDistance() {
 		if (ControlBox.isRed()) {
 			return redDistance();
@@ -162,9 +163,9 @@ public class RobotVision {
 					failTime = 0;
 				} else {
 					try {
-						Thread.sleep(20);	
+						Thread.sleep(20);
 					} catch (Exception e) {
-						
+
 					}
 					failTime += 20;
 				}
