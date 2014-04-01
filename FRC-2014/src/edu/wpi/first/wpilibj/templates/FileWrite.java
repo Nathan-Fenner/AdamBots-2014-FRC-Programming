@@ -20,7 +20,7 @@ public class FileWrite {
 			FileConnection file = (FileConnection) Connector.open("file:///" + name, Connector.WRITE);
 			file.create();
 			DataOutputStream stream = file.openDataOutputStream();
-			stream.writeUTF(contents);
+			stream.writeChars(contents);
 			stream.flush();
 			stream.close();
 			file.close();

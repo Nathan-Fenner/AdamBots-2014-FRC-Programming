@@ -20,6 +20,26 @@ import java.util.Calendar;
  */
 public class MainRobot extends IterativeRobot {
 
+	public static String cumulativeErrorList = "";
+
+	public static void handleException(Exception e, String from) {
+		cumulativeErrorList += "{EXCEPTION FROM " + from + "}\n";
+		DriverStation ds = null;
+		try {
+			ds = DriverStation.getInstance();
+		} catch (Exception u) {
+		}
+		if (ds != null) {
+			cumulativeErrorList += "\tmatch time\t" + ds.getMatchTime() + "\n";
+		}
+		cumulativeErrorList += e.getClass() + "\n\t" + e.getMessage() + "\n" + "\t" + e + "\n\n\n";
+		try {
+			FileWrite.writeFile("exceptions.txt", cumulativeErrorList);
+		} catch (Exception u) {
+		}
+		System.out.println("EXCEPTIONZ!!!!!!");
+		System.out.println(cumulativeErrorList);
+	}
 	public static String logData = "";
 	public static boolean shooterInManualMode = false;
 	public static boolean targetInManualMode = true;
@@ -50,13 +70,17 @@ public class MainRobot extends IterativeRobot {
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
-		RobotShoot.useAutomatic();
-		runCompressor();
-		RobotAuton.update();
-		RobotDrive.update();
-		RobotPickup.update();													// TODO: UNDISABLE WHEN IT CAN DRIVE AGAIN
-		RobotShoot.update();
-		DashboardPut.put();
+		try {
+			RobotShoot.useAutomatic();
+			runCompressor();
+			RobotAuton.update();
+			RobotDrive.update();
+			RobotPickup.update();													// TODO: UNDISABLE WHEN IT CAN DRIVE AGAIN
+			RobotShoot.update();
+			DashboardPut.put();
+		} catch (Exception e) {
+			handleException(e, "autonomousPeriodic");
+		}
 	}
 
 	public void teleopInit() {
@@ -80,80 +104,85 @@ public class MainRobot extends IterativeRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-		frames++;
-		System.out.println("FPS: " + frames / timer.get());
-		if (RobotShoot.gameTime.get() == 0) {
-			RobotShoot.gameTime.start();
-		}
+		try {
 
-		//SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
-		if (!targetInManualMode) {
-			//Automatic targetting Mode (Using camera to figure out encoder)
-			RobotShoot.setTargetTicks(RobotVision.getEncoder());
-			// reinstated the vision's encoder
-			//RobotShoot.setTargetTicks(1300);
-		} else {
-			//Manual targetting mode (using driver to tap left and right)
-			if (Gamepad.secondary.getA()) {
-				RobotShoot.setTargetTicks(1000);
-			}
-			if (Gamepad.secondary.getB()) {
-				RobotShoot.setTargetTicks(1300);
+			frames++;
+			//System.out.println("FPS: " + frames / timer.get());
+			if (RobotShoot.gameTime.get() == 0) {
+				RobotShoot.gameTime.start();
 			}
 
-			if (Gamepad.secondary.getDPadLeft()) {
-				if (!previousShooterLeft) {
-					RobotShoot.adjustTargetDown();
-				}
-				previousShooterLeft = true;
+			//SmartDashboard.putBoolean("shooter AUTO ENCODER", ControlBox.getTopSwitch(3));
+			if (!targetInManualMode) {
+				//Automatic targetting Mode (Using camera to figure out encoder)
+				RobotShoot.setTargetTicks(RobotVision.getEncoder());
+				// reinstated the vision's encoder
+				//RobotShoot.setTargetTicks(1300);
 			} else {
-				previousShooterLeft = false;
-			}
-			if (Gamepad.secondary.getDPadRight()) {
-				if (!previousShooterRight) {
-					RobotShoot.adjustTargetUp();
+				//Manual targetting mode (using driver to tap left and right)
+				if (Gamepad.secondary.getA()) {
+					RobotShoot.setTargetTicks(1000);
 				}
-				previousShooterRight = true;
-			} else {
-				previousShooterRight = false;
+				if (Gamepad.secondary.getB()) {
+					RobotShoot.setTargetTicks(1300);
+				}
+
+				if (Gamepad.secondary.getDPadLeft()) {
+					if (!previousShooterLeft) {
+						RobotShoot.adjustTargetDown();
+					}
+					previousShooterLeft = true;
+				} else {
+					previousShooterLeft = false;
+				}
+				if (Gamepad.secondary.getDPadRight()) {
+					if (!previousShooterRight) {
+						RobotShoot.adjustTargetUp();
+					}
+					previousShooterRight = true;
+				} else {
+					previousShooterRight = false;
+				}
 			}
-		}
 
-		ControlBox.update();
-		RobotDrive.update();
-		RobotPickup.update();
-		RobotShoot.update();
+			ControlBox.update();
+			RobotDrive.update();
+			RobotPickup.update();
+			RobotShoot.update();
 
-		RobotPickup.moveToShootPosition();
+			RobotPickup.moveToShootPosition();
 
-		RobotTeleop.update();
-		//SmartDashboard.putBoolean("TOP SWITCH TWO", ControlBox.getTopSwitch(2));
-		if (!shooterInManualMode) {
-			RobotShoot.useAutomatic();
-		} else {
-			RobotShoot.useManual();
-		}
+			RobotTeleop.update();
+			//SmartDashboard.putBoolean("TOP SWITCH TWO", ControlBox.getTopSwitch(2));
+			if (!shooterInManualMode) {
+				RobotShoot.useAutomatic();
+			} else {
+				RobotShoot.useManual();
+			}
 
-		if (Gamepad.secondary.getBack()) {
-			shooterInManualMode = true;
-		}
-		if (Gamepad.secondary.getStart()) {
-			shooterInManualMode = false;
-		}
-		if (Gamepad.primary.getBack()) {
-			targetInManualMode = true;
-		}
-		if (Gamepad.primary.getStart()) {
-			targetInManualMode = false;
-		}
+			if (Gamepad.secondary.getBack()) {
+				shooterInManualMode = true;
+			}
+			if (Gamepad.secondary.getStart()) {
+				shooterInManualMode = false;
+			}
+			if (Gamepad.primary.getBack()) {
+				targetInManualMode = true;
+			}
+			if (Gamepad.primary.getStart()) {
+				targetInManualMode = false;
+			}
 
-		if (Gamepad.primary.getX() && Gamepad.primary.getY()) {
-			RobotShoot.zeroedBefore = false;
+			if (Gamepad.primary.getX() && Gamepad.primary.getY()) {
+				RobotShoot.zeroedBefore = false;
+			}
+
+			runCompressor();
+
+			DashboardPut.put();
+		} catch (Exception e) {
+			handleException(e, "teleopPeriodic");
 		}
-
-		runCompressor();
-
-		DashboardPut.put();
 	}
 	private int counterOnTest; //Used in testPeriodic, testInit for debug.
 
@@ -201,15 +230,19 @@ public class MainRobot extends IterativeRobot {
 	}
 
 	public void disabledPeriodic() {
-		RobotDrive.stopDrive();
-		RobotShoot.stopMotors();
-		AutonZero.reset();
-		DashboardPut.put();
-		//maxTrueCount = 0;
-		if (logData.length() != 0) {
-			FileWrite.writeFile("log" + Calendar.HOUR + "_" + Calendar.MINUTE + ".txt", logData);
+		try {
+			RobotDrive.stopDrive();
+			RobotShoot.stopMotors();
+			AutonZero.reset();
+			DashboardPut.put();
+			//maxTrueCount = 0;
+			if (logData.length() != 0) {
+				FileWrite.writeFile("log" + Calendar.HOUR + "_" + Calendar.MINUTE + ".txt", logData);
+			}
+			logData = "";
+		} catch (Exception e) {
+			handleException(e, "disabledPeriodic");
 		}
-		logData = "";
 	}
 
 	public void autonomousInit() {
