@@ -24,7 +24,8 @@ public class DashboardPut {
 		//Pickup diagnostics:
 		SmartDashboard.putNumber("pickup ARM ANGLE", RobotPickup.getArmAngleAboveHorizontal());
 		SmartDashboard.putNumber("pickup ARM ANGLE TARGET", RobotPickup.getArmTargetAngle());
-
+		
+		SmartDashboard.putBoolean("pickup TRUSS POSITION", RobotPickup.isPickupInTrussPosition());
 		SmartDashboard.putBoolean("pickup ARM LIMIT UPPER", RobotPickup.isUpperLimitReached());
 		SmartDashboard.putBoolean("pickup ARM LIMIT LOWER", RobotPickup.isLowerLimitReached());
 		//Drive

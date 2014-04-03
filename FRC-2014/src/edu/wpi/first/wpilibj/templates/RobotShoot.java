@@ -50,11 +50,11 @@ public class RobotShoot {
 	}
 
 	public static void adjustTargetUp() {
-		setTargetTicks(givenTensionTargetTicks + 50);
+		setTargetTicks(givenTensionTargetTicks + 25);
 	}
 
 	public static void adjustTargetDown() {
-		setTargetTicks(givenTensionTargetTicks - 50);
+		setTargetTicks(givenTensionTargetTicks - 25);
 	}
 
 	//// INIT ------------------------------------------------------------------
