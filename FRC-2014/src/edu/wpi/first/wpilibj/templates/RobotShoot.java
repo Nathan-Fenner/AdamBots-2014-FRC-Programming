@@ -17,16 +17,16 @@ public class RobotShoot {
 	////VARIABLES---------------------------------------------------------------
 
 	//// ADDED: SWITCHED THE SIGNS ON THE WIND AND UNWIND SPEED
-	public static final double UNWIND_SPEED = -0.4; // TODO: may change
+	public static final double UNWIND_SPEED = -0.3; // TODO: may change
 	public static final double WAIT_TIME = 0.75;
 	public static final double WIND_SPEED = 1.0;
 	public static final double MAX_REVS = 1500;
 	public static final double QUICK_SHOOT_REVS = .8 * MAX_REVS;
 	public static final double BACKWARDS_REV = -(MAX_REVS + 500.0);
 	public static final double TENSION_TOLERANCE = 15;
-	private static double tensionTargetTicks = 1200;							// Practice robot
-	//private static double tensionTargetTicks = 1000;								// WONT CHANGE AUTON VALUE, GO TO THE AUTON CLASS
-	private static double givenTensionTargetTicks = 1200;
+	//private static double tensionTargetTicks = 1200;							// Practice robot
+	private static double tensionTargetTicks = 1075;								// WONT CHANGE AUTON VALUE, GO TO THE AUTON CLASS
+	private static double givenTensionTargetTicks = 1075;
 	private static int tensionTargetDirection = -1;
 	private static Timer timer;
 	public static Timer gameTime;
@@ -70,6 +70,7 @@ public class RobotShoot {
 
 	public static void startShoot() {
 		stage = 2;
+		zeroedBefore = false;													// CHANGED: 4/4/14
 		//stage = 1;
 	}
 
@@ -183,7 +184,8 @@ public class RobotShoot {
 		if (getEncoder() >= tensionTargetTicks + TENSION_TOLERANCE && !getAtBack()) {
 			automatedUnwind();
 			if (Math.abs(getEncoder() - tensionTargetTicks) < TENSION_TOLERANCE * 3) {
-				updatedSpeed /= 4.0;
+				updatedSpeed /= 5.0;
+				// updatedSpeed /= 4.0;											// 1/4/14
 			}
 			return;
 		}
@@ -284,6 +286,9 @@ public class RobotShoot {
 	// sets speed to the unwind speed
 	private static void automatedUnwind() {
 		updatedSpeed = UNWIND_SPEED;
+		/*if (!zeroedBefore) {
+			updatedSpeed = UNWIND_SPEED * 2.0/3.0;
+		}*/
 	}
 
 	// sets the speed to the wind speed
