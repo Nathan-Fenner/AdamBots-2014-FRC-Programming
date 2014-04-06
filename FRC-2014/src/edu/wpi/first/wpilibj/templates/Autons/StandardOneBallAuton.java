@@ -18,7 +18,7 @@ public class StandardOneBallAuton extends AutonZero {
 
 	public static final double speed = 0.5;
 	public static double startMovingBack;
-	public static final int TENSION_VALUE = 1000;
+	public static final int TENSION_VALUE = 1090; //downloaded to robot for Q26
 	public static double openingTime = 0.5;
 	public static double currentTime = 0.0;
 	public static Timer secondTimer;
@@ -123,5 +123,6 @@ public class StandardOneBallAuton extends AutonZero {
 			default:
 				break;
 		}
+		SmartDashboard.putBoolean("vision HOT GOAL", RobotVision.isHot());
 	}
 }
