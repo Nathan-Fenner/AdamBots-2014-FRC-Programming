@@ -202,18 +202,20 @@ public class MainRobot extends IterativeRobot {
 		} else {
 			RobotActuators.latchRelease.set(true);
 		}
-		if (counterOnTest >= 16 && counterOnTest <= 30) {
+		if (counterOnTest >= 16 && counterOnTest <= 50) {
 			RobotActuators.shooterWinch.set(0.3);
 			counterOnTest++;
 			RobotActuators.latchRelease.set(true);
 		}
-		if (counterOnTest >= 31) {
+		if (counterOnTest >= 51) {
 			RobotActuators.shooterWinch.set(0.0);
 		}
-
+		
+		RobotDrive.stopDrive();
+		
 		System.out.println("counterOnTest: " + counterOnTest);
 	}
-
+	
 	public void testInit() {
 		counterOnTest = 0;
 	}
