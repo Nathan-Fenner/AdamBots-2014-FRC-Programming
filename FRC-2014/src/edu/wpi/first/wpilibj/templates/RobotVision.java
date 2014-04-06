@@ -101,7 +101,7 @@ public class RobotVision {
 	}
 
 	public static boolean isHot() {
-		return getNumber("hot") > 40;
+		return getNumber("hot") >= 80;
 	}
 
 	public static double getDistance() {
