@@ -14,7 +14,8 @@ public class RobotPickup {
 	//private static final double SHOOT_POSITION = 45.0;						// Practice robot
 	//private static final double SHOOT_POSITION = 48.0;						// Practice robot // Changed to bring angle up a few degrees.  Actually targeting 45
 	//private static final double TRUSS_POSITION = 55.0;
-	private static final double SHOOT_POSITION = 43.0;							// competition robot // targeting 5 degrees less than the practice one
+	//private static final double SHOOT_POSITION = 43.0;							// competition robot // targeting 5 degrees less than the practice one
+	private static final double SHOOT_POSITION = 41.0;							// competition robot // targeting 5 degrees less than the practice one
 	private static final double TRUSS_POSITION = 50.0;							// competition robot // targeting 5 degrees less than the practice one
 	private static final double CATCH_POSITION = 90;
 	private static double armTargetAngle = CATCH_POSITION;
@@ -22,6 +23,8 @@ public class RobotPickup {
 	private static double velocity = 0.0;
 	private static Timer timer;
 	private static double lastTime = 0;
+
+	public static boolean manualAdjustment = false;
 
 	public static double getArmTargetAngle() {
 		return armTargetAngle;
@@ -154,9 +157,18 @@ public class RobotPickup {
 			targetSpeed = 1;
 		}
 
-		//double targetSpeed = -Math.max(-30 / 2.5, Math.min(30 / 2.5, armTargetAngle - getArmAngleAboveHorizontal())) * 2.5 / 100.0;
-		//negative because down is positive and up is negative
+		if (Math.abs(Gamepad.secondary.getLeftX()) > .05) {
+			targetSpeed = Gamepad.secondary.getLeftX();
+			if (Math.abs(targetSpeed) < 0.1) {
+				targetSpeed = 0;
+			} else {
+				double mag = Math.abs(targetSpeed);
+				double sign = targetSpeed / mag;
+				targetSpeed = (mag - 0.1) * 0.3 * sign;
+			}
+		}
 
+		//negative because down is positive and up is negative
 		double amt = -targetSpeed; // since up is negative
 
 		if (amt < 0 && (!isUpperLimitReached())) {

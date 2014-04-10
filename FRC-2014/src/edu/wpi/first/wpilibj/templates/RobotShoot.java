@@ -201,6 +201,8 @@ public class RobotShoot {
 		timer.reset();
 	}
 
+	public static int shotNumber = 0;
+
 	// reshoot method
 	// needs to be called before reshooting
 	public static void shoot() {
@@ -210,11 +212,15 @@ public class RobotShoot {
 			if (stage != 1) {
 				returnStage = stage;
 				MainRobot.logData += getEncoder() + "\t" + RobotVision.getDistance() + "\n";
+				MainRobot.logData += "Battery Voltage: " + ControlBox.driverStation.getBatteryVoltage() + "\tEncoder Ticks: " + getEncoder() + "\tsetpoint: " + tensionTargetTicks + "\tArm Angle:" + RobotPickup.getArmAngleAboveHorizontal();
+				MainRobot.logData += "Drive Motors Speeds: " + RobotActuators.leftDrive.get() + ", " + RobotActuators.rightDrive.get() + "\tShot Number: " + shotNumber + "\n";
+				shotNumber++;
 			}
 			stage = 1;
 			timer.stop();
 			timer.reset();
 		}
+
 	}
 
 	// Automated shoot
@@ -287,8 +293,8 @@ public class RobotShoot {
 	private static void automatedUnwind() {
 		updatedSpeed = UNWIND_SPEED;
 		/*if (!zeroedBefore) {
-			updatedSpeed = UNWIND_SPEED * 2.0/3.0;
-		}*/
+		 updatedSpeed = UNWIND_SPEED * 2.0/3.0;
+		 }*/
 	}
 
 	// sets the speed to the wind speed
@@ -352,7 +358,7 @@ public class RobotShoot {
 
 		// sets motor
 		RobotActuators.shooterWinch.set(updatedSpeed);
-		SmartDashboard.putNumber("Updated Speed Value",updatedSpeed);
+		SmartDashboard.putNumber("Updated Speed Value", updatedSpeed);
 
 		// prints to smart dashboard
 		if (inManualMode) {

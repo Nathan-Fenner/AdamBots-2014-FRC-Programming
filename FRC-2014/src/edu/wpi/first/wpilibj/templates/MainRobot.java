@@ -75,6 +75,7 @@ public class MainRobot extends IterativeRobot {
 			runCompressor();
 			RobotAuton.update();
 			RobotDrive.update();
+			RobotPickup.manualAdjustment = false;
 			RobotPickup.update();													// TODO: UNDISABLE WHEN IT CAN DRIVE AGAIN
 			RobotShoot.update();
 			DashboardPut.put();
@@ -121,7 +122,7 @@ public class MainRobot extends IterativeRobot {
 			} else {
 				//Manual targetting mode (using driver to tap left and right)
 				if (Gamepad.secondary.getA()) {
-					RobotShoot.setTargetTicks(1000);
+					RobotShoot.setTargetTicks(1115);
 				}
 				if (Gamepad.secondary.getB()) {
 					RobotShoot.setTargetTicks(1300);
@@ -240,8 +241,9 @@ public class MainRobot extends IterativeRobot {
 			AutonZero.reset();
 			DashboardPut.put();
 			//maxTrueCount = 0;
+			RobotShoot.shotNumber = 0;
 			if (logData.length() != 0) {
-				FileWrite.writeFile("log" + Calendar.HOUR + "_" + Calendar.MINUTE + ".txt", logData);
+				FileWrite.writeFile("LogDataAll" + ControlBox.driverStation.getAlliance().name + MathUtils.rand(999999) + ".txt", logData);
 			}
 			logData = "";
 		} catch (Exception e) {

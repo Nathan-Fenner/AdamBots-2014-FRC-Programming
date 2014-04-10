@@ -12,11 +12,13 @@
             <file>file:/C:/Users/Jason/Desktop/Lubbock%20TX%20Code/Robot%20Code/AdamBots-2014-FRC-Programming-vTexas1/AdamBots-2014-FRC-Programming-vTexas1/FRC-2014/src/edu/wpi/first/wpilibj/templates/Autons/AutonZero.java</file>
         </group>
         <group name="robotics">
+            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/RobotShoot.java</file>
             <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/RobotTeleop.java</file>
-            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/RobotPickup.java</file>
-            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/Autons/AutonZero.java</file>
+            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/RobotVision.java</file>
             <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/Autons/StandardOneBallAuton.java</file>
             <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/MainRobot.java</file>
+            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/Autons/RobotAuton.java</file>
+            <file>file:/C:/Users/Tyler/Documents/GitHub/AdamBots-2014-FRC-Programming/FRC-2014/src/edu/wpi/first/wpilibj/templates/DashboardPut.java</file>
         </group>
     </open-files>
 </project-private>

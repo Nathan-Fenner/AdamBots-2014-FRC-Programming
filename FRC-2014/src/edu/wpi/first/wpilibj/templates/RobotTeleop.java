@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -75,8 +75,13 @@ public class RobotTeleop {
 		}
 
 		// added the false &&
+		
+		if (Math.abs(Gamepad.secondary.getLeftX()) > .1) {
+			RobotPickup.manualAdjustment = true;
+		}
 
 		if (Gamepad.secondary.getLB() || Gamepad.secondary.getRB()) {
+			RobotPickup.manualAdjustment = false;
 			if (!pickupPositionDebounce) {
 				if (Gamepad.secondary.getLB()) {
 					pickupPosition--;
