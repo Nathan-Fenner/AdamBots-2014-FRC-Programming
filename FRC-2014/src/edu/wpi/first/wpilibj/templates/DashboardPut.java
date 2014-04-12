@@ -41,5 +41,7 @@ public class DashboardPut {
 
 		// TESTING VARIABLES
 		SmartDashboard.putNumber("pickup POTENTIOMETER", RobotSensors.pickupPotentiometer.get());
+		
+		SmartDashboard.putBoolean("shooter READY TO FIRE",RobotPickup.isPickupInShootPosition() && RobotShoot.isReadyToShoot());
 	}
 }
