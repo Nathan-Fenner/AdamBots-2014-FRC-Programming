@@ -34,7 +34,7 @@ public class MainRobot extends IterativeRobot {
 		}
 		cumulativeErrorList += e.getClass() + "\n\t" + e.getMessage() + "\n" + "\t" + e + "\n\n\n";
 		try {
-			FileWrite.writeFile("exceptions.txt", cumulativeErrorList);
+			//FileWrite.writeFile("exceptions.txt", cumulativeErrorList);
 		} catch (Exception u) {
 		}
 		System.out.println("EXCEPTIONZ!!!!!!");
@@ -240,10 +240,10 @@ public class MainRobot extends IterativeRobot {
 			AutonZero.reset();
 			DashboardPut.put();
 			//maxTrueCount = 0;
-			if (logData.length() != 0) {
+			/*if (logData.length() != 0) {
 				FileWrite.writeFile("log" + Calendar.HOUR + "_" + Calendar.MINUTE + ".txt", logData);
 			}
-			logData = "";
+			logData = "";*/
 		} catch (Exception e) {
 			handleException(e, "disabledPeriodic");
 		}
