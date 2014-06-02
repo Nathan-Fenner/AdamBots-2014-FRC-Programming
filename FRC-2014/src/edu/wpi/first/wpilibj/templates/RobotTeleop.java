@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class RobotTeleop {
 
 	static double fine_speed = 0.0;
-	private static int pickupPosition = 1;
+	private static int pickupPosition = 2;
 	private static boolean pickupPositionDebounce = false;
 	private static boolean shootDebounce = false;
 	public static double DEBUG_OSCILLATE = 0.0;

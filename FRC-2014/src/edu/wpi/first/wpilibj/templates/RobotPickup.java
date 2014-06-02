@@ -1,15 +1,17 @@
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
  * @author Nathan
  */
 public class RobotPickup {
-
-	private static final double ANGLE_TOLERANCE = 10;                            //// TODO: CHANGE BACK TO 3
+        private static PIDController pidController = new PIDController(-200, 0, 0, RobotSensors.pickupPotentiometer, RobotActuators.pickupMechMotor);
+	//changing later
+        private static final double ANGLE_TOLERANCE = 10; 
+        //// TODO: CHANGE BACK TO 3
 	private static final double PICKUP_POSITION = -18;
 	//private static final double SHOOT_POSITION = 45.0;						// Practice robot
 	//private static final double SHOOT_POSITION = 48.0;						// Practice robot // Changed to bring angle up a few degrees.  Actually targeting 45
@@ -66,23 +68,28 @@ public class RobotPickup {
 	}
 
 	public static void movePickupToAngle(double givenAngle) {
-		armTargetAngle = givenAngle;
+           armTargetAngle = givenAngle;
 	}
 
 	public static void moveToPickupPosition() {
-		movePickupToAngle(PICKUP_POSITION);
+            pidController.disable();
+            movePickupToAngle(PICKUP_POSITION);
 	}
 
 	public static void moveToShootPosition() {
-		movePickupToAngle(SHOOT_POSITION);
+            pidController.setSetpoint(SHOOT_POSITION);
+            movePickupToAngle(SHOOT_POSITION);
+            pidController.enable();
 	}
 
 	public static void moveToTrussPosition() {
-		movePickupToAngle(TRUSS_POSITION);
+            pidController.disable();
+            movePickupToAngle(TRUSS_POSITION);
 	}
 
 	public static void moveToCatchPosition() {
-		movePickupToAngle(CATCH_POSITION);
+            pidController.disable();
+            movePickupToAngle(CATCH_POSITION);
 	}
 
 	public static boolean isPickupInPosition() {
@@ -118,10 +125,15 @@ public class RobotPickup {
 	public static void initialize() {
 		timer = new Timer();
 		timer.start();
+                pidController.setInputRange(25, 55);
+                pidController.setOutputRange(-.35, .35);
+                pidController.setPercentTolerance(5);
+                pidController.disable();
 	}
 
 	public static void update() {
-
+            System.out.println(pidController.isEnable());
+            if(!pidController.isEnable()){
 		double now = timer.get();
 		if (now - lastTime < 0.2) {
 			velocity = 0.5 * velocity + 0.5 * (getArmAngleAboveHorizontal() - lastPosition) / (now - lastTime);
@@ -167,6 +179,7 @@ public class RobotPickup {
 		}
 
 		RobotActuators.pickupMechMotor.set(mechSpeed);
+            }
 	}
 
 	public static double getVelocity() {
