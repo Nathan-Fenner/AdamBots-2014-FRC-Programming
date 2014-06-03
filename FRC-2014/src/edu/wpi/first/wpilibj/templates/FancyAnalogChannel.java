@@ -11,6 +11,7 @@ public class FancyAnalogChannel extends AnalogPotentiometer implements PIDSource
         super(channel);
     }
     public double pidGet(){
+        System.out.println(get() * 73.015 - 179.257);
         return get() * 73.015 - 179.257;
         // return RobotSensors.pickupPotentiometer.get() * 74.522 - 258.68;
     }

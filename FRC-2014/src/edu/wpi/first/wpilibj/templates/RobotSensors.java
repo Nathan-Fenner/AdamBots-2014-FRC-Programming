@@ -22,7 +22,7 @@ public class RobotSensors {
 	public static AnalogChannel configSwitchC;
 	public static Encoder rightDriveEncoder;
 	public static Encoder leftDriveEncoder;
-	public static AnalogPotentiometer pickupPotentiometer;
+	public static FancyAnalogChannel pickupPotentiometer;
 	public static Encoder shooterWinchEncoder;
 	public static DigitalInput ballReadyToLiftLim;
 	public static DigitalInput pickupSystemDownLim;
@@ -38,7 +38,7 @@ public class RobotSensors {
 		configSwitchA = new AnalogChannel(3);
 		configSwitchB = new AnalogChannel(4);
 		configSwitchC = new AnalogChannel(5);
-		pickupPotentiometer = new AnalogPotentiometer(2);
+		pickupPotentiometer = new FancyAnalogChannel(2);
 		shooterLoadedLim = new AnalogSwitch(6);
 		//Now in port TWO on both robots.
 
